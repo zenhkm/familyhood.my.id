@@ -1601,11 +1601,11 @@ if ($action === 'bio') {
     .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); border: 1px solid rgba(148, 163, 184, 0.24); }
     .modern-card { border-radius: 16px; overflow: hidden; border: 1px solid rgba(79, 70, 229, 0.2); box-shadow: 0 7px 25px rgba(79,70,229,0.16); }
 
-    .page-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 20px 21px; background: transparent; color: #1f2937; }
-    .page-header-left { min-width: 0; }
-    .tree-title { margin: 4px 0 0; font-size: 1.35rem; font-weight: 700; line-height: 1.3; color: #1f2937; letter-spacing: -0.3px; }
-    .back-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; border-radius: 11px; font-weight: 700; font-size: 0.9rem; color: #4f46e5; text-decoration: none; background: #eef2ff; border: 1px solid #c7d2fe; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: transform .2s, box-shadow .2s, background .2s; }
-    .back-button:hover { transform: translateY(-1px); background: #e0e7ff; border-color: #a5b4fc; box-shadow: 0 4px 10px rgba(79,70,229,0.12); }
+    .page-header { display: flex; justify-content: space-between; align-items: center; gap: 30px; padding: 22px 24px; background: transparent; color: #1f2937; border-bottom: 1px solid #f0f1f3; }
+    .page-header-content { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .back-button-link { font-size: 0.85rem; font-weight: 600; color: #6366f1; text-decoration: none; transition: color .2s; }
+    .back-button-link:hover { color: #4f46e5; }
+    .tree-title { margin: 0; font-size: 1.5rem; font-weight: 700; line-height: 1.2; color: #1f2937; letter-spacing: -0.4px; }
 
     .alert { padding: 12px; border-radius: 8px; margin-bottom: 15px; }
     .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
@@ -2473,14 +2473,12 @@ if ($action === 'bio') {
 
             <div class="card modern-card">
                 <div class="page-header">
-                    <div class="page-header-left">
-                        <a href="?action=reset_tree" class="back-button">
-                            ← Kembali ke Daftar Keluarga Besar
-                        </a>
+                    <div class="page-header-content">
+                        <a href="?action=reset_tree" class="back-button-link">← Kembali</a>
                         <h2 class="tree-title"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
                     </div>
                     <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?>
-                        <a href="?action=add_person" class="btn btn-primary btn-sm">+ Anggota</a>
+                        <a href="?action=add_person" class="btn btn-primary">+ Anggota</a>
                     <?php endif; ?>
                 </div>
                 
