@@ -279,7 +279,7 @@ function fh_render_single_web_card($p, $currentActiveId) {
     }
     
     $focusedClass = ($p['id'] == $currentActiveId) ? 'node-focused' : '';
-    $deceasedClass = ($p['is_alive'] == 0) ? 'node-deceased' : '';
+    $deceasedClass = (($p['is_alive'] ?? 1) == 0) ? 'node-deceased' : '';
     
     echo '<div class="tree-node-web '.$deceasedClass.'">';
     echo '  <div class="node-card-content '.$focusedClass.'">';
