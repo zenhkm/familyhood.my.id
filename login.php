@@ -69,7 +69,7 @@ if (isset($_GET['code'])) {
         $googleId = $google_account_info->id;
         $picture  = $google_account_info->picture;
 
-        $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+        $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         
         // Cek User
         $stmt = $mysqli->prepare("SELECT * FROM users WHERE email = ?");
