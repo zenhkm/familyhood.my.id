@@ -1598,7 +1598,15 @@ if ($action === 'bio') {
     .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
     .btn-block { width: 100%; display: flex; }
 
-    .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; }
+    .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); border: 1px solid rgba(148, 163, 184, 0.24); }
+    .modern-card { border-radius: 16px; overflow: hidden; border: 1px solid rgba(79, 70, 229, 0.2); box-shadow: 0 7px 25px rgba(79,70,229,0.16); }
+
+    .page-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 17px 21px; background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: #fff; }
+    .page-header-left { min-width: 0; }
+    .tree-title { margin: 8px 0 0; font-size: 1.85rem; font-weight: 800; line-height: 1.1; color: #ffffff; text-shadow: 0 1px 2px rgba(15,23,42,0.32); }
+    .back-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; border-radius: 11px; font-weight: 700; font-size: 0.9rem; color: #e5e7ff; text-decoration: none; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 3px 10px rgba(0,0,0,0.12); transition: transform .2s, box-shadow .2s, background .2s; }
+    .back-button:hover { transform: translateY(-1px); background: rgba(255,255,255,0.26); box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
+
     .alert { padding: 12px; border-radius: 8px; margin-bottom: 15px; }
     .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
     .alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
@@ -2463,14 +2471,15 @@ if ($action === 'bio') {
                 $allPersons = fh_get_persons_by_tree($mysqli, $treeIdToDisplay); 
             ?>
 
-            <div class="card" style="border-radius: 14px; box-shadow: 0 8px 20px rgba(31,41,55,.08); overflow: hidden; border: 1px solid #e5e7eb;">
-                <div style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: #fff; padding: 18px 20px; display:flex; justify-content:space-between; align-items:center; gap: 15px; flex-wrap: wrap;">
-                    <div style="flex: 1 1 320px;">
-                        <a href="?action=reset_tree" style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; color: #e0e7ff; font-weight: 700; text-decoration: none; background: rgba(255, 255, 255, 0.16); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,.3); box-shadow: 0 2px 8px rgba(0,0,0,.08);">
+            <div class="card modern-card">
+                <div class="page-header">
+                    <div class="page-header-left">
+                        <a href="?action=reset_tree" class="back-button">
                             ← Kembali ke Daftar Keluarga Besar
                         </a>
-
-                        <h2 style="margin: 10px 0 0; font-size: 1.65rem; font-weight: 800; line-height: 1.2; color: #fff; text-shadow: 0 1px 2px rgba(15,23,42,.25);"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
+                        <h2 class="tree-title"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
+                    </div>
+                    <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?><?= htmlspecialchars($treeNameToDisplay) ?></h2>
                     </div>
                     <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?>
                         <a href="?action=add_person" class="btn btn-primary btn-sm">+ Anggota</a>
