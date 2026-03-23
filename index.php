@@ -2479,8 +2479,6 @@ if ($action === 'bio') {
                         </a>
                         <h2 class="tree-title"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
                     </div>
-                    <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?><?= htmlspecialchars($treeNameToDisplay) ?></h2>
-                    </div>
                     <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?>
                         <a href="?action=add_person" class="btn btn-primary btn-sm">+ Anggota</a>
                     <?php endif; ?>
