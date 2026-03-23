@@ -279,8 +279,9 @@ function fh_render_single_web_card($p, $currentActiveId) {
     }
     
     $focusedClass = ($p['id'] == $currentActiveId) ? 'node-focused' : '';
+    $deceasedClass = ($p['is_alive'] == 0) ? 'node-deceased' : '';
     
-    echo '<div class="tree-node-web">';
+    echo '<div class="tree-node-web '.$deceasedClass.'">';
     echo '  <div class="node-card-content '.$focusedClass.'">';
     
     // --- 1. TOMBOL EDIT (KIRI ATAS) ---
@@ -1747,6 +1748,11 @@ if ($action === 'bio') {
     
     /* Kartu Orang di Web */
     .tree-node-web { text-decoration: none; display: inline-block; }
+    .tree-node-web.node-deceased .node-card-content { opacity: 0.7; background: #f8f8f8; }
+    .tree-node-web.node-deceased .web-photo { filter: grayscale(100%); opacity: 0.8; border-color: #9ca3af; }
+    .tree-node-web.node-deceased .web-name { color: #6b7280; font-style: italic; text-decoration: line-through; }
+    .tree-node-web.node-deceased::after { content: '†'; position: absolute; top: -8px; right: -8px; background: #dc2626; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
+    
     .node-card-content { 
         background: #fff; 
         border: 1px solid #cbd5e1; 
@@ -1761,8 +1767,8 @@ if ($action === 'bio') {
     .node-card-content:hover { transform: scale(1.05); border-color: #4f46e5; }
     .node-card-content.highlight { border-color: #4f46e5; background: #eef2ff; border-width: 2px; }
     
-    .web-photo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .web-name { font-size: 0.8rem; font-weight: 700; display: block; line-height: 1.3; margin-top: 6px; color: #1e293b; }
+    .web-photo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: filter 0.2s; }
+    .web-name { font-size: 0.8rem; font-weight: 700; display: block; line-height: 1.3; margin-top: 6px; color: #1e293b; transition: all 0.2s; }
     
     .spouse-connector-web { 
         width: 20px; /* Jarak suami istri sedikit diperlebar */
