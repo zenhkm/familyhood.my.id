@@ -2463,15 +2463,14 @@ if ($action === 'bio') {
                 $allPersons = fh_get_persons_by_tree($mysqli, $treeIdToDisplay); 
             ?>
 
-            <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <div>
-                        <a href="?action=reset_tree" style="font-size:2rem; color:#6b7280; font-weight:600; text-decoration:none;">
+            <div class="card" style="border-radius: 14px; box-shadow: 0 8px 20px rgba(31,41,55,.08); overflow: hidden; border: 1px solid #e5e7eb;">
+                <div style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: #fff; padding: 18px 20px; display:flex; justify-content:space-between; align-items:center; gap: 15px; flex-wrap: wrap;">
+                    <div style="flex: 1 1 320px;">
+                        <a href="?action=reset_tree" style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; color: #e0e7ff; font-weight: 700; text-decoration: none; background: rgba(255, 255, 255, 0.16); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,.3); box-shadow: 0 2px 8px rgba(0,0,0,.08);">
                             ← Kembali ke Daftar Keluarga Besar
                         </a>
-                        
-                        <h2 style="margin-top:5px;"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
-                        
+
+                        <h2 style="margin: 10px 0 0; font-size: 1.65rem; font-weight: 800; line-height: 1.2; color: #fff; text-shadow: 0 1px 2px rgba(15,23,42,.25);"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
                     </div>
                     <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?>
                         <a href="?action=add_person" class="btn btn-primary btn-sm">+ Anggota</a>
