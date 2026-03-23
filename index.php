@@ -300,8 +300,12 @@ function fh_render_single_web_card($p, $currentActiveId) {
     echo '      </a>';
     
     // LINK NAMA (Untuk Buka Biodata)
+    $nameDisplay = htmlspecialchars($p['name']);
+    if ((($p['is_alive'] ?? 1) == 0)) {
+        $nameDisplay = 'alm. ' . $nameDisplay;
+    }
     echo '      <a href="?action=bio&id='.$p['id'].'&mode=view" class="web-name" style="text-decoration:none; color:inherit;">';
-    echo            htmlspecialchars($p['name']);
+    echo            $nameDisplay;
     echo '      </a>';
     
     echo '  </div>';
@@ -1750,7 +1754,7 @@ if ($action === 'bio') {
     .tree-node-web { text-decoration: none; display: inline-block; }
     .tree-node-web.node-deceased .node-card-content { opacity: 0.7; background: #f8f8f8; }
     .tree-node-web.node-deceased .web-photo { filter: grayscale(100%); opacity: 0.8; border-color: #9ca3af; }
-    .tree-node-web.node-deceased .web-name { color: #6b7280; font-style: italic; text-decoration: line-through; }
+    .tree-node-web.node-deceased .web-name { color: #6b7280; font-weight: 700; }
     .tree-node-web.node-deceased::after { content: '†'; position: absolute; top: -8px; right: -8px; background: #dc2626; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
     
     .node-card-content { 
