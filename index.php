@@ -1601,11 +1601,11 @@ if ($action === 'bio') {
     .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); border: 1px solid rgba(148, 163, 184, 0.24); }
     .modern-card { border-radius: 16px; overflow: hidden; border: 1px solid rgba(79, 70, 229, 0.2); box-shadow: 0 7px 25px rgba(79,70,229,0.16); }
 
-    .page-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 17px 21px; background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: #fff; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 17px 21px; background: transparent; color: #1f2937; }
     .page-header-left { min-width: 0; }
-    .tree-title { margin: 8px 0 0; font-size: 1.85rem; font-weight: 800; line-height: 1.1; color: #ffffff; text-shadow: 0 1px 2px rgba(15,23,42,0.32); }
-    .back-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; border-radius: 11px; font-weight: 700; font-size: 0.9rem; color: #e5e7ff; text-decoration: none; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 3px 10px rgba(0,0,0,0.12); transition: transform .2s, box-shadow .2s, background .2s; }
-    .back-button:hover { transform: translateY(-1px); background: rgba(255,255,255,0.26); box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
+    .tree-title { margin: 8px 0 0; font-size: 1.85rem; font-weight: 800; line-height: 1.1; color: #1f2937; }
+    .back-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; border-radius: 11px; font-weight: 700; font-size: 0.9rem; color: #4f46e5; text-decoration: none; background: #eef2ff; border: 1px solid #c7d2fe; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: transform .2s, box-shadow .2s, background .2s; }
+    .back-button:hover { transform: translateY(-1px); background: #e0e7ff; border-color: #a5b4fc; box-shadow: 0 4px 10px rgba(79,70,229,0.12); }
 
     .alert { padding: 12px; border-radius: 8px; margin-bottom: 15px; }
     .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
