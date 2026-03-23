@@ -1601,11 +1601,11 @@ if ($action === 'bio') {
     .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); border: 1px solid rgba(148, 163, 184, 0.24); }
     .modern-card { border-radius: 16px; overflow: hidden; border: 1px solid rgba(79, 70, 229, 0.2); box-shadow: 0 7px 25px rgba(79,70,229,0.16); }
 
-    .page-header { display: flex; justify-content: space-between; align-items: center; gap: 30px; padding: 22px 24px; background: transparent; color: #1f2937; border-bottom: 1px solid #f0f1f3; }
-    .page-header-content { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .page-header { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px 24px; background: transparent; color: #1f2937; border-bottom: 1px solid #f0f1f3; }
     .back-button-link { font-size: 0.85rem; font-weight: 600; color: #6366f1; text-decoration: none; transition: color .2s; }
     .back-button-link:hover { color: #4f46e5; }
-    .tree-title { margin: 0; font-size: 1.5rem; font-weight: 700; line-height: 1.2; color: #1f2937; letter-spacing: -0.4px; }
+    .tree-title { margin: 0; font-size: 1.65rem; font-weight: 700; line-height: 1.2; color: #1f2937; letter-spacing: -0.4px; }
+    .btn-add-member { margin-top: 8px; }
 
     .alert { padding: 12px; border-radius: 8px; margin-bottom: 15px; }
     .alert-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
@@ -2473,12 +2473,10 @@ if ($action === 'bio') {
 
             <div class="card modern-card">
                 <div class="page-header">
-                    <div class="page-header-content">
-                        <a href="?action=reset_tree" class="back-button-link">← Kembali</a>
-                        <h2 class="tree-title"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
-                    </div>
+                    <a href="?action=reset_tree" class="back-button-link">← Kembali</a>
+                    <h2 class="tree-title"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
                     <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?>
-                        <a href="?action=add_person" class="btn btn-primary">+ Anggota</a>
+                        <a href="?action=add_person" class="btn btn-primary btn-add-member">+ Anggota</a>
                     <?php endif; ?>
                 </div>
                 
