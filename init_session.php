@@ -6,12 +6,17 @@ $lifetime = 2592000;
 
 class DBSessionHandler implements SessionHandlerInterface {
     private $mysqli;
+    private $enabled = true;
 
     public function __construct($host, $user, $pass, $name) {
         $this->mysqli = new mysqli($host, $user, $pass, $name);
         if ($this->mysqli->connect_errno) {
-            throw new RuntimeException('Gagal konek database untuk session: ' . $this->mysqli->connect_error);
+            error_log('[DBSessionHandler] Gagal konek database untuk session: ' . $this->mysqli->connect_error);
+            $this->enabled = false;
+            $this->mysqli = null;
+            return;
         }
+
         $this->mysqli->set_charset('utf8mb4');
     }
 
@@ -20,10 +25,12 @@ class DBSessionHandler implements SessionHandlerInterface {
     }
 
     public function close() {
+        if (!$this->enabled || !$this->mysqli) return true;
         return $this->mysqli->close();
     }
 
     public function read($id) {
+        if (!$this->enabled || !$this->mysqli) return '';
         $stmt = $this->mysqli->prepare('SELECT session_data FROM sessions WHERE session_id = ? AND session_expires > ?');
         $now = time();
         $stmt->bind_param('si', $id, $now);
@@ -52,6 +59,7 @@ class DBSessionHandler implements SessionHandlerInterface {
     }
 
     public function gc($maxLifetime) {
+        if (!$this->enabled || !$this->mysqli) return true;
         $stmt = $this->mysqli->prepare('DELETE FROM sessions WHERE session_expires < ?');
         $time = time();
         $stmt->bind_param('i', $time);
@@ -62,7 +70,16 @@ class DBSessionHandler implements SessionHandlerInterface {
 }
 
 $handler = new DBSessionHandler(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-session_set_save_handler($handler, true);
+if ($handler && $handler->open('', '')) {
+    session_set_save_handler($handler, true);
+} else {
+    error_log('[init_session] DB session handler gagal, fallback ke filesystem session.');
+    $savePath = __DIR__ . '/sessions';
+    if (!is_dir($savePath)) {
+        mkdir($savePath, 0777, true);
+    }
+    session_save_path($savePath);
+}
 
 ini_set('session.gc_maxlifetime', $lifetime);
 
