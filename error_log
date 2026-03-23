@@ -1,0 +1,876 @@
+[22-Nov-2025 16:04:08 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:04:52 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:04:57 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:12 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:14 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:16 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:18 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:24 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:27 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:38 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:41 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:44 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:52 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:05:55 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:03 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:08 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:10 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:12 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:14 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:17 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:26 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:28 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:30 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:34 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:06:37 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:07:03 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:07:13 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:07:16 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:07:37 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1011
+[22-Nov-2025 16:07:37 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1012
+[22-Nov-2025 16:08:03 Asia/Jakarta] PHP Warning:  Undefined array key "status" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1057
+[22-Nov-2025 16:08:08 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'p.note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:396
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(396): mysqli->query('\r\n        SELEC...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 396
+[22-Nov-2025 16:08:11 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'p.note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:396
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(396): mysqli->query('\r\n        SELEC...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 396
+[22-Nov-2025 16:21:59 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'p.note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:396
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(396): mysqli->query('\r\n        SELEC...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 396
+[22-Nov-2025 16:22:17 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'p.note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:396
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(396): mysqli->query('\r\n        SELEC...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 396
+[22-Nov-2025 16:32:17 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:414
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(414): mysqli->query('SELECT id, name...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 414
+[22-Nov-2025 16:32:41 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:414
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(414): mysqli->query('SELECT id, name...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 414
+[22-Nov-2025 16:33:21 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'INSERT INTO' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:153
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(153): mysqli->prepare('INSERT INTO per...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 153
+[22-Nov-2025 16:33:35 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'INSERT INTO' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:153
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(153): mysqli->prepare('INSERT INTO per...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 153
+[22-Nov-2025 16:33:47 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'INSERT INTO' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:153
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(153): mysqli->prepare('INSERT INTO per...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 153
+[22-Nov-2025 16:56:28 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:430
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(430): mysqli->query('SELECT id, name...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 430
+[22-Nov-2025 16:56:54 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:430
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(430): mysqli->query('SELECT id, name...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 430
+[22-Nov-2025 16:57:27 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'INSERT INTO' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:160
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(160): mysqli->prepare('INSERT INTO per...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 160
+[22-Nov-2025 17:01:01 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'note' in 'SELECT' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:432
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(432): mysqli->query('SELECT id, name...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 432
+[22-Nov-2025 17:27:45 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'is_alive' cannot be null in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:170
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(170): mysqli_stmt->execute()
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 170
+[22-Nov-2025 20:11:45 Asia/Jakarta] PHP Warning:  Undefined array key "is_alive" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 231
+[22-Nov-2025 20:11:45 Asia/Jakarta] PHP Warning:  Undefined array key "is_alive" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 231
+[22-Nov-2025 20:13:43 Asia/Jakarta] PHP Warning:  Undefined array key "is_alive" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 231
+[22-Nov-2025 20:13:43 Asia/Jakarta] PHP Warning:  Undefined array key "is_alive" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 231
+[23-Nov-2025 07:04:37 Asia/Jakarta] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:350
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(350): mysqli_stmt->bind_param('iis', 17, 24)
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 350
+[23-Nov-2025 07:09:20 Asia/Jakarta] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:352
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(352): mysqli_stmt->bind_param('iis', 17, 25)
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 352
+[23-Nov-2025 08:36:43 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 127 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1642
+[23-Nov-2025 08:36:45 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 127 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1642
+[23-Nov-2025 08:38:45 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 127 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1644
+[23-Nov-2025 09:23:02 Asia/Jakarta] PHP Warning:  Undefined variable $pdo in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 857
+[23-Nov-2025 09:23:02 Asia/Jakarta] PHP Fatal error:  Uncaught TypeError: fh_get_all_persons(): Argument #1 ($pdo) must be of type PDO, null given, called in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 857 and defined in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:799
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(857): fh_get_all_persons(NULL)
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 799
+[23-Nov-2025 09:23:09 Asia/Jakarta] PHP Warning:  Undefined variable $pdo in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 857
+[23-Nov-2025 09:23:09 Asia/Jakarta] PHP Fatal error:  Uncaught TypeError: fh_get_all_persons(): Argument #1 ($pdo) must be of type PDO, null given, called in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 857 and defined in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:799
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(857): fh_get_all_persons(NULL)
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 799
+[23-Nov-2025 09:23:21 Asia/Jakarta] PHP Warning:  Undefined variable $pdo in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 857
+[23-Nov-2025 09:23:21 Asia/Jakarta] PHP Fatal error:  Uncaught TypeError: fh_get_all_persons(): Argument #1 ($pdo) must be of type PDO, null given, called in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 857 and defined in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:799
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(857): fh_get_all_persons(NULL)
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 799
+[23-Nov-2025 15:01:14 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 379 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2520
+[23-Nov-2025 15:01:14 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 379 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2520
+[23-Nov-2025 15:01:29 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 441 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2520
+[23-Nov-2025 15:01:29 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 441 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2520
+[23-Nov-2025 15:03:24 Asia/Jakarta] PHP Fatal error:  Uncaught TypeError: usort(): Argument #1 ($array) must be of type array, null given in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:496
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(496): usort(NULL, Object(Closure))
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 496
+[23-Nov-2025 15:15:26 Asia/Jakarta] PHP Parse error:  Unmatched '}' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 654
+[23-Nov-2025 15:15:26 Asia/Jakarta] PHP Parse error:  Unmatched '}' in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 654
+[23-Nov-2025 15:16:52 Asia/Jakarta] PHP Fatal error:  Uncaught TypeError: usort(): Argument #1 ($array) must be of type array, null given in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:496
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/index.php(496): usort(NULL, Object(Closure))
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 496
+[23-Nov-2025 16:36:39 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 439 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2598
+[23-Nov-2025 16:37:18 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 653 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2598
+[23-Nov-2025 16:37:18 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 653 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2598
+[23-Nov-2025 16:37:19 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 653 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2598
+[23-Nov-2025 16:37:19 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 653 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2598
+[23-Nov-2025 16:41:01 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 439 in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2637
+[23-Nov-2025 18:31:18 Asia/Jakarta] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2617
+[23-Nov-2025 18:31:18 Asia/Jakarta] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2617
+[23-Nov-2025 18:33:35 Asia/Jakarta] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2549
+[23-Nov-2025 18:33:35 Asia/Jakarta] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2549
+[23-Nov-2025 18:33:54 Asia/Jakarta] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2618
+[23-Nov-2025 18:33:54 Asia/Jakarta] PHP Parse error:  syntax error, unexpected end of file, expecting "elseif" or "else" or "endif" in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 2618
+[23-Nov-2025 21:08:02 Asia/Jakarta] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[23-Nov-2025 21:08:15 Asia/Jakarta] PHP Warning:  PHP Startup: session.gc_divisor must be greater than 0 in Unknown on line 0
+[23-Nov-2025 21:34:25 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:34:25 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:34:52 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:34:52 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:38:50 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:38:50 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:39:20 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:39:20 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:39:34 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:39:34 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:52:50 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:52:50 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:53:01 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:53:01 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:53:27 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:53:27 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:55:26 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:55:26 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:56:25 Asia/Jakarta] PHP Warning:  Undefined variable $row in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 21:56:25 Asia/Jakarta] PHP Warning:  Trying to access array offset on null in /home/quic1934/public_html/familyhood.quizb.my.id/google_auth.php on line 37
+[23-Nov-2025 23:11:35 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function render_avatar_svg() in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:632
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 632
+[23-Nov-2025 23:11:40 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function render_avatar_svg() in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:632
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 632
+[23-Nov-2025 23:12:04 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function render_avatar_svg() in /home/quic1934/public_html/familyhood.quizb.my.id/index.php:632
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 632
+[24-Nov-2025 05:35:47 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "endif", expecting end of file in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1251
+[24-Nov-2025 05:35:47 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "endif", expecting end of file in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1251
+[24-Nov-2025 08:18:53 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'quic1934_familyhood.allowed_users' doesn't exist in /home/quic1934/public_html/familyhood.quizb.my.id/login.php:24
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/login.php(24): mysqli->prepare('SELECT * FROM a...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/login.php on line 24
+[24-Nov-2025 08:19:26 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'quic1934_familyhood.allowed_users' doesn't exist in /home/quic1934/public_html/familyhood.quizb.my.id/login.php:24
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.quizb.my.id/login.php(24): mysqli->prepare('SELECT * FROM a...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.quizb.my.id/login.php on line 24
+[24-Nov-2025 08:32:19 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 1365
+[24-Nov-2025 09:32:49 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 56
+[24-Nov-2025 09:32:53 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 56
+[24-Nov-2025 09:32:58 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 56
+[24-Nov-2025 09:33:02 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 56
+[24-Nov-2025 09:33:53 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 56
+[24-Nov-2025 09:34:11 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 56
+[24-Nov-2025 09:34:17 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 56
+[24-Nov-2025 09:34:19 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.quizb.my.id/index.php on line 56
+[25-Nov-2025 18:36:02 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function fh_word_recurse_chart() in /home/quic1934/public_html/familyhood.my.id/index.php:638
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(648): fh_word_render_chart(Object(PhpOffice\PhpWord\Element\Section), 106, Array, Array, Array)
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 638
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: hr line 1 and body in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Premature end of data in tag ul line 1 in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  Attempt to read property "nodeName" on null in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 197
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  Attempt to read property "nodeName" on null in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 250
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  Attempt to read property "nodeName" on null in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 289
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  Attempt to read property "childNodes" on null in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 290
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php:94) in /home/quic1934/public_html/familyhood.my.id/index.php on line 676
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php:94) in /home/quic1934/public_html/familyhood.my.id/index.php on line 677
+[25-Nov-2025 18:39:20 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php:94) in /home/quic1934/public_html/familyhood.my.id/index.php on line 678
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: img line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: ul line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: div line 1 and li in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and ul in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: li line 1 and div in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Opening and ending tag mismatch: hr line 1 and body in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  DOMDocument::loadXML(): Premature end of data in tag ul line 1 in Entity, line: 1 in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 94
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  Attempt to read property "nodeName" on null in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 197
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  Attempt to read property "nodeName" on null in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 250
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  Attempt to read property "nodeName" on null in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 289
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  Attempt to read property "childNodes" on null in /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php on line 290
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php:94) in /home/quic1934/public_html/familyhood.my.id/index.php on line 676
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php:94) in /home/quic1934/public_html/familyhood.my.id/index.php on line 677
+[25-Nov-2025 18:39:30 Asia/Jakarta] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/quic1934/public_html/familyhood.my.id/vendor/phpoffice/phpword/src/PhpWord/Shared/Html.php:94) in /home/quic1934/public_html/familyhood.my.id/index.php on line 678
+[25-Nov-2025 20:22:03 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function escapeshellcmd() in /home/quic1934/public_html/familyhood.my.id/index.php:690
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 690
+[26-Nov-2025 22:44:37 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 941 in /home/quic1934/public_html/familyhood.my.id/index.php on line 2694
+[26-Nov-2025 22:45:16 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 942 in /home/quic1934/public_html/familyhood.my.id/index.php on line 2695
+[26-Nov-2025 22:45:19 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 942 in /home/quic1934/public_html/familyhood.my.id/index.php on line 2695
+[26-Nov-2025 22:45:20 Asia/Jakarta] PHP Parse error:  Unclosed '{' on line 942 in /home/quic1934/public_html/familyhood.my.id/index.php on line 2695
+[26-Nov-2025 22:49:18 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 1068
+[26-Nov-2025 22:49:42 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function fh_get_all_persons() in /home/quic1934/public_html/familyhood.my.id/index.php:1227
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 1227
+[26-Nov-2025 22:50:46 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 1065
+[26-Nov-2025 22:50:47 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 1065
+[26-Nov-2025 22:51:09 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function fh_get_all_persons() in /home/quic1934/public_html/familyhood.my.id/index.php:1224
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 1224
+[26-Nov-2025 22:51:58 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 1065
+[26-Nov-2025 22:52:29 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function fh_get_all_persons() in /home/quic1934/public_html/familyhood.my.id/index.php:1225
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 1225
+[26-Nov-2025 22:55:24 Asia/Jakarta] PHP Warning:  Undefined variable $userId in /home/quic1934/public_html/familyhood.my.id/index.php on line 177
+[26-Nov-2025 22:55:24 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'AND relation_type IN ('ayah','ibu')' at line 1 in /home/quic1934/public_html/familyhood.my.id/index.php:178
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(178): mysqli->query('SELECT person_i...')
+#1 /home/quic1934/public_html/familyhood.my.id/index.php(2149): fh_compute_generations(Object(mysqli), 1)
+#2 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 178
+[26-Nov-2025 22:56:09 Asia/Jakarta] PHP Warning:  Undefined variable $userId in /home/quic1934/public_html/familyhood.my.id/index.php on line 177
+[26-Nov-2025 22:56:09 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'AND relation_type IN ('ayah','ibu')' at line 1 in /home/quic1934/public_html/familyhood.my.id/index.php:178
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(178): mysqli->query('SELECT person_i...')
+#1 /home/quic1934/public_html/familyhood.my.id/index.php(2149): fh_compute_generations(Object(mysqli), 1)
+#2 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 178
+[26-Nov-2025 22:56:14 Asia/Jakarta] PHP Warning:  Undefined variable $userId in /home/quic1934/public_html/familyhood.my.id/index.php on line 177
+[26-Nov-2025 22:56:14 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'AND relation_type IN ('ayah','ibu')' at line 1 in /home/quic1934/public_html/familyhood.my.id/index.php:178
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(178): mysqli->query('SELECT person_i...')
+#1 /home/quic1934/public_html/familyhood.my.id/index.php(471): fh_compute_generations(Object(mysqli), 2)
+#2 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 178
+[26-Nov-2025 22:57:21 Asia/Jakarta] PHP Warning:  Undefined variable $userId in /home/quic1934/public_html/familyhood.my.id/index.php on line 177
+[26-Nov-2025 22:57:21 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'AND relation_type IN ('ayah','ibu')' at line 1 in /home/quic1934/public_html/familyhood.my.id/index.php:178
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(178): mysqli->query('SELECT person_i...')
+#1 /home/quic1934/public_html/familyhood.my.id/index.php(2149): fh_compute_generations(Object(mysqli), 1)
+#2 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 178
+[26-Nov-2025 22:57:24 Asia/Jakarta] PHP Warning:  Undefined variable $userId in /home/quic1934/public_html/familyhood.my.id/index.php on line 177
+[26-Nov-2025 22:57:24 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'AND relation_type IN ('ayah','ibu')' at line 1 in /home/quic1934/public_html/familyhood.my.id/index.php:178
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(178): mysqli->query('SELECT person_i...')
+#1 /home/quic1934/public_html/familyhood.my.id/index.php(2149): fh_compute_generations(Object(mysqli), 1)
+#2 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 178
+[26-Nov-2025 22:57:29 Asia/Jakarta] PHP Warning:  Undefined variable $userId in /home/quic1934/public_html/familyhood.my.id/index.php on line 177
+[26-Nov-2025 22:57:29 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'AND relation_type IN ('ayah','ibu')' at line 1 in /home/quic1934/public_html/familyhood.my.id/index.php:178
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(178): mysqli->query('SELECT person_i...')
+#1 /home/quic1934/public_html/familyhood.my.id/index.php(2149): fh_compute_generations(Object(mysqli), 1)
+#2 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 178
+[26-Nov-2025 22:57:32 Asia/Jakarta] PHP Warning:  Undefined variable $userId in /home/quic1934/public_html/familyhood.my.id/index.php on line 177
+[26-Nov-2025 22:57:32 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'AND relation_type IN ('ayah','ibu')' at line 1 in /home/quic1934/public_html/familyhood.my.id/index.php:178
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(178): mysqli->query('SELECT person_i...')
+#1 /home/quic1934/public_html/familyhood.my.id/index.php(2149): fh_compute_generations(Object(mysqli), 1)
+#2 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 178
+[27-Nov-2025 23:05:42 Asia/Jakarta] PHP Warning:  Array to string conversion in /home/quic1934/public_html/familyhood.my.id/index.php on line 1063
+[27-Nov-2025 23:05:58 Asia/Jakarta] PHP Warning:  Array to string conversion in /home/quic1934/public_html/familyhood.my.id/index.php on line 1063
+[27-Nov-2025 23:06:54 Asia/Jakarta] PHP Warning:  Array to string conversion in /home/quic1934/public_html/familyhood.my.id/index.php on line 1063
+[27-Nov-2025 23:07:26 Asia/Jakarta] PHP Warning:  Array to string conversion in /home/quic1934/public_html/familyhood.my.id/index.php on line 1063
+[27-Nov-2025 23:08:47 Asia/Jakarta] PHP Warning:  Array to string conversion in /home/quic1934/public_html/familyhood.my.id/index.php on line 1063
+[27-Nov-2025 23:10:51 Asia/Jakarta] PHP Warning:  Array to string conversion in /home/quic1934/public_html/familyhood.my.id/index.php on line 1063
+[27-Nov-2025 23:11:14 Asia/Jakarta] PHP Warning:  Array to string conversion in /home/quic1934/public_html/familyhood.my.id/index.php on line 1063
+[28-Nov-2025 12:50:25 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 2102
+[28-Nov-2025 12:50:27 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 2102
+[28-Nov-2025 12:50:28 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 2102
+[29-Nov-2025 15:48:12 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "}", expecting "," or ";" in /home/quic1934/public_html/familyhood.my.id/index.php on line 2067
+[29-Nov-2025 16:06:20 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:22 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:24 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:26 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:27 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:29 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:30 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:31 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:33 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:34 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:36 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:06:45 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:07:32 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:08:07 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:08:09 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:08:12 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:08:12 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 16:08:14 Asia/Jakarta] PHP Warning:  Undefined variable $action in /home/quic1934/public_html/familyhood.my.id/index.php on line 9
+[29-Nov-2025 20:41:08 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:1204
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(1204): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 1204
+[29-Nov-2025 20:41:15 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:1204
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(1204): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 1204
+[29-Nov-2025 20:41:28 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:1204
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(1204): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 1204
+[29-Nov-2025 20:41:51 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:1204
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(1204): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 1204
+[29-Nov-2025 20:42:14 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:1204
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(1204): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 1204
+[29-Nov-2025 20:48:20 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:99
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(99): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 99
+[29-Nov-2025 20:48:29 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:99
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(99): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 99
+[29-Nov-2025 20:48:40 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:99
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(99): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 99
+[29-Nov-2025 20:49:11 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:99
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(99): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 99
+[29-Nov-2025 20:49:30 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:99
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(99): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 99
+[29-Nov-2025 20:55:47 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 20:55:55 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 20:55:59 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 20:56:04 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 20:56:17 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 20:56:41 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 20:57:53 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 20:58:11 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 20:59:34 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[29-Nov-2025 21:01:27 Asia/Jakarta] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.photo' in 'SELECT' in /home/quic1934/public_html/familyhood.my.id/index.php:106
+Stack trace:
+#0 /home/quic1934/public_html/familyhood.my.id/index.php(106): mysqli->query('SELECT c.user_i...')
+#1 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/index.php on line 106
+[30-Nov-2025 16:57:06 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3148
+[30-Nov-2025 16:57:08 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3148
+[30-Nov-2025 16:57:10 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3148
+[30-Nov-2025 16:57:11 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3148
+[30-Nov-2025 16:57:12 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3148
+[30-Nov-2025 16:57:15 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3148
+[30-Nov-2025 16:57:15 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3148
+[30-Nov-2025 16:57:19 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3148
+[30-Nov-2025 16:57:59 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3147
+[30-Nov-2025 16:58:00 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "elseif", expecting end of file in /home/quic1934/public_html/familyhood.my.id/index.php on line 3147
+[01-Dec-2025 16:26:34 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:132
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 132
+[01-Dec-2025 16:27:18 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:132
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 132
+[01-Dec-2025 16:27:20 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:132
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 132
+[01-Dec-2025 16:27:22 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:132
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 132
+[01-Dec-2025 16:27:24 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:132
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 132
+[01-Dec-2025 16:30:26 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:134
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 134
+[01-Dec-2025 16:31:50 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:31:51 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:31:52 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:31:52 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:32:23 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:32:27 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:34:06 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:34:10 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:36:08 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:37:57 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:38:16 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 135
+[01-Dec-2025 16:39:27 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:39:28 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:39:28 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:42:17 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:42:18 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:42:19 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:42:26 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:42:26 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:42:30 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:42:31 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function get_google_client() in /home/quic1934/public_html/familyhood.my.id/login.php:137
+Stack trace:
+#0 {main}
+  thrown in /home/quic1934/public_html/familyhood.my.id/login.php on line 137
+[01-Dec-2025 16:48:56 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "endif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 3419
+[01-Dec-2025 16:48:57 Asia/Jakarta] PHP Parse error:  syntax error, unexpected token "endif" in /home/quic1934/public_html/familyhood.my.id/index.php on line 3419
+[23-Mar-2026 17:02:39 Asia/Jakarta] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 268435464 bytes) in /home/quic1934/public_html/familyhood.my.id/index.php on line 437
+[23-Mar-2026 17:02:44 Asia/Jakarta] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 268435464 bytes) in /home/quic1934/public_html/familyhood.my.id/index.php on line 437
+[23-Mar-2026 17:02:46 Asia/Jakarta] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 268435464 bytes) in /home/quic1934/public_html/familyhood.my.id/index.php on line 437
+[23-Mar-2026 17:02:57 Asia/Jakarta] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 268435464 bytes) in /home/quic1934/public_html/familyhood.my.id/index.php on line 437
+[23-Mar-2026 17:03:19 Asia/Jakarta] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 268435464 bytes) in /home/quic1934/public_html/familyhood.my.id/index.php on line 437
+[23-Mar-2026 17:04:33 Asia/Jakarta] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 268435464 bytes) in /home/quic1934/public_html/familyhood.my.id/index.php on line 437
