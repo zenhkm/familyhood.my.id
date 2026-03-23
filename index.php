@@ -1,39 +1,30 @@
 <?php
-// TAMBAHKAN KODE INI DI BARIS PALING PERTAMA (Baris 2)
-ob_start(); 
+ob_start();
 
 require_once 'init_session.php';
+require_once 'config.php';
 require_once __DIR__ . '/vendor/autoload.php';
-
 
 // --- 1. DEFINISIKAN ACTION DULU (WAJIB DI PALING ATAS) ---
 $action = $_GET['action'] ?? 'home';
 
-// --- 2. BARU CEK LOGIKA RESET SETELAH ACTION DIDEFINISIKAN ---
+// --- 2. LOGIKA RESET TREE ---
 if ($action === 'reset_tree') {
-    // Hapus variabel session spesifik
     unset($_SESSION['current_tree_id']);
     unset($_SESSION['current_tree_name']);
-    
-    // PENTING: Paksa server menyimpan perubahan session SEKARANG JUGA
-    session_write_close(); 
-    
-    // Gunakan Javascript replace agar tidak bisa di-back (lebih bersih)
-    echo "<script>window.location.replace('?action=home');</script>";
+    session_write_close();
+    header("Location: ?action=home");
     exit;
 }
 
-// --- PERBAIKAN: DEFINISIKAN ACTION DI SINI ---
-$action = $_GET['action'] ?? 'home';
 // --- LOGIKA LOGOUT ---
 if ($action === 'logout') {
-    $_SESSION = [];         // Kosongkan array session
-    session_unset();        // Hapus semua variabel session
-    session_destroy();      // Hancurkan session di server
-    header("Location: login.php"); // Redirect ke halaman login
+    $_SESSION = [];
+    session_unset();
+    session_destroy();
+    header("Location: login.php");
     exit;
 }
-// ---------------------------------------------
 
 // --- CEK LOGIN ---
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
@@ -41,27 +32,18 @@ if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
     exit;
 }
 
-// ... (lanjutkan dengan kode di bawahnya seperti biasa)
-
 // Cek Admin
-// Pastikan session menyimpan user_id dan role saat login
-$myUserId = $_SESSION['user_id'] ?? 0; 
+$myUserId = $_SESSION['user_id'] ?? 0;
 $myRole   = $_SESSION['role'] ?? 'user';
 $isAdmin  = ($myRole === 'admin');
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Konfigurasi database
-$DB_HOST = 'localhost';
-$DB_USER = 'quic1934_zenhkm';
-$DB_PASS = '03Maret1990';
-$DB_NAME = 'quic1934_familyhood';
-
-
-
-// Koneksi
-$mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+// Koneksi database
+$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+if ($mysqli->connect_errno) die('Gagal konek database: ' . $mysqli->connect_error);
+$mysqli->set_charset('utf8mb4');
 if ($mysqli->connect_errno) die('Gagal konek database: ' . $mysqli->connect_error);
 $mysqli->set_charset('utf8mb4');
 
@@ -85,34 +67,45 @@ if ($action === 'get_collaborators') {
 
     // 3. Cek Otorisasi (Owner)
     $isAuthorized = false;
-    $auth = $mysqli->query("SELECT id FROM family_trees WHERE id=$tid AND user_id=$myId");
-    if ($auth && $auth->num_rows > 0) { $isAuthorized = true; } 
-    else {
-        // Cek Collaborator (Safe Mode)
-        // Gunakan @ untuk menekan error jika tabel belum ada
-        $auth2 = @$mysqli->query("SELECT id FROM tree_collaborators WHERE tree_id=$tid AND user_id=$myId");
-        if ($auth2 && $auth2->num_rows > 0) { $isAuthorized = true; }
+
+    $stmtAuth = $mysqli->prepare("SELECT id FROM family_trees WHERE id = ? AND user_id = ?");
+    $stmtAuth->bind_param('ii', $tid, $myId);
+    $stmtAuth->execute();
+    $resultAuth = $stmtAuth->get_result();
+    if ($resultAuth && $resultAuth->num_rows > 0) {
+        $isAuthorized = true;
     }
-    
+    $stmtAuth->close();
+
+    if (!$isAuthorized) {
+        $stmtAuth2 = $mysqli->prepare("SELECT id FROM tree_collaborators WHERE tree_id = ? AND user_id = ?");
+        $stmtAuth2->bind_param('ii', $tid, $myId);
+        $stmtAuth2->execute();
+        $resultAuth2 = $stmtAuth2->get_result();
+        if ($resultAuth2 && $resultAuth2->num_rows > 0) {
+            $isAuthorized = true;
+        }
+        $stmtAuth2->close();
+    }
+
     if ($isAuthorized) {
-        // PERBAIKAN DI SINI: Saya menghapus 'u.photo' untuk mencegah error kolom tidak ditemukan
-        $sql = "SELECT c.user_id, u.name, u.email 
-                FROM tree_collaborators c 
-                JOIN users u ON u.id = c.user_id 
-                WHERE c.tree_id = $tid";
-        
-        $res = $mysqli->query($sql);
-        
-        // Cek jika query berhasil
+        $stmt = $mysqli->prepare("SELECT c.user_id, u.name, u.email
+                FROM tree_collaborators c
+                JOIN users u ON u.id = c.user_id
+                WHERE c.tree_id = ?");
+        $stmt->bind_param('i', $tid);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
         if ($res) {
-            while($r = $res->fetch_assoc()) {
-                // Tambahkan inisial nama manual karena u.photo dihapus
+            while ($r = $res->fetch_assoc()) {
                 $r['initial'] = strtoupper(substr($r['name'], 0, 1));
                 $rows[] = $r;
             }
         }
+        $stmt->close();
     }
-    
+
     echo json_encode($rows);
     exit;
 }
@@ -122,27 +115,28 @@ if ($action === 'get_viewable_trees' && $isAdmin) {
     // 1. Bersihkan buffer output
     while (ob_get_level()) { ob_end_clean(); }
     header('Content-Type: application/json');
-    
+
     // 2. Matikan display error
     ini_set('display_errors', 0);
-    
+
     $targetId = intval($_GET['user_id'] ?? 0);
     $rows = [];
 
     if ($targetId > 0) {
-        $sql = "SELECT id, name FROM family_trees 
-                WHERE user_id = $targetId AND allow_admin_view = 1
-                ORDER BY name ASC";
-        
-        $res = $mysqli->query($sql);
-        
+        $stmt = $mysqli->prepare("SELECT id, name FROM family_trees WHERE user_id = ? AND allow_admin_view = 1 ORDER BY name ASC");
+        $stmt->bind_param('i', $targetId);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
         if ($res) {
-            while($r = $res->fetch_assoc()) {
+            while ($r = $res->fetch_assoc()) {
                 $rows[] = $r;
             }
         }
+
+        $stmt->close();
     }
-    
+
     echo json_encode($rows);
     exit;
 }
@@ -170,8 +164,11 @@ if ($action === 'activate') {
         if ($u) {
             // AKTIFKAN AKUN
             $userId = $u['id'];
-            $mysqli_local->query("UPDATE users SET is_active = 1, activation_code = NULL WHERE id = $userId");
-            
+            $stmtUpdate = $mysqli_local->prepare("UPDATE users SET is_active = 1, activation_code = NULL WHERE id = ?");
+            $stmtUpdate->bind_param('i', $userId);
+            $stmtUpdate->execute();
+            $stmtUpdate->close();
+
             $_SESSION['status_success'] = "Akun Anda berhasil diaktifkan kembali! Anda kini dapat login.";
         } else {
             $_SESSION['status_error'] = "Gagal: Kode aktivasi tidak valid atau akun sudah aktif.";

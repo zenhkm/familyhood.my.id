@@ -1,6 +1,7 @@
 <?php
 // File: register.php
 require_once 'init_session.php';
+require_once 'config.php';
 require_once 'function_send_mail.php'; // <--- LOAD HELPER EMAIL
 
 if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
@@ -12,7 +13,7 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $mysqli = new mysqli('localhost', 'quic1934_zenhkm', '03Maret1990', 'quic1934_familyhood');
+    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     if ($mysqli->connect_error) die("Koneksi Gagal");
 
     $name  = trim($_POST['name']);

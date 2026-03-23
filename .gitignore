@@ -1,3 +1,6 @@
 vendor/
 sessions/
 uploads/
+config.php
+config_google.php
+error_log

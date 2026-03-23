@@ -1,13 +1,8 @@
 <?php
 // File: login.php
 require_once 'init_session.php';
+require_once 'config.php';
 require_once 'config_google.php';
-
-// Konfigurasi DB (Sama seperti index.php)
-$DB_HOST = 'localhost';
-$DB_USER = 'quic1934_zenhkm';
-$DB_PASS = '03Maret1990';
-$DB_NAME = 'quic1934_familyhood';
 
 $login_error = '';
 
@@ -29,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_login'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $mysqli = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     if ($mysqli->connect_error) die("DB Error");
 
     // Ambil user berdasarkan email
