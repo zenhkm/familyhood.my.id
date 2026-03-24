@@ -337,7 +337,7 @@ function fh_compute_generations($mysqli, $treeId) {
     if (!$mysqli) return [[], 0, 0, [], [], [], []];
 
     // 1. Ambil Data Orang di Tree Ini
-    $sqlPersons = "SELECT id, name, date_of_birth, gender, photo FROM persons WHERE tree_id = $treeId ORDER BY id ASC";
+    $sqlPersons = "SELECT id, name, date_of_birth, gender, photo, is_alive FROM persons WHERE tree_id = $treeId ORDER BY id ASC";
     if ($res = $mysqli->query($sqlPersons)) {
         while ($row = $res->fetch_assoc()) {
             $id = (int)$row['id'];
@@ -346,7 +346,8 @@ function fh_compute_generations($mysqli, $treeId) {
                 'name' => $row['name'], 
                 'dob' => $row['date_of_birth'] ?? null,
                 'gender' => $row['gender'], 
-                'photo' => $row['photo']
+                'photo' => $row['photo'],
+                'is_alive' => $row['is_alive'] ?? 1
             ];
         }
         $res->free();
