@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-//bagus
+//bagus k
 require_once 'init_session.php';
 require_once 'config.php';
 require_once __DIR__ . '/vendor/autoload.php';
