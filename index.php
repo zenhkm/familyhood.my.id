@@ -405,6 +405,7 @@ function fh_compute_generations($mysqli, $treeId) {
             }
         }
         $res->free();
+    }
 
     // --- LOGIKA PERHITUNGAN GENERASI (TIDAK BERUBAH DARI SINI KE BAWAH) ---
     
@@ -1434,8 +1435,6 @@ if (isset($_POST['remove_collab'])) {
     }
 }
 
-
-
 // --- 5. HAPUS KOLABORATOR ---
 if (isset($_POST['remove_collab'])) {
     $treeId = intval($_POST['tree_id']);
@@ -1580,7 +1579,7 @@ if ($action === 'bio') {
     <title>familyHood - Pohon Keluarga</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTIwIiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGQ9Ik0yNTYgMTUwVjI1MCIgc3Ryb2tlPSIjNGY0NmU1IiBzdHJva2Utd2lkdGg9IjMyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjU2IDI1MEwxNTAgMzQwIiBzdHJva2U9IiM0ZjQ2ZTUiIHN0cm9rZS13aWR0aD0iMzIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTYgMjUwTDM2MiAzNDAiIHN0cm9rZT0iIzRmNDZlNSIgc3Ryb2tlLXdpZHRoPSIzMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMTQwIiByPSI2MCIgZmlsbD0iIzRmNDZlNSIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjM2MCIgcj0iNTAiIGZpbGw9IiM0ZjQ2ZTUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+PGNpcmNsZSBjeD0iMzYyIiBjeT0iMzYwIiByPSI1MCIgZmlsbD0iIzRmNDZlNSIgZmlsbC1vcGFjaXR5PSIwLjgiLz48L3N2Zz4=" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTIwIiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGQ9Ik0yNTYgMTUwVjI1MCIgc3Ryb2tlPSIjNGY0NmU1IiBzdHJva2Utd2lkdGg9IjMyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjU2IDI1MEwxNTAgMzQwIiBzdHJva2U9IiM0ZjQ2ZTUiIHN0cm9rZT0iIzRmNDZlNSIgc3Ryb2tlLXdpZHRoPSIzMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iMjU2IiBjeT0iMTQwIiByPSI2MCIgZmlsbD0iIzRmNDZlNSIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjM2MCIgcj0iNTAiIGZpbGw9IiM0ZjQ2ZTUiIGZpbGwtb3BhY2l0eT0iMC44Ii8+PGNpcmNsZSBjeD0iMzYyIiBjeT0iMzYwIiByPSI1MCIgZmlsbD0iIzRmNDZlNSIgZmlsbC1vcGFjaXR5PSIwLjgiLz48L3N2Zz4=" type="image/svg+xml">
     <style>
     /* Efek Berdenyut untuk Orang yang di-Fokuskan */
     .node-focused {
@@ -2425,8 +2424,8 @@ if ($action === 'bio') {
             <div id="modalShare" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:999;">
                 <div style="background:#fff; padding:25px; border-radius:12px; width:90%; max-width:450px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                        <h3 style="margin:0;">Bagikan Keluarga</h3>
-                        <button onclick="document.getElementById('modalShare').style.display='none'" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#6b7280;">&times;</button>
+                        <h3 style="margin:0;">Bagikan Keluarga</h2>
+                        <button onclick="document.getElementById('modalShare').style.display='none'" style="border:none; background:none; font-size:1.5rem; cursor:pointer; color:#6b7280;">&times;</button>
                     </div>
                     
                     <p style="font-size:0.9rem; color:#6b7280; margin-bottom:15px;">
@@ -3061,7 +3060,7 @@ if ($action === 'bio') {
     <div id="modalAddRelation" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(2px);">
         <div style="background:#fff; padding:20px; border-radius:12px; width:90%; max-width:350px; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation: popUp 0.3s;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
-                <h3 style="margin:0; font-size:1.1rem;">Tambah Relasi</h3>
+                <h3 style="margin:0; font-size:1.1rem;">Tambah Relasi</h2>
                 <button onclick="document.getElementById('modalAddRelation').style.display='none'" style="border:none; background:none; font-size:1.2rem; cursor:pointer;">&times;</button>
             </div>
             
@@ -3125,7 +3124,7 @@ if ($action === 'bio') {
         <?php else: ?>
             <div class="card" style="text-align:center; padding:50px 20px;">
                 <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">📭</div>
-                <h3 style="color:#374151; margin:0;">Belum ada notifikasi</h3>
+                <h3 style="color:#374151; margin:0;">Belum ada notifikasi</h2>
                 <p style="color:#6b7280; font-size:0.9rem;">Info keluarga dan pengumuman akan muncul di sini.</p>
             </div>
         <?php endif; ?>
@@ -3263,7 +3262,7 @@ if ($action === 'bio') {
                     <strong><?= htmlspecialchars($t['subject']) ?></strong>
                     <span style="font-size:0.8rem; color:#9ca3af;"><?= date('d M Y H:i', strtotime($t['created_at'])) ?></span>
                 </div>
-                <p style="color:#4b5563; margin-bottom:10px;"><?= nl2br(htmlspecialchars($t['message'])) ?></p>
+                <p style="margin-bottom:10px; font-size:0.9rem;"><?= nl2br(htmlspecialchars($t['message'])) ?></p>
                 
                 <?php if ($t['admin_reply']): ?>
                     <div style="background:#ecfdf5; padding:10px; border-radius:6px; border-left:4px solid #10b981; font-size:0.9rem;">
@@ -3429,7 +3428,8 @@ elseif ($action === 'privacy'): ?>
                                 <button type="button" 
                                         onclick="showAdminViewModal(<?= $u['id'] ?>, '<?= htmlspecialchars($u['name'], ENT_QUOTES) ?>')"
                                         class="btn btn-sm btn-primary"
-                                        style="background:#4f46e5; color:#fff; padding:6px 10px; font-size:0.75rem;">
+                                        style="background:#4f46e5; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
+                                        onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($u['name']) ?>?');">
                                     ✅ <?= $viewableTreesCount ?> Keluarga Diizinkan
                                 </button>
                             <?php else: ?>
@@ -3775,7 +3775,7 @@ function openShareModal(id, name) {
     
     // 2. Load List Kolaborator via AJAX
     const listContainer = document.getElementById('collab_list_container');
-    listContainer.innerHTML = '<li style="text-align:center; color:#999; padding:10px;">Sedang memuat...</li>';
+    listContainer.innerHTML = '<li style="text-align:center; color:#9ca3af; padding:10px;">Memuat data...</li>';
     
     fetch('?action=get_collaborators&tree_id=' + id)
         .then(response => response.json())
