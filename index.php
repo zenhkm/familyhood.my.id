@@ -387,17 +387,24 @@ function fh_compute_generations($mysqli, $treeId) {
     }
 
     // 4. Ambil Relasi Pasangan (Filter by Person ID)
-    $sqlRelSpouse = "SELECT person_id, related_person_id FROM relations 
+    $sqlRelSpouse = "SELECT person_id, related_person_id, spouse_order FROM relations 
                      WHERE person_id IN ($idsStr) AND relation_type = 'pasangan'";
                      
     if ($res = $mysqli->query($sqlRelSpouse)) {
         while ($row = $res->fetch_assoc()) {
             $a = (int)$row['person_id']; 
             $b = (int)$row['related_person_id'];
+            $order = (int)($row['spouse_order'] ?? 0);
             
             if (isset($persons[$a]) && isset($persons[$b])) {
                 if (!isset($spouses[$a])) $spouses[$a] = [];
                 if (!isset($spouses[$b])) $spouses[$b] = [];
+                $spouses[$a][$b] = ['order' => $order];
+                $spouses[$b][$a] = ['order' => $order]; // Simpan juga kebalikannya
+            }
+        }
+        $res->free();
+    }
                 $spouses[$a][$b] = true; 
                 $spouses[$b][$a] = true;
             }
