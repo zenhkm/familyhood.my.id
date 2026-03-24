@@ -1267,7 +1267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $myName = $_SESSION['user_name'];
 
                 $stmt = $mysqli->prepare("UPDATE persons SET name=?, gender=?, place_of_birth=?, date_of_birth=?, is_alive=?, note=?, photo=?, child_order=?, last_editor_name=? WHERE id=? AND user_id=?");
-                $stmt->bind_param("ssssisssii", $name, $gender, $pob, $dob, $alive, $note, $photoPath, $child_order, $myName, $id, $targetUserId);
+                $stmt->bind_param("ssssisssisi", $name, $gender, $pob, $dob, $alive, $note, $photoPath, $child_order, $myName, $id, $targetUserId);
                 
 
                 if ($stmt->execute()) $bio_success = "Update berhasil."; else $bio_error = $stmt->error;
