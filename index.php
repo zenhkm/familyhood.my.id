@@ -3376,7 +3376,7 @@ elseif ($action === 'privacy'): ?>
         <h3 class="section-title">Daftar Pengguna</h3>
         <div style="overflow-x:auto;">
             <table style="min-width: 700px;">
-                <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Akses Data</th></tr></thead>
+                <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Waktu Bergabung</th><th>Akses Data</th></tr></thead>
                 <tbody>
                 <?php
                 // Ambil data dari tabel users. Kolom allow_admin_view di users sekarang diabaikan.
@@ -3387,6 +3387,7 @@ elseif ($action === 'privacy'): ?>
                         <td>#<?= $u['id'] ?></td>
                         <td><?= htmlspecialchars($u['name']) ?></td>
                         <td><?= htmlspecialchars($u['email']) ?></td>
+                        <td><?= date('d M Y H:i', strtotime($u['created_at'])) ?></td>
 
                         <td>
                             <?php 
