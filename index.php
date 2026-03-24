@@ -337,7 +337,7 @@ function fh_compute_generations($mysqli, $treeId) {
     if (!$mysqli) return [[], 0, 0, [], [], [], []];
 
     // 1. Ambil Data Orang di Tree Ini
-    $sqlPersons = "SELECT id, name, date_of_birth, gender, photo, is_alive FROM persons WHERE tree_id = $treeId ORDER BY id ASC";
+    $sqlPersons = "SELECT id, name, date_of_birth, gender, photo, is_alive, child_order FROM persons WHERE tree_id = $treeId ORDER BY id ASC";
     if ($res = $mysqli->query($sqlPersons)) {
         while ($row = $res->fetch_assoc()) {
             $id = (int)$row['id'];
@@ -347,7 +347,8 @@ function fh_compute_generations($mysqli, $treeId) {
                 'dob' => $row['date_of_birth'] ?? null,
                 'gender' => $row['gender'], 
                 'photo' => $row['photo'],
-                'is_alive' => $row['is_alive'] ?? 1
+                'is_alive' => $row['is_alive'] ?? 1,
+                'child_order' => $row['child_order'] ?? null
             ];
         }
         $res->free();
@@ -554,6 +555,10 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $cur
     
     if (!empty($childIds)) {
         usort($childIds, function($a, $b) use ($persons) {
+            $oa = $persons[$a]['child_order'] ?? null; $ob = $persons[$b]['child_order'] ?? null;
+            if ($oa && $ob) return ($oa <=> $ob); // Sortir berdasarkan child_order
+            elseif ($oa && !$ob) return -1; elseif (!$oa && $ob) return 1;
+            
             $da = $persons[$a]['dob'] ?? null; $db = $persons[$b]['dob'] ?? null;
             $ka = ($da && $da !== '0000-00-00') ? $da : null; $kb = ($db && $db !== '0000-00-00') ? $db : null;
             if ($ka && $kb && $ka !== $kb) return strcmp($ka, $kb); elseif ($ka && !$kb) return -1; elseif (!$ka && $kb) return 1;
@@ -606,6 +611,10 @@ function fh_get_family_rows_recursive($personId, $currentGen, $persons, $spouses
     if (empty($childIds)) return [[ $currentGen => $label ]];
 
     usort($childIds, function($a, $b) use ($persons) {
+        $oa = $persons[$a]['child_order'] ?? null; $ob = $persons[$b]['child_order'] ?? null;
+        if ($oa && $ob) return ($oa <=> $ob);
+        elseif ($oa && !$ob) return -1; elseif (!$oa && $ob) return 1;
+        
         $da = $persons[$a]['dob'] ?? null; $db = $persons[$b]['dob'] ?? null;
         $ka = ($da && $da !== '0000-00-00') ? $da : null; $kb = ($db && $db !== '0000-00-00') ? $db : null;
         if ($ka && $kb && $ka !== $kb) return strcmp($ka, $kb); elseif ($ka && !$kb) return -1; elseif (!$ka && $kb) return 1;
@@ -902,6 +911,10 @@ if (isset($_GET['export'])) {
 
                 if (!empty($childIds)) {
                     usort($childIds, function($a, $b) use ($persons) {
+                        $oa = $persons[$a]['child_order'] ?? null; $ob = $persons[$b]['child_order'] ?? null;
+                        if ($oa && $ob) return ($oa <=> $ob);
+                        elseif ($oa && !$ob) return -1; elseif (!$oa && $ob) return 1;
+                        
                         $da = $persons[$a]['dob'] ?? null; $db = $persons[$b]['dob'] ?? null;
                         $ka = ($da && $da !== '0000-00-00') ? $da : null; $kb = ($db && $db !== '0000-00-00') ? $db : null;
                         if ($ka && $kb && $ka !== $kb) return strcmp($ka, $kb);
@@ -1160,6 +1173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dob = empty($_POST['date_of_birth']) ? null : $_POST['date_of_birth'];
         $alive = ($_POST['is_alive'] === '') ? 1 : (int)$_POST['is_alive'];
         $note = trim($_POST['note']??'');
+        $child_order = (isset($_POST['child_order']) && intval($_POST['child_order']) > 0) ? intval($_POST['child_order']) : null;
         
         $from_id = intval($_POST['from_id']??0);
         $from_rel = $_POST['from_relation_type']??'';
@@ -1188,8 +1202,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $myName = $_SESSION['user_name']; // Ambil nama user yang login
                 // INSERT dengan user_id (Logika simpan data masuk di sini)
-                $stmt = $mysqli->prepare("INSERT INTO persons (user_id, tree_id, name, gender, place_of_birth, date_of_birth, is_alive, note, last_editor_name) VALUES (?,?,?,?,?,?,?,?,?)");
-                $stmt->bind_param("iisssssss", $targetUserId, $treeId, $name, $gender, $place_of_birth, $dob, $alive, $note, $myName);
+                $stmt = $mysqli->prepare("INSERT INTO persons (user_id, tree_id, name, gender, place_of_birth, date_of_birth, is_alive, note, child_order, last_editor_name) VALUES (?,?,?,?,?,?,?,?,?,?)");
+                $stmt->bind_param("iissssissi", $targetUserId, $treeId, $name, $gender, $place_of_birth, $dob, $alive, $note, $child_order, $myName);
                 
                 if ($stmt->execute()) {
                     $newId = $stmt->insert_id;
@@ -1248,11 +1262,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $dob = empty($_POST['date_of_birth']) ? null : $_POST['date_of_birth'];
                 $alive = ($_POST['is_alive'] === '') ? 1 : (int)$_POST['is_alive'];
                 $note = trim($_POST['note']??'');
+                $child_order = (isset($_POST['child_order']) && intval($_POST['child_order']) > 0) ? intval($_POST['child_order']) : null;
                 $photoPath = handle_photo_upload('photo', $pOld['photo']);
                 $myName = $_SESSION['user_name'];
 
-                $stmt = $mysqli->prepare("UPDATE persons SET name=?, gender=?, place_of_birth=?, date_of_birth=?, is_alive=?, note=?, photo=?, last_editor_name=? WHERE id=? AND user_id=?");
-                $stmt->bind_param("ssssisssii", $name, $gender, $pob, $dob, $alive, $note, $photoPath, $myName, $id, $targetUserId);
+                $stmt = $mysqli->prepare("UPDATE persons SET name=?, gender=?, place_of_birth=?, date_of_birth=?, is_alive=?, note=?, photo=?, child_order=?, last_editor_name=? WHERE id=? AND user_id=?");
+                $stmt->bind_param("ssssisssii", $name, $gender, $pob, $dob, $alive, $note, $photoPath, $child_order, $myName, $id, $targetUserId);
                 
 
                 if ($stmt->execute()) $bio_success = "Update berhasil."; else $bio_error = $stmt->error;
@@ -2599,6 +2614,11 @@ if ($action === 'bio') {
                 <label>Catatan</label>
                 <textarea name="note" placeholder="Tambahkan catatan khusus..."></textarea>
                 
+                <?php if ($req_rel === 'anak'): ?>
+                    <label>Anak ke berapa</label>
+                    <input type="number" name="child_order" min="1" placeholder="Contoh: 1, 2, 3...">
+                <?php endif; ?>
+                
                 <?php if ($req_rel === 'saudara'): ?>
                     <div class="alert alert-success" style="margin-top:10px;">
                         <label style="margin:0; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;">
@@ -2668,6 +2688,9 @@ if ($action === 'bio') {
                             </div>
                         </div>
                         <label>Catatan</label><textarea name="note"><?= htmlspecialchars($currentPerson['note']??'') ?></textarea>
+                        
+                        <label>Anak ke berapa (jika berlaku)</label>
+                        <input type="number" name="child_order" min="1" value="<?= htmlspecialchars($currentPerson['child_order']??'') ?>" placeholder="Kosongkan jika bukan anak">
                         
                         <div style="margin-top:20px;">
                             <button type="submit" class="btn btn-primary btn-block">💾 Simpan Perubahan</button>
