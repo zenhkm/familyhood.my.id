@@ -405,13 +405,6 @@ function fh_compute_generations($mysqli, $treeId) {
             }
         }
         $res->free();
-    }
-                $spouses[$a][$b] = true; 
-                $spouses[$b][$a] = true;
-            }
-        }
-        $res->free();
-    }
 
     // --- LOGIKA PERHITUNGAN GENERASI (TIDAK BERUBAH DARI SINI KE BAWAH) ---
     
