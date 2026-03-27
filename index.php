@@ -599,6 +599,64 @@ function fh_render_tree_branch_web($personId, $spouseId, $childIds, $persons, $s
     echo '</li>';
 }
 
+function fh_render_multi_spouse_cluster_web($personId, $branches, $persons, $currentActiveId) {
+    $spouseIds = [];
+    foreach ($branches as $branch) {
+        if (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) {
+            $spouseIds[] = $branch['spouse_id'];
+        }
+    }
+
+    $left = [];
+    $right = [];
+    foreach (array_values($spouseIds) as $index => $spouseId) {
+        if ($index % 2 === 0) $left[] = $spouseId;
+        else $right[] = $spouseId;
+    }
+
+    $rows = max(count($left), count($right), 1);
+
+    echo '<div class="multi-spouse-cluster">';
+    for ($i = 0; $i < $rows; $i++) {
+        $leftId = $left[$i] ?? null;
+        $rightId = $right[$i] ?? null;
+        $isMainRow = ($i === 0);
+
+        echo '<div class="multi-spouse-row'.($isMainRow ? ' is-main-row' : '').'">';
+
+        echo '<div class="multi-spouse-side multi-spouse-side-left">';
+        if ($leftId && isset($persons[$leftId])) {
+            fh_render_single_web_card($persons[$leftId], $currentActiveId);
+        } else {
+            echo '<div class="multi-spouse-empty"></div>';
+        }
+        echo '</div>';
+
+        echo '<div class="multi-spouse-link multi-spouse-link-left"></div>';
+
+        echo '<div class="multi-spouse-center">';
+        if ($isMainRow) {
+            fh_render_single_web_card($persons[$personId], $currentActiveId);
+        } else {
+            echo '<div class="multi-spouse-center-spacer"></div>';
+        }
+        echo '</div>';
+
+        echo '<div class="multi-spouse-link multi-spouse-link-right"></div>';
+
+        echo '<div class="multi-spouse-side multi-spouse-side-right">';
+        if ($rightId && isset($persons[$rightId])) {
+            fh_render_single_web_card($persons[$rightId], $currentActiveId);
+        } else {
+            echo '<div class="multi-spouse-empty"></div>';
+        }
+        echo '</div>';
+
+        echo '</div>';
+    }
+    echo '</div>';
+}
+
 function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId) {
     if (!isset($persons[$personId])) return;
 
@@ -610,19 +668,24 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     echo '<li>';
 
     if (count($meaningfulBranches) > 1) {
-        fh_render_single_web_card($persons[$personId], $currentActiveId);
+        fh_render_multi_spouse_cluster_web($personId, $meaningfulBranches, $persons, $currentActiveId);
         echo '<ul class="tree-subfamily-list">';
         foreach ($meaningfulBranches as $branch) {
-            fh_render_tree_branch_web(
-                $personId,
-                $branch['spouse_id'],
-                $branch['child_ids'],
-                $persons,
-                $spouses,
-                $parentChildren,
-                $childParents,
-                $currentActiveId
-            );
+            echo '<li class="tree-branch-family">';
+            $branchLabel = 'Anak dari ' . htmlspecialchars($persons[$personId]['name']);
+            if (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) {
+                $branchLabel .= ' &amp; ' . htmlspecialchars($persons[$branch['spouse_id']]['name']);
+            }
+            echo '<div class="tree-branch-label">'.$branchLabel.'</div>';
+
+            if (!empty($branch['child_ids'])) {
+                echo '<ul>';
+                foreach ($branch['child_ids'] as $childId) {
+                    fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+                }
+                echo '</ul>';
+            }
+            echo '</li>';
         }
         echo '</ul>';
     } else {
@@ -1881,6 +1944,69 @@ if ($action === 'bio') {
         display: inline-block; 
         vertical-align: middle; 
         margin: 0 5px;
+    }
+
+    .multi-spouse-cluster {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        position: relative;
+    }
+
+    .multi-spouse-row {
+        display: grid;
+        grid-template-columns: auto 34px auto 34px auto;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+    }
+
+    .multi-spouse-link {
+        height: 2px;
+        background: #ef4444;
+        min-width: 28px;
+    }
+
+    .multi-spouse-center-spacer,
+    .multi-spouse-empty {
+        width: 120px;
+        min-height: 18px;
+    }
+
+    .multi-spouse-center-spacer {
+        position: relative;
+    }
+
+    .multi-spouse-center-spacer::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: -18px;
+        bottom: -18px;
+        border-left: 2px solid #ef4444;
+        transform: translateX(-50%);
+    }
+
+    .tree-subfamily-list {
+        gap: 18px;
+        align-items: flex-start;
+    }
+
+    .tree-branch-family {
+        min-width: 180px;
+    }
+
+    .tree-branch-label {
+        display: inline-block;
+        margin-bottom: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #4338ca;
+        font-size: 0.78rem;
+        font-weight: 700;
+        border: 1px solid #c7d2fe;
     }
     
     /* Other Styles */
