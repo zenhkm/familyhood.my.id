@@ -546,61 +546,30 @@ function fh_get_family_branches($personId, $persons, $spouses, $childParents) {
     foreach ($sortedSpouseIds as $spouseId) {
         $childIds = [];
         foreach ($childParents as $childId => $parentMap) {
-            $hasPerson = isset($parentMap[$personId]);
-            $hasSpouse = isset($parentMap[$spouseId]);
-            
-            // LOGIKA BARU: Tarik anak jika terhubung ke KEDUANYA, atau HANYA ke pasangannya
-            if (($hasPerson && $hasSpouse) || $hasSpouse) {
-                // Hindari duplikasi jika anak sudah masuk ke list
-                if (!in_array($childId, $childIds)) {
-                    $childIds[] = $childId;
-                }
+            // Anak ditarik HANYA jika terhubung ke Suami DAN Istri tersebut
+            if (isset($parentMap[$personId]) && isset($parentMap[$spouseId])) {
+                $childIds[] = $childId;
             }
         }
         fh_sort_child_ids($childIds, $persons);
         $branches[] = ['spouse_id' => $spouseId, 'child_ids' => $childIds];
     }
 
+    // Cek jika ada anak yang hanya punya hubungan ke Ayah saja (Tanpa Ibu terdaftar)
     $singleParentChildIds = [];
     foreach ($childParents as $childId => $parentMap) {
-        if (!isset($parentMap[$personId])) continue;
-
-        $belongsToKnownSpouse = false;
-        foreach ($sortedSpouseIds as $spouseId) {
-            if (isset($parentMap[$spouseId])) {
-                $belongsToKnownSpouse = true;
-                break;
-            }
-        }
-
-        if (!$belongsToKnownSpouse) {
+        if (isset($parentMap[$personId]) && count($parentMap) == 1) {
             $singleParentChildIds[] = $childId;
         }
     }
 
-    fh_sort_child_ids($singleParentChildIds, $persons);
-
-    // Otomatis gabungkan anak ke istri jika suami hanya punya 1 istri
     if (!empty($singleParentChildIds)) {
-        if (count($branches) === 1) {
-            foreach ($singleParentChildIds as $cid) {
-                if (!in_array($cid, $branches[0]['child_ids'])) {
-                    $branches[0]['child_ids'][] = $cid;
-                }
-            }
-            fh_sort_child_ids($branches[0]['child_ids'], $persons);
-        } else {
-            $branches[] = ['spouse_id' => null, 'child_ids' => $singleParentChildIds];
-        }
-    }
-
-    if (empty($branches)) {
-        $branches[] = ['spouse_id' => null, 'child_ids' => []];
+        fh_sort_child_ids($singleParentChildIds, $persons);
+        $branches[] = ['spouse_id' => null, 'child_ids' => $singleParentChildIds];
     }
 
     return $branches;
 }
-
 function fh_render_tree_branch_web($personId, $spouseId, $childIds, $persons, $spouses, $parentChildren, $childParents, $currentActiveId) {
     if (!isset($persons[$personId])) return;
 
@@ -684,69 +653,74 @@ function fh_render_multi_spouse_cluster_web($personId, $branches, $persons, $cur
 function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId) {
     if (!isset($persons[$personId])) return;
 
-    // 1. Ambil semua cabang (istri-istri dan anak-anaknya)
+    // Ambil semua cabang keluarga (istri dan anak-anaknya)
     $branches = fh_get_family_branches($personId, $persons, $spouses, $childParents);
     
-    // Filter cabang yang valid
+    // Filter hanya cabang yang memiliki pasangan atau anak
     $meaningfulBranches = array_values(array_filter($branches, function($branch) {
         return $branch['spouse_id'] !== null || !empty($branch['child_ids']);
     }));
 
     echo '<li>';
 
-    // =========================================================
-    // BAGIAN ATAS: RENDER ORANG TUA (SUAMI & ISTRI-ISTRI)
-    // =========================================================
-    echo '<div style="display:inline-flex; align-items:center; position:relative; z-index:2; background:#fff; padding:10px 15px; border-radius:20px; border:1px solid #cbd5e1; box-shadow:0 4px 6px rgba(0,0,0,0.05);">';
-    
-    // Jika Poligami (Lebih dari 1 Istri), taruh Istri 1 di Kiri, Suami Tengah, Istri 2 di Kanan
+    // JIKA POLIGAMI (Lebih dari 1 Istri)
     if (count($meaningfulBranches) > 1) {
-        // Istri Pertama (Kiri)
+        // Render Header Orang Tua (Istri 1 - Suami - Istri 2)
+        echo '<div style="display:inline-flex; align-items:center; background:#fff; padding:10px 15px; border-radius:20px; border:1px solid #cbd5e1; box-shadow:0 4px 6px rgba(0,0,0,0.05);">';
+        
+        // Tampilkan Istri 1 (Kiri)
         if (isset($meaningfulBranches[0]['spouse_id'])) {
             fh_render_single_web_card($persons[$meaningfulBranches[0]['spouse_id']], $currentActiveId);
             echo '<div style="width:30px; height:2px; background:#ef4444; margin:0 8px;"></div>';
         }
 
-        // Suami (Tengah)
+        // Tampilkan Suami (Tengah)
         fh_render_single_web_card($persons[$personId], $currentActiveId);
 
-        // Istri Kedua (Kanan)
+        // Tampilkan Istri 2 (Kanan)
         if (isset($meaningfulBranches[1]['spouse_id'])) {
             echo '<div style="width:30px; height:2px; background:#ef4444; margin:0 8px;"></div>';
             fh_render_single_web_card($persons[$meaningfulBranches[1]['spouse_id']], $currentActiveId);
         }
-    } 
-    // Jika Monogami (1 Istri)
-    else {
-        $branch = $meaningfulBranches[0] ?? ['spouse_id' => null, 'child_ids' => []];
-        fh_render_single_web_card($persons[$personId], $currentActiveId);
-        if ($branch['spouse_id']) {
-            echo '<div style="width:30px; height:2px; background:#ef4444; margin:0 8px;"></div>';
-            fh_render_single_web_card($persons[$branch['spouse_id']], $currentActiveId);
-        }
-    }
-    echo '</div>';
+        echo '</div>';
 
-    // =========================================================
-    // BAGIAN BAWAH: RENDER SEMUA ANAK DALAM SATU BARIS
-    // =========================================================
-    // Kumpulkan semua ID anak dari semua istri agar tampil berjajar seperti di gambar
-    $allChildrenIds = [];
-    foreach ($meaningfulBranches as $branch) {
-        foreach ($branch['child_ids'] as $cid) {
-            if (!in_array($cid, $allChildrenIds)) {
-                $allChildrenIds[] = $cid;
+        // Render Anak-anak (Dipisah berdasarkan blok istri)
+        echo '<ul>';
+        foreach ($meaningfulBranches as $branch) {
+            if (!empty($branch['child_ids'])) {
+                echo '<li>';
+                // Garis penanda kelompok anak dari istri tertentu
+                $sName = ($branch['spouse_id']) ? $persons[$branch['spouse_id']]['name'] : 'Tanpa Ibu';
+                echo '<div style="font-size:0.7rem; color:#6366f1; font-weight:bold; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px;">Keturunan '.$sName.'</div>';
+                
+                echo '<ul>';
+                foreach ($branch['child_ids'] as $childId) {
+                    fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+                }
+                echo '</ul>';
+                echo '</li>';
             }
         }
-    }
-
-    if (!empty($allChildrenIds)) {
-        echo '<ul>';
-        foreach ($allChildrenIds as $childId) {
-            // Rekursif untuk menampilkan cucu dsb
-            fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
-        }
         echo '</ul>';
+    } 
+    // JIKA MONOGAMI (1 Istri atau Single)
+    else {
+        $branch = $meaningfulBranches[0] ?? ['spouse_id' => null, 'child_ids' => []];
+        echo '<div style="display:inline-flex; align-items:center;">';
+        fh_render_single_web_card($persons[$personId], $currentActiveId);
+        if ($branch['spouse_id']) {
+            echo '<div class="spouse-connector-web"></div>';
+            fh_render_single_web_card($persons[$branch['spouse_id']], $currentActiveId);
+        }
+        echo '</div>';
+
+        if (!empty($branch['child_ids'])) {
+            echo '<ul>';
+            foreach ($branch['child_ids'] as $childId) {
+                fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+            }
+            echo '</ul>';
+        }
     }
 
     echo '</li>';
