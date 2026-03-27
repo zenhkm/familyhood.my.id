@@ -3404,14 +3404,19 @@ elseif ($action === 'privacy'): ?>
                 <tbody>
                 <?php
                 // Ambil data dari tabel users. Kolom allow_admin_view di users sekarang diabaikan.
-                $users = $mysqli->query("SELECT id, name, email, is_active FROM users WHERE role != 'admin' ORDER BY created_at DESC");
+                $users = $mysqli->query("SELECT id, name, email, is_active, created_at FROM users WHERE role != 'admin' ORDER BY created_at DESC");
                 while ($u = $users->fetch_assoc()):
                 ?>
                     <tr>
                         <td>#<?= $u['id'] ?></td>
                         <td><?= htmlspecialchars($u['name']) ?></td>
                         <td><?= htmlspecialchars($u['email']) ?></td>
-                        <td><?= date('d M Y H:i', strtotime($u['created_at'])) ?></td>
+                        <td>
+                            <?php
+                            $joinedAt = $u['created_at'] ?? null;
+                            echo !empty($joinedAt) ? date('d M Y H:i', strtotime($joinedAt)) : '-';
+                            ?>
+                        </td>
 
                         <td>
                             <?php 
