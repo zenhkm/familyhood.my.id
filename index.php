@@ -1448,7 +1448,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bind_param("ssssisssisi", $name, $gender, $pob, $dob, $alive, $note, $photoPath, $child_order, $myName, $id, $targetUserId);
                 
 
-                if ($stmt->execute()) $bio_success = "Update berhasil."; else $bio_error = $stmt->error;
+                if ($stmt->execute()) {
+                    $bio_success = "Update berhasil."; 
+                    
+                    // Update urutan pasangan (spouse_order) jika ada
+                    if (isset($_POST['spouse_order']) && is_array($_POST['spouse_order'])) {
+                        foreach ($_POST['spouse_order'] as $relId => $sOrder) {
+                            $relId = intval($relId);
+                            $sOrder = intval($sOrder);
+                            if ($relId > 0) {
+                                $sOrderVal = ($sOrder > 0) ? $sOrder : "NULL";
+                                $mysqli->query("UPDATE relations SET spouse_order=$sOrderVal WHERE id=$relId AND person_id=$id AND user_id=$targetUserId");
+                                
+                                // Update relasi sebaliknya (B -> A)
+                                $relRes = $mysqli->query("SELECT related_person_id FROM relations WHERE id=$relId")->fetch_assoc();
+                                if ($relRes) {
+                                    $relatedPersonId = $relRes['related_person_id'];
+                                    $mysqli->query("UPDATE relations SET spouse_order=$sOrderVal WHERE person_id=$relatedPersonId AND related_person_id=$id AND relation_type='pasangan' AND user_id=$targetUserId");
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    $bio_error = $stmt->error;
+                }
                 $stmt->close();
                 
                 $action = 'bio'; $_GET['id'] = $id; $_GET['mode'] = 'view';
