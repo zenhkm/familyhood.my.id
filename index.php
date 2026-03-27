@@ -684,6 +684,8 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
                     fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
                 }
                 echo '</ul>';
+            } else {
+                echo '<div class="tree-branch-empty">Belum ada anak pada pasangan ini</div>';
             }
             echo '</li>';
         }
@@ -1991,10 +1993,23 @@ if ($action === 'bio') {
     .tree-subfamily-list {
         gap: 18px;
         align-items: flex-start;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .tree-branch-family {
-        min-width: 180px;
+        min-width: 220px;
+        padding-top: 10px !important;
+    }
+
+    .tree-branch-family::before,
+    .tree-branch-family::after {
+        border-top-color: #c7d2fe;
+    }
+
+    .tree-branch-family > ul {
+        justify-content: flex-start;
+        padding-top: 16px;
     }
 
     .tree-branch-label {
@@ -2007,6 +2022,17 @@ if ($action === 'bio') {
         font-size: 0.78rem;
         font-weight: 700;
         border: 1px solid #c7d2fe;
+    }
+
+    .tree-branch-empty {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        color: #64748b;
+        font-size: 0.78rem;
+        font-weight: 600;
     }
     
     /* Other Styles */
