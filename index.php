@@ -468,7 +468,7 @@ function fh_compute_generations($mysqli, $treeId) {
         if ($g > $maxGen) $maxGen = $g;
     }
     
-    return [$personsByGen, $maxGen, 0, $generation, $persons, $parentChildren, $spouses];
+    return [$personsByGen, $maxGen, 0, $generation, $persons, $parentChildren, $spouses, $childParents];
 }
 
 // --- FUNGSI PENGGABUNG KELUARGA (UNION-FIND) ---
@@ -526,50 +526,124 @@ function fh_count_descendants($rootIds, $spouses, $parentChildren, &$visited) {
     return $count;
 }
 
-function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $currentActiveId) {
-    if (!isset($persons[$personId])) return;
-    $p = $persons[$personId];
+function fh_sort_child_ids(&$childIds, $persons) {
+    usort($childIds, function($a, $b) use ($persons) {
+        $oa = $persons[$a]['child_order'] ?? null; $ob = $persons[$b]['child_order'] ?? null;
+        if ($oa && $ob) return ($oa <=> $ob);
+        elseif ($oa && !$ob) return -1; elseif (!$oa && $ob) return 1;
+
+        $da = $persons[$a]['dob'] ?? null; $db = $persons[$b]['dob'] ?? null;
+        $ka = ($da && $da !== '0000-00-00') ? $da : null; $kb = ($db && $db !== '0000-00-00') ? $db : null;
+        if ($ka && $kb && $ka !== $kb) return strcmp($ka, $kb); elseif ($ka && !$kb) return -1; elseif (!$ka && $kb) return 1;
+        return strnatcasecmp($persons[$a]['name'], $persons[$b]['name']);
+    });
+}
+
+function fh_get_family_branches($personId, $persons, $spouses, $childParents) {
+    $branches = [];
     $sortedSpouseIds = fh_get_sorted_spouse_ids($personId, $spouses, $persons);
-    echo '<li>';
-    echo '<div style="display:inline-flex; align-items:center;">';
-    fh_render_single_web_card($p, $currentActiveId);
-    if (!empty($sortedSpouseIds)) {
+
+    foreach ($sortedSpouseIds as $spouseId) {
+        $childIds = [];
+        foreach ($childParents as $childId => $parentMap) {
+            if (!isset($parentMap[$personId]) || !isset($parentMap[$spouseId])) continue;
+            $childIds[] = $childId;
+        }
+        fh_sort_child_ids($childIds, $persons);
+        $branches[] = ['spouse_id' => $spouseId, 'child_ids' => $childIds];
+    }
+
+    $singleParentChildIds = [];
+    foreach ($childParents as $childId => $parentMap) {
+        if (!isset($parentMap[$personId])) continue;
+
+        $belongsToKnownSpouse = false;
         foreach ($sortedSpouseIds as $spouseId) {
-            if (isset($persons[$spouseId])) {
-                echo '<div class="spouse-connector-web"></div>';
-                fh_render_single_web_card($persons[$spouseId], $currentActiveId);
+            if (isset($parentMap[$spouseId])) {
+                $belongsToKnownSpouse = true;
+                break;
             }
         }
+
+        if (!$belongsToKnownSpouse) $singleParentChildIds[] = $childId;
+    }
+
+    fh_sort_child_ids($singleParentChildIds, $persons);
+
+    if (!empty($singleParentChildIds) || empty($branches)) {
+        $branches[] = ['spouse_id' => null, 'child_ids' => $singleParentChildIds];
+    }
+
+    return $branches;
+}
+
+function fh_render_tree_branch_web($personId, $spouseId, $childIds, $persons, $spouses, $parentChildren, $childParents, $currentActiveId) {
+    if (!isset($persons[$personId])) return;
+
+    echo '<li>';
+    echo '<div style="display:inline-flex; align-items:center;">';
+    fh_render_single_web_card($persons[$personId], $currentActiveId);
+    if ($spouseId && isset($persons[$spouseId])) {
+        echo '<div class="spouse-connector-web"></div>';
+        fh_render_single_web_card($persons[$spouseId], $currentActiveId);
     }
     echo '</div>';
-    
-    $groupIds = array_merge([$personId], $sortedSpouseIds);
-    
-    $childIdsMap = [];
-    foreach ($groupIds as $pid) {
-        if (!empty($parentChildren[$pid])) {
-            foreach ($parentChildren[$pid] as $cid => $_) { $childIdsMap[$cid] = true; }
-        }
-    }
-    $childIds = array_keys($childIdsMap);
-    
+
     if (!empty($childIds)) {
-        usort($childIds, function($a, $b) use ($persons) {
-            $oa = $persons[$a]['child_order'] ?? null; $ob = $persons[$b]['child_order'] ?? null;
-            if ($oa && $ob) return ($oa <=> $ob); // Sortir berdasarkan child_order
-            elseif ($oa && !$ob) return -1; elseif (!$oa && $ob) return 1;
-            
-            $da = $persons[$a]['dob'] ?? null; $db = $persons[$b]['dob'] ?? null;
-            $ka = ($da && $da !== '0000-00-00') ? $da : null; $kb = ($db && $db !== '0000-00-00') ? $db : null;
-            if ($ka && $kb && $ka !== $kb) return strcmp($ka, $kb); elseif ($ka && !$kb) return -1; elseif (!$ka && $kb) return 1;
-            return strnatcasecmp($persons[$a]['name'], $persons[$b]['name']);
-        });
         echo '<ul>';
         foreach ($childIds as $childId) {
-            fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $currentActiveId);
+            fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
         }
         echo '</ul>';
     }
+    echo '</li>';
+}
+
+function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId) {
+    if (!isset($persons[$personId])) return;
+
+    $branches = fh_get_family_branches($personId, $persons, $spouses, $childParents);
+    $meaningfulBranches = array_values(array_filter($branches, function($branch) {
+        return $branch['spouse_id'] !== null || !empty($branch['child_ids']);
+    }));
+
+    echo '<li>';
+
+    if (count($meaningfulBranches) > 1) {
+        fh_render_single_web_card($persons[$personId], $currentActiveId);
+        echo '<ul class="tree-subfamily-list">';
+        foreach ($meaningfulBranches as $branch) {
+            fh_render_tree_branch_web(
+                $personId,
+                $branch['spouse_id'],
+                $branch['child_ids'],
+                $persons,
+                $spouses,
+                $parentChildren,
+                $childParents,
+                $currentActiveId
+            );
+        }
+        echo '</ul>';
+    } else {
+        $branch = $meaningfulBranches[0] ?? ['spouse_id' => null, 'child_ids' => []];
+        echo '<div style="display:inline-flex; align-items:center;">';
+        fh_render_single_web_card($persons[$personId], $currentActiveId);
+        if (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) {
+            echo '<div class="spouse-connector-web"></div>';
+            fh_render_single_web_card($persons[$branch['spouse_id']], $currentActiveId);
+        }
+        echo '</div>';
+
+        if (!empty($branch['child_ids'])) {
+            echo '<ul>';
+            foreach ($branch['child_ids'] as $childId) {
+                fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+            }
+            echo '</ul>';
+        }
+    }
+
     echo '</li>';
 }
 
@@ -2973,7 +3047,7 @@ if ($action === 'bio') {
         }
 
         // --- HITUNG DATA GENERASI ---
-        list($personsByGen, $maxGen, $maxHeight, $generationData, $allPersonsData, $parentChildren, $spouses) 
+        list($personsByGen, $maxGen, $maxHeight, $generationData, $allPersonsData, $parentChildren, $spouses, $childParents)
             = fh_compute_generations($mysqli, $activeTreeId);
 
         // --- LOGIKA REVOLUSIONER: AUTO ROOT FINDER ---
@@ -3078,7 +3152,7 @@ if ($action === 'bio') {
                             
                             // RENDERING DENGAN FOCUS ID
                             // Kita kirim $focusId ke parameter terakhir agar function tahu siapa yang harus di-highlight
-                            fh_render_tree_web($rootId, $allPersonsData, $spouses, $parentChildren, $focusId);
+                            fh_render_tree_web($rootId, $allPersonsData, $spouses, $parentChildren, $childParents, $focusId);
                             
                             $globalProcessed[$rootId] = true;
                             if (!empty($spouses[$rootId])) {
