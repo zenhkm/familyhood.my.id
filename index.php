@@ -686,7 +686,7 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
 
     $branches = fh_get_family_branches($personId, $persons, $spouses, $childParents);
     
-    // Saring cabang yang relevan (punya pasangan atau punya anak)
+    // Filter cabang yang relevan (punya pasangan atau anak)
     $meaningfulBranches = array_values(array_filter($branches, function($branch) {
         return $branch['spouse_id'] !== null || !empty($branch['child_ids']);
     }));
@@ -694,117 +694,97 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     echo '<li>';
 
     // =========================================================
-    // KASUS 1: SINGLE / TIDAK PUNYA PASANGAN
+    // KASUS 1: SINGLE ATAU HANYA 1 PASANGAN (SEPERTI DI GAMBAR)
     // =========================================================
-    if (empty($meaningfulBranches) || (count($meaningfulBranches) === 1 && empty($meaningfulBranches[0]['spouse_id']))) {
+    if (count($meaningfulBranches) <= 1) {
+        $branch = $meaningfulBranches[0] ?? ['spouse_id' => null, 'child_ids' => []];
         
-        echo '<div style="display:inline-block;">';
+        // 1. Render Suami dan Istri didekatkan rapat
+        echo '<div style="display:inline-flex; align-items:center; position:relative; z-index:2;">';
+        
         fh_render_single_web_card($persons[$personId], $currentActiveId);
+        
+        if (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) {
+            // Garis penghubung merah yang pendek dan rapat
+            echo '<div style="width:40px; height:2px; background:#ef4444; margin:0 4px;"></div>';
+            fh_render_single_web_card($persons[$branch['spouse_id']], $currentActiveId);
+        }
         echo '</div>';
 
-        // Langsung turunkan anak di bawahnya
-        if (!empty($meaningfulBranches) && !empty($meaningfulBranches[0]['child_ids'])) {
+        // 2. Render anak persis di bawah mereka
+        if (!empty($branch['child_ids'])) {
             echo '<ul>';
-            foreach ($meaningfulBranches[0]['child_ids'] as $childId) {
+            foreach ($branch['child_ids'] as $childId) {
                 fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
             }
             echo '</ul>';
         }
     } 
     // =========================================================
-    // KASUS 2: PUNYA 1 ATAU LEBIH PASANGAN (Gunakan Struktur Tabel)
+    // KASUS 2: POLIGAMI / LEBIH DARI 1 ISTRI
     // =========================================================
     else {
         $leftBranches = [];
         $rightBranches = [];
+        foreach ($meaningfulBranches as $index => $branch) {
+            if ($index % 2 === 0) $leftBranches[] = $branch; // Istri 1 ke Kiri
+            else $rightBranches[] = $branch;                 // Istri 2 ke Kanan
+        }
+        $leftBranches = array_reverse($leftBranches); // Istri 1 nempel Suami
+
+        // 1. Render Suami & Istri (Dengan 1 Border Bulat Bersih)
+        echo '<div style="display:inline-flex; align-items:center; position:relative; z-index:2; background:#fff; padding:8px 12px; border-radius:18px; border:1px solid #cbd5e1; box-shadow:0 2px 6px rgba(0,0,0,0.05);">';
         
-        if (count($meaningfulBranches) === 1) {
-            // Jika hanya 1 Istri, tampilkan di Kanan: (Suami --- Istri 1)
-            $rightBranches[] = $meaningfulBranches[0];
-        } else {
-            // Jika Istri > 1, pisah Istri 1 ke kiri, Istri 2 ke kanan, dst.
-            foreach ($meaningfulBranches as $index => $branch) {
-                if ($index % 2 === 0) { 
-                    $leftBranches[] = $branch; // Index genap (0) -> Istri 1 di Kiri
-                } else { 
-                    $rightBranches[] = $branch; // Index ganjil (1) -> Istri 2 di Kanan
-                }
+        // Istri Kiri
+        foreach ($leftBranches as $branch) {
+            if (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) {
+                fh_render_single_web_card($persons[$branch['spouse_id']], $currentActiveId);
+                echo '<div style="width:30px; height:2px; background:#ef4444; margin:0 6px;"></div>';
             }
-            // Balik urutan kiri agar Istri ke-1 paling dekat dengan Suami
-            $leftBranches = array_reverse($leftBranches);
+        }
+        
+        // Suami Tengah
+        fh_render_single_web_card($persons[$personId], $currentActiveId);
+        
+        // Istri Kanan
+        foreach ($rightBranches as $branch) {
+            if (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) {
+                echo '<div style="width:30px; height:2px; background:#ef4444; margin:0 6px;"></div>';
+                fh_render_single_web_card($persons[$branch['spouse_id']], $currentActiveId);
+            }
+        }
+        echo '</div>';
+
+        // 2. Render Anak-anak
+        $hasAnyChild = false;
+        foreach ($meaningfulBranches as $branch) {
+            if (!empty($branch['child_ids'])) $hasAnyChild = true;
         }
 
-        // Mulai Tabel Pembungkus Tanpa Border (hanya untuk layout)
-        echo '<table style="margin: 0 auto; border-spacing: 0; border-collapse: collapse;">';
-        echo '<tr>';
-        
-        // --- 1. RENDER KELUARGA KIRI (Istri 1) ---
-        foreach ($leftBranches as $branch) {
-            // Kolom Istri Kiri
-            echo '<td align="center" style="vertical-align: top; padding: 0;">';
-            if (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) {
-                fh_render_single_web_card($persons[$branch['spouse_id']], $currentActiveId);
-            }
-            echo '</td>';
-            
-            // Kolom Penghubung Tengah & Tempat Anak Turun
-            echo '<td align="center" style="vertical-align: top; padding: 0;">';
-            echo '<div style="display: flex; flex-direction: column; align-items: center; width: 100%; min-width: 40px;">';
-            
-            // Garis Merah Horizontal
-            echo '<div style="width: 100%; height: 35px; position: relative;">';
-            echo '<div style="position: absolute; top: 34px; left: 0; width: 100%; height: 2px; background: #ef4444;"></div>';
-            echo '</div>';
-            
-            // Kolom Anak (Turun tepat dari tengah garis merah)
-            if (!empty($branch['child_ids'])) {
-                echo '<ul style="padding-top: 20px; margin: 0;">';
-                foreach ($branch['child_ids'] as $childId) {
-                    fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+        if ($hasAnyChild) {
+            echo '<ul style="padding-top:20px;">';
+            foreach ($meaningfulBranches as $branch) {
+                if (!empty($branch['child_ids'])) {
+                    echo '<li>';
+                    // Indikator anak dari istri yang mana
+                    $spouseName = (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) 
+                                  ? htmlspecialchars($persons[$branch['spouse_id']]['name']) 
+                                  : 'Tidak Diketahui';
+                                  
+                    echo '<div style="display:inline-block; font-size:0.75rem; font-weight:700; background:#eef2ff; color:#4338ca; padding:4px 12px; border-radius:99px; margin-bottom:10px; border:1px solid #c7d2fe;">';
+                    echo 'Anak dari ' . $spouseName;
+                    echo '</div>';
+
+                    echo '<ul>';
+                    foreach ($branch['child_ids'] as $childId) {
+                        fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+                    }
+                    echo '</ul>';
+                    echo '</li>';
                 }
-                echo '</ul>';
             }
-            echo '</div>';
-            echo '</td>';
+            echo '</ul>';
         }
-        
-        // --- 2. RENDER SUAMI (CUKUP SATU KALI DI TENGAH) ---
-        echo '<td align="center" style="vertical-align: top; padding: 0; z-index: 2;">';
-        fh_render_single_web_card($persons[$personId], $currentActiveId);
-        echo '</td>';
-        
-        // --- 3. RENDER KELUARGA KANAN (Istri 2) ---
-        foreach ($rightBranches as $branch) {
-            // Kolom Penghubung Tengah & Tempat Anak Turun
-            echo '<td align="center" style="vertical-align: top; padding: 0;">';
-            echo '<div style="display: flex; flex-direction: column; align-items: center; width: 100%; min-width: 40px;">';
-            
-            // Garis Merah Horizontal
-            echo '<div style="width: 100%; height: 35px; position: relative;">';
-            echo '<div style="position: absolute; top: 34px; left: 0; width: 100%; height: 2px; background: #ef4444;"></div>';
-            echo '</div>';
-            
-            // Kolom Anak (Turun tepat dari tengah garis merah)
-            if (!empty($branch['child_ids'])) {
-                echo '<ul style="padding-top: 20px; margin: 0;">';
-                foreach ($branch['child_ids'] as $childId) {
-                    fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
-                }
-                echo '</ul>';
-            }
-            echo '</div>';
-            echo '</td>';
-            
-            // Kolom Istri Kanan
-            echo '<td align="center" style="vertical-align: top; padding: 0;">';
-            if (!empty($branch['spouse_id']) && isset($persons[$branch['spouse_id']])) {
-                fh_render_single_web_card($persons[$branch['spouse_id']], $currentActiveId);
-            }
-            echo '</td>';
-        }
-        
-        echo '</tr>';
-        echo '</table>';
     }
 
     echo '</li>';
