@@ -529,11 +529,12 @@ function fh_count_descendants($rootIds, $spouses, $parentChildren, &$visited) {
 function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $currentActiveId) {
     if (!isset($persons[$personId])) return;
     $p = $persons[$personId];
+    $sortedSpouseIds = fh_get_sorted_spouse_ids($personId, $spouses, $persons);
     echo '<li>';
     echo '<div style="display:inline-flex; align-items:center;">';
     fh_render_single_web_card($p, $currentActiveId);
-    if (!empty($spouses[$personId])) {
-        foreach ($spouses[$personId] as $spouseId => $_) {
+    if (!empty($sortedSpouseIds)) {
+        foreach ($sortedSpouseIds as $spouseId) {
             if (isset($persons[$spouseId])) {
                 echo '<div class="spouse-connector-web"></div>';
                 fh_render_single_web_card($persons[$spouseId], $currentActiveId);
@@ -542,10 +543,7 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $cur
     }
     echo '</div>';
     
-    $groupIds = [$personId];
-    if (!empty($spouses[$personId])) {
-        foreach ($spouses[$personId] as $sid => $_) { $groupIds[] = $sid; }
-    }
+    $groupIds = array_merge([$personId], $sortedSpouseIds);
     
     $childIdsMap = [];
     foreach ($groupIds as $pid) {
@@ -578,16 +576,8 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $cur
 // --- DATA EXPORT HELPERS (Sama seperti sebelumnya) ---
 function fh_get_group_label_for_person($id, $gen, $generation, $persons, $spouses) {
     if (!isset($persons[$id])) return '';
-    $mainId = $id; $otherIds = [];
-    if (!empty($spouses[$mainId])) {
-        foreach ($spouses[$mainId] as $spouseId => $_) { if (isset($persons[$spouseId])) $otherIds[] = $spouseId; }
-    }
-    usort($otherIds, function($a, $b) use ($persons) {
-        $da = $persons[$a]['dob'] ?? null; $db = $persons[$b]['dob'] ?? null;
-        $ka = ($da && $da !== '0000-00-00') ? $da : null; $kb = ($db && $db !== '0000-00-00') ? $db : null;
-        if ($ka && $kb) { if ($ka !== $kb) return strcmp($ka, $kb); } elseif ($ka && !$kb) return -1; elseif (!$ka && $kb) return 1;
-        return strnatcasecmp($persons[$a]['name'], $persons[$b]['name']);
-    });
+    $mainId = $id;
+    $otherIds = fh_get_sorted_spouse_ids($mainId, $spouses, $persons);
     $groupIds = array_merge([$mainId], $otherIds);
     $names = [];
     foreach ($groupIds as $pid) $names[] = $persons[$pid]['name'];
@@ -598,10 +588,7 @@ function fh_get_family_rows_recursive($personId, $currentGen, $persons, $spouses
     $label = fh_get_group_label_for_person($personId, $currentGen, $generationData, $persons, $spouses);
     if ($currentGen > 1 && $childNumber !== null) $label = $childNumber . '. ' . $label;
 
-    $groupIds = [$personId];
-    if (!empty($spouses[$personId])) {
-        foreach ($spouses[$personId] as $sid => $_) $groupIds[] = $sid;
-    }
+    $groupIds = array_merge([$personId], fh_get_sorted_spouse_ids($personId, $spouses, $persons));
     $childIdsMap = [];
     foreach ($groupIds as $pid) {
         if (!empty($parentChildren[$pid])) {
@@ -1010,6 +997,25 @@ function render_avatar_svg($gender) {
     return '<img src="' . $imgSrc . '" alt="' . $gender . '" style="width:100%; height:100%; object-fit:cover; display:block;">';
 }
 
+function fh_get_sorted_spouse_ids($personId, $spouses, $persons = []) {
+    if (empty($spouses[$personId]) || !is_array($spouses[$personId])) return [];
+
+    $ids = array_keys($spouses[$personId]);
+    usort($ids, function($a, $b) use ($personId, $spouses, $persons) {
+        $oa = (int)($spouses[$personId][$a]['order'] ?? 0);
+        $ob = (int)($spouses[$personId][$b]['order'] ?? 0);
+        if ($oa > 0 && $ob > 0 && $oa !== $ob) return $oa <=> $ob;
+        if ($oa > 0 && $ob <= 0) return -1;
+        if ($oa <= 0 && $ob > 0) return 1;
+
+        $na = $persons[$a]['name'] ?? '';
+        $nb = $persons[$b]['name'] ?? '';
+        return strnatcasecmp($na, $nb);
+    });
+
+    return $ids;
+}
+
 $action = $_GET['action'] ?? 'home';
 $currentPerson = null;
 $relations = [];
@@ -1179,6 +1185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $from_id = intval($_POST['from_id']??0);
         $from_rel = $_POST['from_relation_type']??'';
+        $spouse_order = (isset($_POST['spouse_order']) && intval($_POST['spouse_order']) > 0) ? intval($_POST['spouse_order']) : null;
 
         // Auto-detect gender jika relasi tertentu
         if ($from_rel === 'ibu') $gender = 'P'; 
@@ -1214,9 +1221,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // LOGIKA RELASI OTOMATIS
                     if ($from_id > 0 && $from_rel !== '') {
                         $pid = $from_id; $rid = $newId; $rtype = $from_rel;
+                        $relationSpouseOrder = ($rtype === 'pasangan') ? ($spouse_order ?? 0) : 0;
                         
                         // Insert Relasi (Pakai user_id)
-                        $mysqli->query("INSERT INTO relations (user_id, person_id, related_person_id, relation_type) VALUES ($targetUserId, $pid, $rid, '$rtype')");
+                        $mysqli->query("INSERT INTO relations (user_id, person_id, related_person_id, relation_type, spouse_order) VALUES ($targetUserId, $pid, $rid, '$rtype', " . ($relationSpouseOrder ?: "NULL") . ")");
                         
                         // Insert Relasi Kebalikannya
                         $revType = null;
@@ -1228,7 +1236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         elseif ($rtype == 'pasangan') $revType = 'pasangan';
                         
                         if ($revType) {
-                            $mysqli->query("INSERT INTO relations (user_id, person_id, related_person_id, relation_type) VALUES ($targetUserId, $rid, $pid, '$revType')");
+                            $mysqli->query("INSERT INTO relations (user_id, person_id, related_person_id, relation_type, spouse_order) VALUES ($targetUserId, $rid, $pid, '$revType', " . (($revType === 'pasangan' && $relationSpouseOrder > 0) ? $relationSpouseOrder : "NULL") . ")");
                         }
 
                         // Logic saudara satu orang tua
@@ -1563,7 +1571,7 @@ if ($action === 'bio') {
     if ($id > 0) {
         $currentPerson = $mysqli->query("SELECT * FROM persons WHERE id=$id")->fetch_assoc();
         if ($currentPerson) {
-            $res = $mysqli->query("SELECT r.id, r.relation_type, r.related_person_id, p.name AS related_name, p.gender AS related_gender, p.photo AS related_photo FROM relations r JOIN persons p ON p.id = r.related_person_id WHERE r.person_id=$id ORDER BY FIELD(r.relation_type,'ayah','ibu','anak','saudara','pasangan'), p.name");
+            $res = $mysqli->query("SELECT r.id, r.relation_type, r.related_person_id, r.spouse_order, p.name AS related_name, p.gender AS related_gender, p.photo AS related_photo FROM relations r JOIN persons p ON p.id = r.related_person_id WHERE r.person_id=$id ORDER BY FIELD(r.relation_type,'ayah','ibu','anak','saudara','pasangan'), CASE WHEN r.relation_type='pasangan' THEN COALESCE(r.spouse_order, 999999) ELSE 999999 END, p.name");
             $relations = $res->fetch_all(MYSQLI_ASSOC);
             
             // PERBAIKAN DI SINI: Ambil orang lain dalam satu tree yang sama
@@ -2616,6 +2624,11 @@ if ($action === 'bio') {
                 <label>Catatan</label>
                 <textarea name="note" placeholder="Tambahkan catatan khusus..."></textarea>
                 
+                <?php if ($req_rel === 'pasangan'): ?>
+                    <label>Pasangan ke</label>
+                    <input type="number" name="spouse_order" min="1" placeholder="Contoh: 1, 2, 3...">
+                <?php endif; ?>
+
                 <?php if ($req_rel === 'anak'): ?>
                     <label>Anak ke berapa</label>
                     <input type="number" name="child_order" min="1" placeholder="Contoh: 1, 2, 3...">
@@ -2693,6 +2706,27 @@ if ($action === 'bio') {
                         
                         <label>Anak ke berapa (jika berlaku)</label>
                         <input type="number" name="child_order" min="1" value="<?= htmlspecialchars($currentPerson['child_order']??'') ?>" placeholder="Kosongkan jika bukan anak">
+
+                        <?php
+                            $spouseRelations = array_values(array_filter($relations, function($rel) {
+                                return ($rel['relation_type'] ?? '') === 'pasangan';
+                            }));
+                        ?>
+                        <?php if (!empty($spouseRelations)): ?>
+                            <label>Urutan Pasangan</label>
+                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                <?php foreach ($spouseRelations as $spouseRel): ?>
+                                    <div style="display:flex; gap:10px; align-items:center; padding:10px; border:1px solid #e5e7eb; border-radius:8px;">
+                                        <div style="flex:1; font-size:0.9rem; font-weight:600; color:#374151;">
+                                            <?= htmlspecialchars($spouseRel['related_name']) ?>
+                                        </div>
+                                        <div style="width:120px;">
+                                            <input type="number" name="spouse_order[<?= (int)$spouseRel['id'] ?>]" min="1" value="<?= htmlspecialchars($spouseRel['spouse_order'] ?? '') ?>" placeholder="Pasangan ke">
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
                         
                         <div style="margin-top:20px;">
                             <button type="submit" class="btn btn-primary btn-block">💾 Simpan Perubahan</button>
@@ -2839,6 +2873,9 @@ if ($action === 'bio') {
                                 <td>
                                     <span class="relation-type-pill">
                                         <?= ucfirst($r['relation_type']) ?>
+                                        <?php if (($r['relation_type'] ?? '') === 'pasangan' && !empty($r['spouse_order'])): ?>
+                                            <?= ' ke-' . (int)$r['spouse_order'] ?>
+                                        <?php endif; ?>
                                     </span>
                                 </td>
                                 <td style="text-align:right;">
