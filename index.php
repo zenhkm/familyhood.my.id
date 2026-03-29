@@ -3933,7 +3933,10 @@ if ($action === 'bio') {
                 const spouseMap = spouses[curr] || {};
                 Object.keys(spouseMap).forEach((sid) => {
                     const spouseId = Number(sid);
-                    if (spouseId) visible.add(spouseId);
+                    if (!spouseId) return;
+                    const alreadyVisible = visible.has(spouseId);
+                    visible.add(spouseId);
+                    if (!alreadyVisible) stack.push(spouseId);
                 });
             }
 
