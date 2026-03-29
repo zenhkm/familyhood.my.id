@@ -6,6 +6,41 @@ require_once 'config_google.php';
 
 $login_error = '';
 
+function sanitize_return_to($rawReturnTo) {
+    if (!is_string($rawReturnTo) || $rawReturnTo === '') {
+        return 'index.php';
+    }
+
+    $decoded = rawurldecode($rawReturnTo);
+    $parts = parse_url($decoded);
+    if ($parts === false) {
+        return 'index.php';
+    }
+
+    // Blokir URL eksternal.
+    if (isset($parts['scheme']) || isset($parts['host'])) {
+        return 'index.php';
+    }
+
+    $path = $parts['path'] ?? 'index.php';
+    if ($path === '' || $path === '/') {
+        $path = 'index.php';
+    }
+
+    // Hanya izinkan redirect internal ke index.
+    if (!preg_match('/^\/?index\.php$/', $path)) {
+        return 'index.php';
+    }
+
+    $normalizedPath = ltrim($path, '/');
+    $query = isset($parts['query']) && $parts['query'] !== '' ? '?' . $parts['query'] : '';
+    return $normalizedPath . $query;
+}
+
+if (isset($_GET['return_to'])) {
+    $_SESSION['post_login_redirect'] = sanitize_return_to($_GET['return_to']);
+}
+
 // --- FUNGSI BANTUAN LOGIN SUKSES ---
 function do_login_session($userRow) {
     $_SESSION['is_logged_in'] = true;
@@ -13,7 +48,9 @@ function do_login_session($userRow) {
     $_SESSION['user_email'] = $userRow['email'];
     $_SESSION['user_name']  = $userRow['name'];
     $_SESSION['role']       = $userRow['role'];
-    header("Location: index.php");
+    $target = $_SESSION['post_login_redirect'] ?? 'index.php';
+    unset($_SESSION['post_login_redirect']);
+    header("Location: " . $target);
     exit;
 }
 
@@ -108,7 +145,9 @@ if (isset($_GET['code'])) {
 
 // Jika sudah login, lempar ke index
 if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true) {
-    header("Location: index.php");
+    $target = $_SESSION['post_login_redirect'] ?? 'index.php';
+    unset($_SESSION['post_login_redirect']);
+    header("Location: " . $target);
     exit;
 }
 

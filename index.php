@@ -29,7 +29,11 @@ if ($action === 'logout') {
 
 // --- CEK LOGIN ---
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    header("Location: login.php");
+    $returnTo = 'index.php';
+    if (!empty($_SERVER['QUERY_STRING'])) {
+        $returnTo .= '?' . $_SERVER['QUERY_STRING'];
+    }
+    header("Location: login.php?return_to=" . rawurlencode($returnTo));
     exit;
 }
 
