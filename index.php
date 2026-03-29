@@ -695,13 +695,20 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     echo '<div class="horizontal-parents-wrapper">';
 
         if ($numWives > 0) {
-            echo '<div class="marriage-grid">';
-            echo '  <div class="wives-inline">';
-            foreach ($spouseBranches as $branch) {
-                $sid = $branch['spouse_id'] ?? 0;
+            $leftSpouses = [];
+            $rightSpouses = [];
+            $splitIndex = (int) ceil($numWives / 2);
+            for ($i = 0; $i < $numWives; $i++) {
+                $sid = $spouseBranches[$i]['spouse_id'] ?? 0;
                 if ($sid <= 0 || !isset($persons[$sid])) continue;
+                if ($i < $splitIndex) $leftSpouses[] = $sid;
+                else $rightSpouses[] = $sid;
+            }
 
-                echo '<div class="marriage-inline-unit">';
+            echo '<div class="marriage-grid">';
+            echo '  <div class="wives-inline wives-inline-left">';
+            foreach ($leftSpouses as $sid) {
+                echo '<div class="marriage-inline-unit marriage-inline-unit-left">';
                 echo '  <div class="node-wrapper spouse-node">';
                 fh_render_single_web_card($persons[$sid], $currentActiveId);
                 echo '  </div>';
@@ -711,6 +718,16 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
             echo '  </div>';
             echo '  <div class="node-wrapper husband-node">';
             fh_render_single_web_card($persons[$personId], $currentActiveId);
+            echo '  </div>';
+            echo '  <div class="wives-inline wives-inline-right">';
+            foreach ($rightSpouses as $sid) {
+                echo '<div class="marriage-inline-unit marriage-inline-unit-right">';
+                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">❤</span></div>';
+                echo '  <div class="node-wrapper spouse-node">';
+                fh_render_single_web_card($persons[$sid], $currentActiveId);
+                echo '  </div>';
+                echo '</div>';
+            }
             echo '  </div>';
             echo '</div>';
         } else {
@@ -2210,14 +2227,22 @@ if ($action === 'bio') {
         align-items: center;
         justify-content: center;
         gap: 10px;
+        flex-wrap: nowrap;
     }
 
     .wives-inline {
         display: flex;
         align-items: center;
         gap: 8px;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-wrap: nowrap;
+    }
+
+    .wives-inline-left {
+        justify-content: flex-end;
+    }
+
+    .wives-inline-right {
+        justify-content: flex-start;
     }
 
     .marriage-inline-unit {
@@ -2331,6 +2356,10 @@ if ($action === 'bio') {
 
     .marriage-link-zigzag .marriage-love {
         transform: translateY(0);
+    }
+
+    .husband-node {
+        margin: 0 4px;
     }
 
     .children-container {
