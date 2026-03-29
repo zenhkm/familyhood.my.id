@@ -694,39 +694,32 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
 
     // --- CONTAINER UTAMA PASANGAN (HORIZONTAL) ---
     echo '<div class="horizontal-parents-wrapper">';
-    
-        // 1. Kelompok Istri Kiri
-        echo '<div class="wives-side side-left">';
+
+        // Bangun urutan node pasangan agar connector selalu langsung nyambung.
+        $leftSpouses = [];
         for ($i = 0; $i < $splitIndex; $i++) {
-            $sid = $spouseBranches[$i]['spouse_id'];
-            echo '<div class="node-wrapper spouse-node">';
-            fh_render_single_web_card($persons[$sid], $currentActiveId);
-            echo '</div>';
-            if ($i < $splitIndex - 1) echo '<div class="line-connector"></div>';
+            if (isset($spouseBranches[$i]['spouse_id'])) $leftSpouses[] = $spouseBranches[$i]['spouse_id'];
         }
-        echo '</div>';
-
-        // 2. Garis Penghubung Kiri ke Suami
-        if ($numWives > 0) echo '<div class="line-connector marriage-bridge"></div>';
-
-        // 3. SUAMI (TENGAH)
-        echo '<div class="node-wrapper husband-node">';
-        fh_render_single_web_card($persons[$personId], $currentActiveId);
-        echo '</div>';
-
-        // 4. Garis Penghubung Suami ke Kanan
-        if ($numWives > $splitIndex) echo '<div class="line-connector marriage-bridge"></div>';
-
-        // 5. Kelompok Istri Kanan
-        echo '<div class="wives-side side-right">';
+        $rightSpouses = [];
         for ($i = $splitIndex; $i < $numWives; $i++) {
-            $sid = $spouseBranches[$i]['spouse_id'];
-            echo '<div class="node-wrapper spouse-node">';
-            fh_render_single_web_card($persons[$sid], $currentActiveId);
-            echo '</div>';
-            if ($i < $numWives - 1) echo '<div class="line-connector"></div>';
+            if (isset($spouseBranches[$i]['spouse_id'])) $rightSpouses[] = $spouseBranches[$i]['spouse_id'];
         }
-        echo '</div>';
+
+        $sequence = array_merge($leftSpouses, [$personId], $rightSpouses);
+        $seqCount = count($sequence);
+
+        for ($i = 0; $i < $seqCount; $i++) {
+            $pid = $sequence[$i];
+            $nodeClass = ($pid == $personId) ? 'husband-node' : 'spouse-node';
+
+            echo '<div class="node-wrapper '.$nodeClass.'">';
+            fh_render_single_web_card($persons[$pid], $currentActiveId);
+            echo '</div>';
+
+            if ($i < $seqCount - 1) {
+                echo '<div class="line-connector marriage-bridge"></div>';
+            }
+        }
 
     echo '</div>'; // Tutup horizontal-parents-wrapper
 
@@ -2197,7 +2190,8 @@ if ($action === 'bio') {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 0;
+        flex-wrap: nowrap;
         padding: 8px 10px;
         border-radius: 16px;
         background: rgba(255, 255, 255, 0.82);
@@ -2206,18 +2200,17 @@ if ($action === 'bio') {
         backdrop-filter: blur(2px);
     }
 
-    .wives-side {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+    .node-wrapper { display: flex; align-items: center; }
 
     .line-connector {
-        width: 22px;
-        height: 2px;
-        background: #64748b;
+        width: 24px;
+        min-width: 24px;
+        height: 3px;
+        background: #ef4444;
         border-radius: 999px;
         flex-shrink: 0;
+        margin: 0 1px;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.55) inset;
     }
 
     .marriage-bridge { background: #ef4444; }
@@ -2371,11 +2364,14 @@ if ($action === 'bio') {
     @media (max-width: 900px) {
         .tree-container { padding: 16px 12px 22px; }
         .horizontal-parents-wrapper {
-            gap: 6px;
+            gap: 0;
             padding: 8px 8px;
             border-radius: 14px;
         }
-        .line-connector { width: 14px; }
+        .line-connector {
+            width: 14px;
+            min-width: 14px;
+        }
         .node-card-content {
             min-width: 96px;
             max-width: 120px;
