@@ -1104,6 +1104,23 @@ if (isset($_GET['export'])) {
         .node-name { font-size: 10px; font-weight: bold; }
         .spouse-connector { color: red; font-size: 10px; margin: 0 2px; }
         @media print { .no-print { display: none; } }
+        /* Pastikan grup orang tua tidak terpotong dan tetap satu baris */
+.parent-group-wrapper {
+    white-space: nowrap;
+    flex-wrap: nowrap;
+}
+
+/* Mengatur jarak antar list anak agar tidak terlalu mepet saat ada banyak istri */
+.child-list-wrapper {
+    min-width: 100%;
+}
+
+/* Membuat tampilan garis keturunan lebih smooth */
+.tree ul.child-list-wrapper::before {
+    border-left: 2px solid #94a3b8;
+}
+
+
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
         
