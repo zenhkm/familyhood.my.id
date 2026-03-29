@@ -1116,7 +1116,11 @@ if (isset($_GET['export'])) {
         * { box-sizing: border-box; } body { margin:0; font-family: sans-serif; }
         .tree { display: table; margin: 0 auto; }
         .tree ul { padding-top: 20px; position: relative; transition: all 0.5s; display: flex; justify-content: center; }
-        .tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 20px 5px 0 5px; transition: all 0.5s; }
+        .tree li { 
+            display: inline-block;
+    vertical-align: top; 
+        
+        text-align: center; list-style-type: none; position: relative; padding: 20px 5px 0 5px; transition: all 0.5s; }
         .tree li::before, .tree li::after { content: ""; position: absolute; top: 0; right: 50%; border-top: 1px solid #ccc; width: 50%; height: 20px; }
         .tree li::after { right: auto; left: 50%; border-left: 1px solid #ccc; }
         .tree li:only-child::after, .tree li:only-child::before { display: none; }
@@ -1153,6 +1157,7 @@ if (isset($_GET['export'])) {
 /* Sisi Istri */
 .wives-side {
     display: flex;
+    flex-direction: row !important;
     align-items: center;
 }
 
@@ -1309,6 +1314,14 @@ if (isset($_GET['export'])) {
     width: 2px;
     height: 20px;
     background: #64748b;
+}
+
+.horizontal-parents-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
 }
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
@@ -2117,8 +2130,8 @@ if ($action === 'bio') {
     .tree ul { 
         padding-top: 20px; 
         position: relative; 
-        display: flex;        /* Gunakan Flexbox */
-        justify-content: center; 
+       display: block; /* WAJIB */
+    text-align: center;
     }
 
     .tree li { 
