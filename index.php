@@ -2136,6 +2136,53 @@ if ($action === 'bio') {
         scrollbar-gutter: stable;
     }
 
+    .tree-graph-wrapper {
+        width: 100%;
+        min-height: 620px;
+        border-radius: 14px;
+        background: #ffffff;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+    }
+
+    #family-graph {
+        width: 100%;
+        height: 620px;
+    }
+
+    .tree-legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        font-size: 0.78rem;
+        color: #475569;
+    }
+
+    .tree-legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 999px;
+        padding: 4px 10px;
+    }
+
+    .tree-legend-line {
+        width: 18px;
+        height: 2px;
+        border-radius: 999px;
+        background: #94a3b8;
+    }
+
+    .tree-legend-line.spouse {
+        background: #ef4444;
+    }
+
     .tree {
         width: max-content;
         min-width: 100%;
@@ -2510,6 +2557,12 @@ if ($action === 'bio') {
 
     @media (max-width: 900px) {
         .tree-container { padding: 16px 12px 22px; }
+        .tree-graph-wrapper {
+            min-height: 520px;
+        }
+        #family-graph {
+            height: 520px;
+        }
         .horizontal-parents-wrapper {
             gap: 0;
             padding: 8px 8px;
@@ -3798,34 +3851,197 @@ if ($action === 'bio') {
             </div>
         </div>
 
+        <?php
+            $graphPersons = [];
+            foreach ($allPersonsData as $pid => $person) {
+                $photoUrl = (($person['gender'] ?? '') === 'P') ? 'assets/p.png' : 'assets/l.png';
+                if (!empty($person['photo']) && file_exists(__DIR__ . '/' . $person['photo'])) {
+                    $photoUrl = $person['photo'];
+                }
+                $graphPersons[$pid] = [
+                    'id' => (int)$pid,
+                    'name' => $person['name'] ?? ('ID '.$pid),
+                    'gender' => $person['gender'] ?? '',
+                    'is_alive' => (int)($person['is_alive'] ?? 1),
+                    'photo' => $photoUrl
+                ];
+            }
+        ?>
+
+        <div class="tree-legend">
+            <span class="tree-legend-item"><span class="tree-legend-line"></span> Garis Orang Tua-Anak</span>
+            <span class="tree-legend-item"><span class="tree-legend-line spouse"></span> Garis Suami-Istri</span>
+        </div>
+
         <div class="tree-container">
-            <div class="tree">
-                <ul>
-                <?php
-                    if (empty($rootsToRender)) {
-                        echo "<p style='padding:20px;'>Data tidak ditemukan.</p>";
-                    } else {
-                        $globalProcessed = []; 
-                        foreach ($rootsToRender as $rootId) {
-                            if (isset($globalProcessed[$rootId])) continue;
-                            
-                            // RENDERING DENGAN FOCUS ID
-                            // Kita kirim $focusId ke parameter terakhir agar function tahu siapa yang harus di-highlight
-                            fh_render_tree_web($rootId, $allPersonsData, $spouses, $parentChildren, $childParents, $focusId);
-                            
-                            $globalProcessed[$rootId] = true;
-                            if (!empty($spouses[$rootId])) {
-                                foreach($spouses[$rootId] as $sid => $_) $globalProcessed[$sid] = true;
+            <div class="tree-graph-wrapper">
+                <div id="family-graph"></div>
+            </div>
+
+            <div id="tree-fallback" style="display:none; margin-top:16px;">
+                <div class="tree">
+                    <ul>
+                    <?php
+                        if (empty($rootsToRender)) {
+                            echo "<p style='padding:20px;'>Data tidak ditemukan.</p>";
+                        } else {
+                            $globalProcessed = []; 
+                            foreach ($rootsToRender as $rootId) {
+                                if (isset($globalProcessed[$rootId])) continue;
+                                fh_render_tree_web($rootId, $allPersonsData, $spouses, $parentChildren, $childParents, $focusId);
+                                $globalProcessed[$rootId] = true;
+                                if (!empty($spouses[$rootId])) {
+                                    foreach($spouses[$rootId] as $sid => $_) $globalProcessed[$sid] = true;
+                                }
                             }
                         }
-                    }
-                ?>
-                </ul>
+                    ?>
+                    </ul>
+                </div>
             </div>
         </div>
+
+        <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+        <script>
+        (function() {
+            const container = document.getElementById('family-graph');
+            const fallback = document.getElementById('tree-fallback');
+            if (!container || typeof vis === 'undefined') {
+                if (fallback) fallback.style.display = 'block';
+                return;
+            }
+
+            const persons = <?= json_encode($graphPersons, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            const parentChildren = <?= json_encode($parentChildren, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            const spouses = <?= json_encode($spouses, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            const roots = <?= json_encode(array_values($rootsToRender)) ?>;
+            const focusId = <?= (int)$focusId ?>;
+
+            const visible = new Set();
+            const stack = [...roots];
+            while (stack.length) {
+                const curr = Number(stack.pop());
+                if (!curr || visible.has(curr)) continue;
+                visible.add(curr);
+
+                const childrenMap = parentChildren[curr] || {};
+                Object.keys(childrenMap).forEach((cid) => {
+                    const childId = Number(cid);
+                    if (childId && !visible.has(childId)) stack.push(childId);
+                });
+
+                const spouseMap = spouses[curr] || {};
+                Object.keys(spouseMap).forEach((sid) => {
+                    const spouseId = Number(sid);
+                    if (spouseId) visible.add(spouseId);
+                });
+            }
+
+            if (visible.size === 0) {
+                if (fallback) fallback.style.display = 'block';
+                return;
+            }
+
+            const nodes = [];
+            const edges = [];
+            const spouseEdgeSet = new Set();
+
+            visible.forEach((id) => {
+                const p = persons[id];
+                if (!p) return;
+                const alivePrefix = Number(p.is_alive) === 0 ? 'alm. ' : '';
+                nodes.push({
+                    id: id,
+                    label: `${alivePrefix}${p.name}`,
+                    shape: 'circularImage',
+                    image: p.photo,
+                    size: focusId === id ? 44 : 36,
+                    font: { size: focusId === id ? 16 : 13, face: 'Segoe UI', color: '#0f172a' },
+                    borderWidth: focusId === id ? 4 : 2,
+                    color: {
+                        border: focusId === id ? '#4f46e5' : '#94a3b8',
+                        background: '#ffffff',
+                        highlight: { border: '#4338ca', background: '#eef2ff' }
+                    }
+                });
+            });
+
+            visible.forEach((parentId) => {
+                const childrenMap = parentChildren[parentId] || {};
+                Object.keys(childrenMap).forEach((cid) => {
+                    const childId = Number(cid);
+                    if (!visible.has(childId)) return;
+                    edges.push({
+                        from: Number(parentId),
+                        to: childId,
+                        arrows: { to: { enabled: false } },
+                        color: { color: '#94a3b8' },
+                        width: 2,
+                        smooth: { enabled: true, type: 'cubicBezier', roundness: 0.22 }
+                    });
+                });
+
+                const spouseMap = spouses[parentId] || {};
+                Object.keys(spouseMap).forEach((sid) => {
+                    const spouseId = Number(sid);
+                    if (!visible.has(spouseId)) return;
+                    const a = Math.min(Number(parentId), spouseId);
+                    const b = Math.max(Number(parentId), spouseId);
+                    const key = `${a}-${b}`;
+                    if (spouseEdgeSet.has(key)) return;
+                    spouseEdgeSet.add(key);
+                    edges.push({
+                        from: a,
+                        to: b,
+                        dashes: [7, 6],
+                        color: { color: '#ef4444' },
+                        width: 2.4,
+                        smooth: { enabled: true, type: 'curvedCW', roundness: 0.16 }
+                    });
+                });
+            });
+
+            const network = new vis.Network(container, {
+                nodes: new vis.DataSet(nodes),
+                edges: new vis.DataSet(edges)
+            }, {
+                autoResize: true,
+                physics: false,
+                interaction: { hover: true, navigationButtons: true, keyboard: true },
+                layout: {
+                    hierarchical: {
+                        enabled: true,
+                        direction: 'UD',
+                        sortMethod: 'directed',
+                        nodeSpacing: 190,
+                        levelSeparation: 180,
+                        treeSpacing: 240
+                    }
+                },
+                nodes: { shapeProperties: { useBorderWithImage: true } },
+                edges: { selectionWidth: 0, hoverWidth: 0.3 }
+            });
+
+            network.once('stabilizationIterationsDone', () => network.fit({ animation: { duration: 500 } }));
+            setTimeout(() => network.fit({ animation: { duration: 500 } }), 350);
+
+            network.on('doubleClick', (params) => {
+                if (!params.nodes || !params.nodes.length) return;
+                const pid = Number(params.nodes[0]);
+                if (!pid) return;
+                window.location.href = `?action=tree&focus_id=${pid}`;
+            });
+            network.on('click', (params) => {
+                if (!params.nodes || !params.nodes.length) return;
+                const pid = Number(params.nodes[0]);
+                if (!pid) return;
+                window.location.href = `?action=bio&id=${pid}&mode=view`;
+            });
+        })();
+        </script>
         
         <p style="text-align:center; color:#9ca3af; font-size:0.8rem; margin-top:10px;">
-            <small>Tips: Klik FOTO untuk melihat silsilah lengkap orang tersebut.<br>Klik NAMA untuk melihat biodata detail.</small>
+            <small>Tips: Klik node untuk biodata, double-click node untuk fokus silsilah orang tersebut.</small>
         </p>
 
     </div>
