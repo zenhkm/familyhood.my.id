@@ -1111,7 +1111,8 @@ if (isset($_GET['export'])) {
         .spouse-connector { color: red; font-size: 10px; margin: 0 2px; }
         @media print { .no-print { display: none; } }
         /* Pastikan grup orang tua tidak terpotong dan tetap satu baris */
-/* Container Utama Pasangan */
+
+        /* Container Utama Pasangan */
 .horizontal-parents-wrapper {
     display: flex !important;
     flex-direction: row !important;
@@ -1200,9 +1201,7 @@ if (isset($_GET['export'])) {
     margin: 0 5px;
 }
 
-/* =========================================
-   CSS KHUSUS POLIGAMI (SUAMI DI TENGAH, ISTRI SEJAJAR)
-   ========================================= */
+
 .clean-poly-root {
     padding-top: 0 !important;
 }
@@ -1305,6 +1304,7 @@ ul.poly-children::before {
     top: -10px;
     z-index: 10;
 }
+
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
         
