@@ -684,74 +684,59 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     }));
 
     $numWives = count($spouseBranches);
-    $splitIndex = ceil($numWives / 2); // Pembagi untuk kiri dan kanan
+    $splitIndex = ceil($numWives / 2); // Bagi istri ke kiri dan kanan
 
-    echo '<li class="family-unit-root">';
+    echo '<li class="clean-poly-root">';
+    echo '<ul class="poly-row">';
 
-    // --- CONTAINER UTAMA PASANGAN (HORIZONTAL) ---
-    echo '<div class="horizontal-parents-wrapper">';
-    
-        // 1. Kelompok Istri Kiri
-        echo '<div class="wives-side side-left">';
-        for ($i = 0; $i < $splitIndex; $i++) {
-            $sid = $spouseBranches[$i]['spouse_id'];
-            echo '<div class="node-wrapper spouse-node">';
-            fh_render_single_web_card($persons[$sid], $currentActiveId);
-            echo '</div>';
-            if ($i < $splitIndex - 1) echo '<div class="line-connector"></div>';
-        }
+    // 1. Kelompok Istri KIRI
+    for ($i = 0; $i < $splitIndex; $i++) {
+        $sid = $spouseBranches[$i]['spouse_id'];
+        echo '<li class="poly-cell wife-cell">';
+        echo '<div class="card-bridge-wrap">';
+        fh_render_single_web_card($persons[$sid], $currentActiveId);
         echo '</div>';
-
-        // 2. Garis Penghubung Kiri ke Suami
-        if ($numWives > 0) echo '<div class="line-connector marriage-bridge"></div>';
-
-        // 3. SUAMI (TENGAH)
-        echo '<div class="node-wrapper husband-node">';
-        fh_render_single_web_card($persons[$personId], $currentActiveId);
-        echo '</div>';
-
-        // 4. Garis Penghubung Suami ke Kanan
-        if ($numWives > $splitIndex) echo '<div class="line-connector marriage-bridge"></div>';
-
-        // 5. Kelompok Istri Kanan
-        echo '<div class="wives-side side-right">';
-        for ($i = $splitIndex; $i < $numWives; $i++) {
-            $sid = $spouseBranches[$i]['spouse_id'];
-            echo '<div class="node-wrapper spouse-node">';
-            fh_render_single_web_card($persons[$sid], $currentActiveId);
-            echo '</div>';
-            if ($i < $numWives - 1) echo '<div class="line-connector"></div>';
-        }
-        echo '</div>';
-
-    echo '</div>'; // Tutup horizontal-parents-wrapper
-
-    // --- AREA ANAK-ANAK ---
-    $hasChildren = false;
-    foreach ($branches as $b) { if(!empty($b['child_ids'])) $hasChildren = true; }
-
-    if ($hasChildren) {
-        echo '<ul class="children-row">';
-        foreach ($branches as $branch) {
-            if (!empty($branch['child_ids'])) {
-                echo '<li class="marriage-branch">';
-                
-                // Label Ibu (Opsional)
-                if ($branch['spouse_id']) {
-                    echo '<div class="mom-label">Keturunan ' . htmlspecialchars($persons[$branch['spouse_id']]['name']) . '</div>';
-                }
-
-                echo '<ul>';
-                foreach ($branch['child_ids'] as $childId) {
-                    fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
-                }
-                echo '</ul>';
-                echo '</li>';
+        
+        // Render anak tepat di bawah istri ini
+        if (!empty($spouseBranches[$i]['child_ids'])) {
+            echo '<div class="mom-badge">Anak ' . htmlspecialchars($persons[$sid]['name']) . '</div>';
+            echo '<ul class="poly-children">';
+            foreach ($spouseBranches[$i]['child_ids'] as $cid) {
+                fh_render_tree_web($cid, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
             }
+            echo '</ul>';
         }
-        echo '</ul>';
+        echo '</li>';
     }
 
+    // 2. SUAMI (TENGAH)
+    echo '<li class="poly-cell husband-cell">';
+    echo '<div class="card-bridge-wrap">';
+    fh_render_single_web_card($persons[$personId], $currentActiveId);
+    echo '</div>';
+    echo '</li>';
+
+    // 3. Kelompok Istri KANAN
+    for ($i = $splitIndex; $i < $numWives; $i++) {
+        $sid = $spouseBranches[$i]['spouse_id'];
+        echo '<li class="poly-cell wife-cell">';
+        echo '<div class="card-bridge-wrap">';
+        fh_render_single_web_card($persons[$sid], $currentActiveId);
+        echo '</div>';
+        
+        // Render anak tepat di bawah istri ini
+        if (!empty($spouseBranches[$i]['child_ids'])) {
+            echo '<div class="mom-badge">Anak ' . htmlspecialchars($persons[$sid]['name']) . '</div>';
+            echo '<ul class="poly-children">';
+            foreach ($spouseBranches[$i]['child_ids'] as $cid) {
+                fh_render_tree_web($cid, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+            }
+            echo '</ul>';
+        }
+        echo '</li>';
+    }
+
+    echo '</ul>';
     echo '</li>';
 }
 // --- DATA EXPORT HELPERS (Sama seperti sebelumnya) ---
@@ -1213,6 +1198,112 @@ if (isset($_GET['export'])) {
 /* Perbaikan agar kotak tidak bertabrakan */
 .tree-node-web {
     margin: 0 5px;
+}
+
+/* =========================================
+   CSS KHUSUS POLIGAMI (SUAMI DI TENGAH, ISTRI SEJAJAR)
+   ========================================= */
+.clean-poly-root {
+    padding-top: 0 !important;
+}
+.clean-poly-root::before, .clean-poly-root::after {
+    display: none !important;
+}
+ul.poly-row {
+    padding-top: 0 !important;
+    display: flex;
+    justify-content: center;
+}
+ul.poly-row::before {
+    display: none !important; /* hilangkan garis atas yang menusuk */
+}
+
+li.poly-cell {
+    padding-top: 0 !important;
+    position: relative;
+}
+/* Matikan garis bawaan silsilah di atas kotak istri/suami */
+li.poly-cell::before, li.poly-cell::after {
+    display: none !important;
+}
+
+/* KOTAK PEMBUNGKUS KARTU NAMA & JEMBATAN PERNIKAHAN */
+.card-bridge-wrap {
+    position: relative;
+    padding-bottom: 20px; /* Ruang untuk jembatan bawah */
+    margin: 0 10px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Garis Jembatan Kiri */
+.card-bridge-wrap::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    border-bottom: 2px solid #ef4444; /* Warna merah jembatan */
+    box-sizing: border-box;
+}
+
+/* Garis Jembatan Kanan + Batang Vertikal Naik ke Kartu */
+.card-bridge-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 50%;
+    border-bottom: 2px solid #ef4444;
+    border-left: 2px solid #ef4444;
+    height: 20px; 
+    box-sizing: border-box;
+}
+
+/* Jika hanya ada 1 orang (Belum menikah), hilangkan garis merah */
+li.poly-cell:only-child .card-bridge-wrap::before,
+li.poly-cell:only-child .card-bridge-wrap::after {
+    display: none !important;
+}
+
+/* Hilangkan garis berlebih di ujung luar istri Paling Kiri */
+li.poly-cell:first-child .card-bridge-wrap::before { 
+    display: none; 
+}
+
+/* Hilangkan garis berlebih di ujung luar istri Paling Kanan */
+li.poly-cell:last-child .card-bridge-wrap::after { 
+    width: 0; /* Matikan garis horizontal kanannya */
+    border-bottom: none; 
+    height: 20px; /* Sisakan garis vertikal naiknya */
+    border-left: 2px solid #ef4444;
+}
+
+/* AREA ANAK */
+ul.poly-children {
+    padding-top: 0 !important;
+    margin-top: 0;
+}
+/* Garis vertikal anak ke jembatan dibuat warna merah agar nyambung */
+ul.poly-children::before {
+    border-left: 2px solid #ef4444 !important;
+    height: 20px !important;
+    top: -20px !important;
+}
+
+/* Label Penanda Anak Istri Siapa */
+.mom-badge {
+    display: inline-block;
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    position: relative;
+    top: -10px;
+    z-index: 10;
 }
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
