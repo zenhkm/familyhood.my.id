@@ -1284,6 +1284,13 @@ if (isset($_GET['export'])) {
     background: #cbd5e1;
 }
 
+.horizontal-parents-wrapper {
+    gap: 30px;
+}
+
+.wives-side {
+    gap: 15px;
+}
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
         
