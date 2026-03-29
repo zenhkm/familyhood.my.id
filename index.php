@@ -3913,6 +3913,7 @@ if ($action === 'bio') {
 
             const persons = <?= json_encode($graphPersons, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const parentChildren = <?= json_encode($parentChildren, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            const childParents = <?= json_encode($childParents, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const spouses = <?= json_encode($spouses, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const roots = <?= json_encode(array_values($rootsToRender)) ?>;
             const focusId = <?= (int)$focusId ?>;
@@ -4007,6 +4008,8 @@ if ($action === 'bio') {
             const nodes = [];
             const edges = [];
             const spouseEdgeSet = new Set();
+            const marriageNodeSet = new Set();
+            const marriageLinkSet = new Set();
 
             visible.forEach((id) => {
                 const p = persons[id];
@@ -4029,21 +4032,8 @@ if ($action === 'bio') {
                 });
             });
 
+            // Garis pernikahan.
             visible.forEach((parentId) => {
-                const childrenMap = parentChildren[parentId] || {};
-                Object.keys(childrenMap).forEach((cid) => {
-                    const childId = Number(cid);
-                    if (!visible.has(childId)) return;
-                    edges.push({
-                        from: Number(parentId),
-                        to: childId,
-                        arrows: { to: { enabled: false } },
-                        color: { color: '#94a3b8' },
-                        width: 2,
-                        smooth: { enabled: true, type: 'cubicBezier', roundness: 0.22 }
-                    });
-                });
-
                 const spouseMap = spouses[parentId] || {};
                 Object.keys(spouseMap).forEach((sid) => {
                     const spouseId = Number(sid);
@@ -4062,6 +4052,101 @@ if ($action === 'bio') {
                         smooth: { enabled: true, type: 'curvedCW', roundness: 0.16 }
                     });
                 });
+            });
+
+            // Kumpulkan semua anak yang terlihat.
+            const childSet = new Set();
+            visible.forEach((pid) => {
+                const childrenMap = parentChildren[pid] || {};
+                Object.keys(childrenMap).forEach((cid) => {
+                    const childId = Number(cid);
+                    if (childId && visible.has(childId)) childSet.add(childId);
+                });
+            });
+
+            // Garis parent-child: jika ayah+ibu lengkap, anak ditarik dari node pasangan (tengah).
+            childSet.forEach((childId) => {
+                const parentMap = childParents[childId] || {};
+                const parentIds = Object.keys(parentMap)
+                    .map((id) => Number(id))
+                    .filter((id) => visible.has(id));
+
+                if (parentIds.length >= 2) {
+                    let fatherId = parentIds.find((id) => (persons[id]?.gender || '') === 'L');
+                    let motherId = parentIds.find((id) => (persons[id]?.gender || '') === 'P');
+                    let p1 = fatherId || parentIds[0];
+                    let p2 = motherId || parentIds.find((id) => id !== p1) || parentIds[1];
+                    if (!p1 || !p2 || p1 === p2) {
+                        p1 = parentIds[0];
+                        p2 = parentIds[1];
+                    }
+                    const a = Math.min(p1, p2);
+                    const b = Math.max(p1, p2);
+                    const marriageId = `m-${a}-${b}`;
+
+                    if (!marriageNodeSet.has(marriageId)) {
+                        marriageNodeSet.add(marriageId);
+                        nodes.push({
+                            id: marriageId,
+                            label: '',
+                            shape: 'dot',
+                            size: 1,
+                            level: Math.min(levels[a] ?? 0, levels[b] ?? 0),
+                            color: {
+                                border: 'rgba(0,0,0,0)',
+                                background: 'rgba(0,0,0,0)',
+                                highlight: { border: 'rgba(0,0,0,0)', background: 'rgba(0,0,0,0)' }
+                            },
+                            physics: false
+                        });
+                    }
+
+                    const lm1 = `p-${a}-${marriageId}`;
+                    const lm2 = `p-${b}-${marriageId}`;
+                    if (!marriageLinkSet.has(lm1)) {
+                        marriageLinkSet.add(lm1);
+                        edges.push({
+                            from: a,
+                            to: marriageId,
+                            color: { color: 'rgba(148,163,184,0.45)' },
+                            width: 1.2,
+                            smooth: { enabled: true, type: 'straightCross', roundness: 0 },
+                            arrows: { to: { enabled: false } }
+                        });
+                    }
+                    if (!marriageLinkSet.has(lm2)) {
+                        marriageLinkSet.add(lm2);
+                        edges.push({
+                            from: b,
+                            to: marriageId,
+                            color: { color: 'rgba(148,163,184,0.45)' },
+                            width: 1.2,
+                            smooth: { enabled: true, type: 'straightCross', roundness: 0 },
+                            arrows: { to: { enabled: false } }
+                        });
+                    }
+
+                    edges.push({
+                        from: marriageId,
+                        to: childId,
+                        arrows: { to: { enabled: false } },
+                        color: { color: '#94a3b8' },
+                        width: 2.2,
+                        smooth: { enabled: true, type: 'cubicBezier', roundness: 0.08 }
+                    });
+                    return;
+                }
+
+                if (parentIds.length === 1) {
+                    edges.push({
+                        from: parentIds[0],
+                        to: childId,
+                        arrows: { to: { enabled: false } },
+                        color: { color: '#94a3b8' },
+                        width: 2,
+                        smooth: { enabled: true, type: 'cubicBezier', roundness: 0.22 }
+                    });
+                }
             });
 
             const network = new vis.Network(container, {
