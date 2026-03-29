@@ -688,37 +688,33 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     }));
 
     $numWives = count($spouseBranches);
-    $splitIndex = ceil($numWives / 2); // Pembagi untuk kiri dan kanan
 
     echo '<li class="family-unit-root">';
 
     // --- CONTAINER UTAMA PASANGAN (HORIZONTAL) ---
     echo '<div class="horizontal-parents-wrapper">';
 
-        // Bangun urutan node pasangan agar connector selalu langsung nyambung.
-        $leftSpouses = [];
-        for ($i = 0; $i < $splitIndex; $i++) {
-            if (isset($spouseBranches[$i]['spouse_id'])) $leftSpouses[] = $spouseBranches[$i]['spouse_id'];
-        }
-        $rightSpouses = [];
-        for ($i = $splitIndex; $i < $numWives; $i++) {
-            if (isset($spouseBranches[$i]['spouse_id'])) $rightSpouses[] = $spouseBranches[$i]['spouse_id'];
-        }
+        if ($numWives > 0) {
+            echo '<div class="marriage-rows">';
+            foreach ($spouseBranches as $branch) {
+                $sid = $branch['spouse_id'] ?? 0;
+                if ($sid <= 0 || !isset($persons[$sid])) continue;
 
-        $sequence = array_merge($leftSpouses, [$personId], $rightSpouses);
-        $seqCount = count($sequence);
-
-        for ($i = 0; $i < $seqCount; $i++) {
-            $pid = $sequence[$i];
-            $nodeClass = ($pid == $personId) ? 'husband-node' : 'spouse-node';
-
-            echo '<div class="node-wrapper '.$nodeClass.'">';
-            fh_render_single_web_card($persons[$pid], $currentActiveId);
-            echo '</div>';
-
-            if ($i < $seqCount - 1) {
-                echo '<div class="line-connector marriage-bridge"></div>';
+                echo '<div class="marriage-row">';
+                echo '  <div class="node-wrapper spouse-node">';
+                fh_render_single_web_card($persons[$sid], $currentActiveId);
+                echo '  </div>';
+                echo '  <div class="marriage-link"><span class="marriage-love">❤</span></div>';
+                echo '  <div class="node-wrapper husband-node">';
+                fh_render_single_web_card($persons[$personId], $currentActiveId);
+                echo '  </div>';
+                echo '</div>';
             }
+            echo '</div>';
+        } else {
+            echo '<div class="node-wrapper husband-node">';
+            fh_render_single_web_card($persons[$personId], $currentActiveId);
+            echo '</div>';
         }
 
     echo '</div>'; // Tutup horizontal-parents-wrapper
@@ -2200,6 +2196,20 @@ if ($action === 'bio') {
         backdrop-filter: blur(2px);
     }
 
+    .marriage-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .marriage-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+
     .node-wrapper { display: flex; align-items: center; }
 
     .line-connector {
@@ -2214,6 +2224,47 @@ if ($action === 'bio') {
     }
 
     .marriage-bridge { background: #ef4444; }
+
+    .marriage-link {
+        position: relative;
+        width: 54px;
+        min-width: 54px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .marriage-link::before,
+    .marriage-link::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 20px;
+        height: 3px;
+        background: #ef4444;
+        border-radius: 999px;
+        transform: translateY(-50%);
+    }
+
+    .marriage-link::before { left: 0; }
+    .marriage-link::after { right: 0; }
+
+    .marriage-love {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff1f2;
+        color: #e11d48;
+        font-size: 12px;
+        line-height: 1;
+        box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25);
+        border: 1px solid #fecdd3;
+        z-index: 1;
+    }
 
     .children-container {
         display: flex;
@@ -2368,6 +2419,14 @@ if ($action === 'bio') {
             padding: 8px 8px;
             border-radius: 14px;
         }
+        .marriage-row { gap: 2px; }
+        .marriage-link {
+            width: 42px;
+            min-width: 42px;
+        }
+        .marriage-link::before,
+        .marriage-link::after { width: 14px; }
+        .marriage-love { width: 16px; height: 16px; font-size: 10px; }
         .line-connector {
             width: 14px;
             min-width: 14px;
