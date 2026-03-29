@@ -731,26 +731,33 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     foreach ($branches as $b) { if(!empty($b['child_ids'])) $hasChildren = true; }
 
     if ($hasChildren) {
-        echo '<ul class="children-row">';
-        foreach ($branches as $branch) {
-            if (!empty($branch['child_ids'])) {
-                echo '<li class="marriage-branch">';
-                
-                // Label Ibu (Opsional)
-                if ($branch['spouse_id']) {
-                    echo '<div class="mom-label">Keturunan ' . htmlspecialchars($persons[$branch['spouse_id']]['name']) . '</div>';
-                }
+    echo '<div class="children-container">';
 
-                echo '<ul>';
-                foreach ($branch['child_ids'] as $childId) {
-                    fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
-                }
-                echo '</ul>';
-                echo '</li>';
+    foreach ($branches as $branch) {
+        if (!empty($branch['child_ids'])) {
+
+            echo '<div class="marriage-block">';
+
+            // GARIS TURUN DARI PASANGAN
+            echo '<div class="marriage-line-down"></div>';
+
+            // LABEL IBU (opsional)
+            if ($branch['spouse_id']) {
+                echo '<div class="mom-label">Keturunan ' . htmlspecialchars($persons[$branch['spouse_id']]['name']) . '</div>';
             }
+
+            echo '<ul class="children-list">';
+            foreach ($branch['child_ids'] as $childId) {
+                fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+            }
+            echo '</ul>';
+
+            echo '</div>';
         }
-        echo '</ul>';
     }
+
+    echo '</div>';
+}
 
     echo '</li>';
 }
@@ -1217,7 +1224,65 @@ if (isset($_GET['export'])) {
 }
 
 
+/* Container anak */
+.children-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 10px;
+    position: relative;
+}
 
+/* Blok tiap istri */
+.marriage-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* GARIS TURUN DARI TENGAH PASANGAN */
+.marriage-line-down {
+    width: 2px;
+    height: 25px;
+    background: #64748b;
+    margin-bottom: 5px;
+}
+
+/* List anak */
+.children-list {
+    display: flex;
+    gap: 20px;
+    padding-top: 10px;
+    position: relative;
+}
+
+/* Garis horizontal antar anak */
+.children-list::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #cbd5e1;
+}
+
+/* Garis ke tiap anak */
+.children-list > li {
+    position: relative;
+    padding-top: 20px;
+}
+
+.children-list > li::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 20px;
+    background: #cbd5e1;
+}
 
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
