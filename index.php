@@ -684,59 +684,74 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     }));
 
     $numWives = count($spouseBranches);
-    $splitIndex = ceil($numWives / 2); // Bagi istri ke kiri dan kanan
+    $splitIndex = ceil($numWives / 2); // Pembagi untuk kiri dan kanan
 
-    echo '<li class="clean-poly-root">';
-    echo '<ul class="poly-row">';
+    echo '<li class="family-unit-root">';
 
-    // 1. Kelompok Istri KIRI
-    for ($i = 0; $i < $splitIndex; $i++) {
-        $sid = $spouseBranches[$i]['spouse_id'];
-        echo '<li class="poly-cell wife-cell">';
-        echo '<div class="card-bridge-wrap">';
-        fh_render_single_web_card($persons[$sid], $currentActiveId);
-        echo '</div>';
-        
-        // Render anak tepat di bawah istri ini
-        if (!empty($spouseBranches[$i]['child_ids'])) {
-            echo '<div class="mom-badge">Anak ' . htmlspecialchars($persons[$sid]['name']) . '</div>';
-            echo '<ul class="poly-children">';
-            foreach ($spouseBranches[$i]['child_ids'] as $cid) {
-                fh_render_tree_web($cid, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
-            }
-            echo '</ul>';
+    // --- CONTAINER UTAMA PASANGAN (HORIZONTAL) ---
+    echo '<div class="horizontal-parents-wrapper">';
+    
+        // 1. Kelompok Istri Kiri
+        echo '<div class="wives-side side-left">';
+        for ($i = 0; $i < $splitIndex; $i++) {
+            $sid = $spouseBranches[$i]['spouse_id'];
+            echo '<div class="node-wrapper spouse-node">';
+            fh_render_single_web_card($persons[$sid], $currentActiveId);
+            echo '</div>';
+            if ($i < $splitIndex - 1) echo '<div class="line-connector"></div>';
         }
-        echo '</li>';
+        echo '</div>';
+
+        // 2. Garis Penghubung Kiri ke Suami
+        if ($numWives > 0) echo '<div class="line-connector marriage-bridge"></div>';
+
+        // 3. SUAMI (TENGAH)
+        echo '<div class="node-wrapper husband-node">';
+        fh_render_single_web_card($persons[$personId], $currentActiveId);
+        echo '</div>';
+
+        // 4. Garis Penghubung Suami ke Kanan
+        if ($numWives > $splitIndex) echo '<div class="line-connector marriage-bridge"></div>';
+
+        // 5. Kelompok Istri Kanan
+        echo '<div class="wives-side side-right">';
+        for ($i = $splitIndex; $i < $numWives; $i++) {
+            $sid = $spouseBranches[$i]['spouse_id'];
+            echo '<div class="node-wrapper spouse-node">';
+            fh_render_single_web_card($persons[$sid], $currentActiveId);
+            echo '</div>';
+            if ($i < $numWives - 1) echo '<div class="line-connector"></div>';
+        }
+        echo '</div>';
+
+    echo '</div>'; // Tutup horizontal-parents-wrapper
+
+    // --- AREA ANAK-ANAK ---
+    $hasChildren = false;
+    foreach ($branches as $b) { if(!empty($b['child_ids'])) $hasChildren = true; }
+
+    if ($hasChildren) {
+        echo '<ul class="children-row">';
+        foreach ($branches as $branch) {
+            if (!empty($branch['child_ids'])) {
+                echo '<li class="marriage-branch">';
+                
+                // Label Ibu (Opsional)
+                if ($branch['spouse_id']) {
+                    echo '<div class="mom-label">Keturunan ' . htmlspecialchars($persons[$branch['spouse_id']]['name']) . '</div>';
+                }
+
+                echo '<ul>';
+                foreach ($branch['child_ids'] as $childId) {
+                    fh_render_tree_web($childId, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
+                }
+                echo '</ul>';
+                echo '</li>';
+            }
+        }
+        echo '</ul>';
     }
 
-    // 2. SUAMI (TENGAH)
-    echo '<li class="poly-cell husband-cell">';
-    echo '<div class="card-bridge-wrap">';
-    fh_render_single_web_card($persons[$personId], $currentActiveId);
-    echo '</div>';
-    echo '</li>';
-
-    // 3. Kelompok Istri KANAN
-    for ($i = $splitIndex; $i < $numWives; $i++) {
-        $sid = $spouseBranches[$i]['spouse_id'];
-        echo '<li class="poly-cell wife-cell">';
-        echo '<div class="card-bridge-wrap">';
-        fh_render_single_web_card($persons[$sid], $currentActiveId);
-        echo '</div>';
-        
-        // Render anak tepat di bawah istri ini
-        if (!empty($spouseBranches[$i]['child_ids'])) {
-            echo '<div class="mom-badge">Anak ' . htmlspecialchars($persons[$sid]['name']) . '</div>';
-            echo '<ul class="poly-children">';
-            foreach ($spouseBranches[$i]['child_ids'] as $cid) {
-                fh_render_tree_web($cid, $persons, $spouses, $parentChildren, $childParents, $currentActiveId);
-            }
-            echo '</ul>';
-        }
-        echo '</li>';
-    }
-
-    echo '</ul>';
     echo '</li>';
 }
 // --- DATA EXPORT HELPERS (Sama seperti sebelumnya) ---
