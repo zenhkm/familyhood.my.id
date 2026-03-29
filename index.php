@@ -696,24 +696,21 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
 
         if ($numWives > 0) {
             echo '<div class="marriage-grid">';
-            echo '  <div class="marriage-rows">';
+            echo '  <div class="wives-inline">';
             foreach ($spouseBranches as $branch) {
                 $sid = $branch['spouse_id'] ?? 0;
                 if ($sid <= 0 || !isset($persons[$sid])) continue;
 
-                echo '<div class="marriage-row">';
+                echo '<div class="marriage-inline-unit">';
                 echo '  <div class="node-wrapper spouse-node">';
                 fh_render_single_web_card($persons[$sid], $currentActiveId);
                 echo '  </div>';
-                echo '  <div class="marriage-link"><span class="marriage-love">❤</span></div>';
+                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">❤</span></div>';
                 echo '</div>';
             }
             echo '  </div>';
-            echo '  <div class="husband-column">';
-            echo '      <div class="husband-spine"></div>';
-            echo '      <div class="node-wrapper husband-node">';
+            echo '  <div class="node-wrapper husband-node">';
             fh_render_single_web_card($persons[$personId], $currentActiveId);
-            echo '      </div>';
             echo '  </div>';
             echo '</div>';
         } else {
@@ -2210,9 +2207,23 @@ if ($action === 'bio') {
 
     .marriage-grid {
         display: flex;
-        align-items: stretch;
+        align-items: center;
         justify-content: center;
+        gap: 10px;
+    }
+
+    .wives-inline {
+        display: flex;
+        align-items: center;
         gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .marriage-inline-unit {
+        display: flex;
+        align-items: center;
+        gap: 2px;
     }
 
     .marriage-row {
@@ -2296,6 +2307,30 @@ if ($action === 'bio') {
         box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25);
         border: 1px solid #fecdd3;
         z-index: 1;
+    }
+
+    .marriage-link-zigzag::before,
+    .marriage-link-zigzag::after {
+        height: 2px;
+        background: #ef4444;
+    }
+
+    .marriage-link-zigzag::before {
+        width: 16px;
+        left: 0;
+        top: calc(50% - 3px);
+        transform: none;
+    }
+
+    .marriage-link-zigzag::after {
+        width: 16px;
+        right: 0;
+        top: calc(50% + 3px);
+        transform: none;
+    }
+
+    .marriage-link-zigzag .marriage-love {
+        transform: translateY(0);
     }
 
     .children-container {
@@ -2453,15 +2488,16 @@ if ($action === 'bio') {
         }
         .marriage-row { gap: 2px; }
         .marriage-grid { gap: 4px; }
+        .wives-inline { gap: 4px; }
         .marriage-link {
             width: 42px;
             min-width: 42px;
         }
         .marriage-link::before,
         .marriage-link::after { width: 14px; }
+        .marriage-link-zigzag::before,
+        .marriage-link-zigzag::after { width: 12px; }
         .marriage-love { width: 16px; height: 16px; font-size: 10px; }
-        .husband-column { min-width: 108px; }
-        .husband-spine { width: 2px; }
         .line-connector {
             width: 14px;
             min-width: 14px;
