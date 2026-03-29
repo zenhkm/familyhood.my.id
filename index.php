@@ -1291,6 +1291,25 @@ if (isset($_GET['export'])) {
 .wives-side {
     gap: 15px;
 }
+
+.horizontal-parents-wrapper {
+    display: flex !important;
+    flex-direction: row !important; /* WAJIB */
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.horizontal-parents-wrapper::after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 20px;
+    background: #64748b;
+}
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
         
