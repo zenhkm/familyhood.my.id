@@ -677,59 +677,68 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     if (!isset($persons[$personId])) return;
 
     $branches = fh_get_family_branches($personId, $persons, $spouses, $childParents);
+    
+    // Ambil semua istri
     $spouseBranches = array_values(array_filter($branches, function($b) {
         return $b['spouse_id'] !== null;
     }));
 
     $numWives = count($spouseBranches);
-    $splitIndex = floor($numWives / 2);
+    $splitIndex = ceil($numWives / 2); // Pembagi untuk kiri dan kanan
 
-    echo '<li class="family-unit">';
+    echo '<li class="family-unit-root">';
 
-    // --- AREA ORANG TUA (Suami di Tengah) ---
-    echo '<div class="parent-row-container">';
+    // --- CONTAINER UTAMA PASANGAN (HORIZONTAL) ---
+    echo '<div class="horizontal-parents-wrapper">';
     
-    // A. Istri Kiri
-    echo '<div class="wife-group left">';
-    for ($i = 0; $i < $splitIndex; $i++) {
-        $sid = $spouseBranches[$i]['spouse_id'];
-        echo '<div class="spouse-node">';
-        fh_render_single_web_card($persons[$sid], $currentActiveId);
+        // 1. Kelompok Istri Kiri
+        echo '<div class="wives-side side-left">';
+        for ($i = 0; $i < $splitIndex; $i++) {
+            $sid = $spouseBranches[$i]['spouse_id'];
+            echo '<div class="node-wrapper spouse-node">';
+            fh_render_single_web_card($persons[$sid], $currentActiveId);
+            echo '</div>';
+            if ($i < $splitIndex - 1) echo '<div class="line-connector"></div>';
+        }
         echo '</div>';
-    }
-    echo '</div>';
 
-    // B. Suami (Center Anchor)
-    echo '<div class="husband-node main-anchor">';
-    fh_render_single_web_card($persons[$personId], $currentActiveId);
-    echo '</div>';
+        // 2. Garis Penghubung Kiri ke Suami
+        if ($numWives > 0) echo '<div class="line-connector marriage-bridge"></div>';
 
-    // C. Istri Kanan
-    echo '<div class="wife-group right">';
-    for ($i = $splitIndex; $i < $numWives; $i++) {
-        $sid = $spouseBranches[$i]['spouse_id'];
-        echo '<div class="spouse-node">';
-        fh_render_single_web_card($persons[$sid], $currentActiveId);
+        // 3. SUAMI (TENGAH)
+        echo '<div class="node-wrapper husband-node">';
+        fh_render_single_web_card($persons[$personId], $currentActiveId);
         echo '</div>';
-    }
-    echo '</div>';
 
-    echo '</div>'; // Tutup parent-row-container
+        // 4. Garis Penghubung Suami ke Kanan
+        if ($numWives > $splitIndex) echo '<div class="line-connector marriage-bridge"></div>';
 
-    // --- AREA ANAK-ANAK (Berdasarkan Jalur Istri) ---
+        // 5. Kelompok Istri Kanan
+        echo '<div class="wives-side side-right">';
+        for ($i = $splitIndex; $i < $numWives; $i++) {
+            $sid = $spouseBranches[$i]['spouse_id'];
+            echo '<div class="node-wrapper spouse-node">';
+            fh_render_single_web_card($persons[$sid], $currentActiveId);
+            echo '</div>';
+            if ($i < $numWives - 1) echo '<div class="line-connector"></div>';
+        }
+        echo '</div>';
+
+    echo '</div>'; // Tutup horizontal-parents-wrapper
+
+    // --- AREA ANAK-ANAK ---
     $hasChildren = false;
     foreach ($branches as $b) { if(!empty($b['child_ids'])) $hasChildren = true; }
 
     if ($hasChildren) {
-        echo '<ul class="spouse-integrated-children">';
+        echo '<ul class="children-row">';
         foreach ($branches as $branch) {
             if (!empty($branch['child_ids'])) {
-                echo '<li class="marriage-path">';
+                echo '<li class="marriage-branch">';
                 
-                // Label Jalur (Opsional, memperjelas garis)
+                // Label Ibu (Opsional)
                 if ($branch['spouse_id']) {
-                    $label = "Keluarga " . htmlspecialchars($persons[$branch['spouse_id']]['name']);
-                    echo '<div class="marriage-label">' . $label . '</div>';
+                    echo '<div class="mom-label">Keturunan ' . htmlspecialchars($persons[$branch['spouse_id']]['name']) . '</div>';
                 }
 
                 echo '<ul>';
@@ -1117,114 +1126,93 @@ if (isset($_GET['export'])) {
         .spouse-connector { color: red; font-size: 10px; margin: 0 2px; }
         @media print { .no-print { display: none; } }
         /* Pastikan grup orang tua tidak terpotong dan tetap satu baris */
-.parent-group-wrapper {
-    display: inline-flex;
+/* Container Utama Pasangan */
+.horizontal-parents-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
     align-items: center;
-    white-space: nowrap; /* Menjaga agar tidak turun baris */
-    min-width: max-content;
-}
-
-/* Mengatur jarak antar list anak agar tidak terlalu mepet saat ada banyak istri */
-.child-list-wrapper {
-    min-width: 100%;
-}
-
-/* Membuat tampilan garis keturunan lebih smooth */
-.tree ul.child-list-wrapper::before {
-    border-left: 2px solid #94a3b8;
-}
-
-
-/* Container Utama */
-.parent-row-container {
-    display: flex;
-    align-items: flex-end;
     justify-content: center;
-    gap: 20px;
-    margin-bottom: 30px;
-    position: relative;
-    padding: 10px;
-}
-
-.wife-group {
-    display: flex;
-    gap: 20px;
-}
-
-/* Kotak Orang Tua */
-.spouse-node, .husband-node {
-    position: relative;
-    z-index: 5;
-}
-
-/* Garis dari bawah kotak ke arah tengah */
-.spouse-node::after, .husband-node::after {
-    content: "";
-    position: absolute;
-    bottom: -15px; /* Jarak garis di bawah kotak */
-    left: 50%;
-    width: 2px;
-    height: 15px;
-    background: #ef4444; /* Warna garis pernikahan */
-    transform: translateX(-50%);
-}
-
-/* Struktur UL untuk Anak-anak */
-.spouse-integrated-children {
-    display: flex;
-    justify-content: center;
-    padding-top: 0 !important;
-    position: relative;
-}
-
-/* Jembatan Pernikahan Horizontal */
-.spouse-integrated-children::before {
-    content: "";
-    position: absolute;
-    top: -15px; /* Menyambung dengan garis vertikal dari kotak */
-    left: 15%;
-    right: 15%;
-    height: 2px;
-    background: #ef4444;
-    z-index: 1;
-}
-
-/* Garis Vertikal Turun ke Anak */
-.marriage-path::before {
-    content: "";
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    width: 2px;
-    height: 15px;
-    background: #ef4444;
-}
-
-/* Label Estetika di Tengah Garis */
-.marriage-label {
-    font-size: 0.6rem;
     background: #fff;
-    border: 1px solid #ef4444;
-    color: #ef4444;
-    padding: 2px 8px;
-    border-radius: 10px;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    margin: 0 auto 20px auto;
+    width: fit-content;
     position: relative;
-    top: -25px; /* Berada di atas garis horizontal */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Sisi Istri */
+.wives-side {
+    display: flex;
+    align-items: center;
+}
+
+/* Node (Kotak Nama) */
+.node-wrapper {
+    position: relative;
     z-index: 10;
+    flex-shrink: 0;
+}
+
+/* Garis antar pasangan */
+.line-connector {
+    width: 25px;
+    height: 2px;
+    background: #4f46e5; /* Warna garis biru modern */
+    flex-shrink: 0;
+}
+
+.marriage-bridge {
+    background: #ef4444; /* Garis khusus ke suami warna merah */
+}
+
+/* Baris Anak */
+.children-row {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px !important;
+    position: relative;
+}
+
+/* Menghilangkan garis vertikal standar tree yang mengganggu di area pasangan */
+.family-unit-root > ul::before, 
+.family-unit-root > ul::after {
+    display: none !important;
+}
+
+/* Garis cabang pernikahan ke bawah */
+.marriage-branch {
+    position: relative;
+    padding-top: 25px !important;
+}
+
+.marriage-branch::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 25px;
+    background: #cbd5e1;
+}
+
+/* Label Kecil untuk Identitas Ibu */
+.mom-label {
+    font-size: 10px;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
     display: inline-block;
+    margin-bottom: 5px;
     font-weight: bold;
-    white-space: nowrap;
+    border: 1px solid #e2e8f0;
 }
 
-/* Penyesuaian Garis Silsilah Standar agar tidak tabrakan */
-.tree li.family-unit::before, .tree li.family-unit::after {
-    border-top: 2px solid #94a3b8; /* Garis darah (biru abu) */
-}
-
-/* Mencegah tabrakan visual */
-.family-unit {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+/* Perbaikan agar kotak tidak bertabrakan */
+.tree-node-web {
+    margin: 0 5px;
 }
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
