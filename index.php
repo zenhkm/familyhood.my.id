@@ -2113,193 +2113,278 @@ if ($action === 'bio') {
         .btn-block { width: auto; display: inline-flex; }
     }
 
-    /* --- CSS TREE/POHON (SHARED) - PERBAIKAN --- */
-    .tree-container { 
-        overflow-x: auto; /* Aktifkan scroll samping */
-        text-align: center; 
-        padding: 40px 20px; 
+    /* --- TREE / FAMILY DIAGRAM (WEB) --- */
+    .tree-container {
+        overflow-x: auto;
+        text-align: center;
+        padding: 26px 18px 34px;
         width: 100%;
-        background-image: radial-gradient(#e5e7eb 1px, transparent 1px); /* Opsional: Pola titik-titik agar terlihat seperti kanvas */
-        background-size: 20px 20px;
+        border-radius: 18px;
+        background:
+            radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.24) 1px, transparent 0) 0 0 / 22px 22px,
+            linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        border: 1px solid rgba(148, 163, 184, 0.32);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        scrollbar-gutter: stable;
     }
 
-    .tree { 
-        /* INI KUNCI PERBAIKANNYA: */
-        width: max-content;   /* Lebar mengikuti isi konten, bisa melebihi layar */
-        min-width: 100%;      /* Minimal selebar layar */
-        margin: 0 auto;       /* Posisi tengah */
+    .tree {
+        width: max-content;
+        min-width: 100%;
+        margin: 0 auto;
         display: block;
     }
 
-    .tree ul { 
-        padding-top: 20px; 
-        position: relative; 
-       display: block; /* WAJIB */
-    text-align: center;
-    }
-
-    .tree li { 
-        float: none;          /* HAPUS float:left (ini penyebab bug layout lama) */
-        text-align: center; 
-        list-style-type: none; 
-        position: relative; 
-        padding: 20px 5px 0 5px; 
-        flex-shrink: 0;       /* Mencegah kartu mengecil/gepeng saat ramai */
-    }
-
-    /* Garis Penghubung (Line Connectors) */
-    .tree li::before, .tree li::after { 
-        content: ''; 
-        position: absolute; 
-        top: 0; 
-        right: 50%; 
-        border-top: 2px solid #94a3b8; /* Warna garis diperjelas */
-        width: 50%; 
-        height: 20px; 
-    }
-    .tree li::after { 
-        right: auto; 
-        left: 50%; 
-        border-left: 2px solid #94a3b8; 
-    }
-    .tree li:only-child::after, .tree li:only-child::before { display: none; }
-    .tree li:only-child { padding-top: 0; }
-    .tree li:first-child::before, .tree li:last-child::after { border: 0 none; }
-    .tree li:last-child::before { 
-        border-right: 2px solid #94a3b8; 
-        border-radius: 0 5px 0 0; 
-    }
-    .tree li:first-child::after { 
-        border-radius: 5px 0 0 0; 
-    }
-    .tree ul ul::before { 
-        content: ''; 
-        position: absolute; 
-        top: 0; 
-        left: 50%; 
-        border-left: 2px solid #94a3b8; 
-        width: 0; 
-        height: 20px; 
-    }
-    
-    /* Kartu Orang di Web */
-    .tree-node-web { text-decoration: none; display: inline-block; }
-    .tree-node-web.node-deceased .node-card-content { opacity: 0.7; background: #f8f8f8; }
-    .tree-node-web.node-deceased .web-photo { filter: grayscale(100%); opacity: 0.8; border-color: #9ca3af; }
-    .tree-node-web.node-deceased .web-name { color: #6b7280; font-weight: 700; }
-    .tree-node-web.node-deceased::after { content: '†'; position: absolute; top: -8px; right: -8px; background: #dc2626; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
-    
-    .node-card-content { 
-        background: #fff; 
-        border: 1px solid #cbd5e1; 
-        border-radius: 12px; 
-        padding: 8px 10px; 
-        min-width: 100px; /* Lebar minimum agar nama panjang muat */
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
-        position: relative; 
-        z-index: 2; 
-        transition: transform 0.2s;
-    }
-    .node-card-content:hover { transform: scale(1.05); border-color: #4f46e5; }
-    .node-card-content.highlight { border-color: #4f46e5; background: #eef2ff; border-width: 2px; }
-    
-    .web-photo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: filter 0.2s; }
-    .web-name { font-size: 0.8rem; font-weight: 700; display: block; line-height: 1.3; margin-top: 6px; color: #1e293b; transition: all 0.2s; }
-    
-    .spouse-connector-web { 
-        width: 20px; /* Jarak suami istri sedikit diperlebar */
-        height: 2px; 
-        background: #ef4444; 
-        display: inline-block; 
-        vertical-align: middle; 
-        margin: 0 5px;
-    }
-
-    .multi-spouse-cluster {
-        display: inline-flex;
-        flex-direction: column;
-        gap: 12px;
-        align-items: center;
+    .tree ul {
+        padding-top: 26px;
         position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 8px;
+        margin: 0;
     }
 
-    .multi-spouse-row {
-        display: grid;
-        grid-template-columns: auto 34px auto 34px auto;
-        align-items: center;
-        gap: 6px;
+    .tree li {
+        text-align: center;
+        list-style-type: none;
         position: relative;
+        padding: 26px 8px 0;
+        flex-shrink: 0;
     }
 
-    .multi-spouse-link {
-        height: 2px;
-        background: #ef4444;
-        min-width: 28px;
-    }
-
-    .multi-spouse-center-spacer,
-    .multi-spouse-empty {
-        width: 120px;
-        min-height: 18px;
-    }
-
-    .multi-spouse-center-spacer {
-        position: relative;
-    }
-
-    .multi-spouse-center-spacer::before {
+    .tree li::before,
+    .tree li::after {
         content: '';
         position: absolute;
+        top: 0;
+        right: 50%;
+        border-top: 2px solid #94a3b8;
+        width: 50%;
+        height: 26px;
+    }
+
+    .tree li::after {
+        right: auto;
         left: 50%;
-        top: -18px;
-        bottom: -18px;
-        border-left: 2px solid #ef4444;
-        transform: translateX(-50%);
+        border-left: 2px solid #94a3b8;
     }
 
-    .tree-subfamily-list {
-        gap: 18px;
-        align-items: flex-start;
-        flex-wrap: wrap;
+    .tree li:only-child::after,
+    .tree li:only-child::before { display: none; }
+    .tree li:only-child { padding-top: 0; }
+    .tree li:first-child::before,
+    .tree li:last-child::after { border: 0 none; }
+
+    .tree li:last-child::before {
+        border-right: 2px solid #94a3b8;
+        border-radius: 0 7px 0 0;
+    }
+
+    .tree li:first-child::after { border-radius: 7px 0 0 0; }
+
+    .tree ul ul::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        border-left: 2px solid #94a3b8;
+        width: 0;
+        height: 26px;
+    }
+
+    .horizontal-parents-wrapper {
+        display: flex;
+        align-items: center;
         justify-content: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(2px);
     }
 
-    .tree-branch-family {
-        min-width: 220px;
-        padding-top: 10px !important;
+    .wives-side {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .tree-branch-family::before,
-    .tree-branch-family::after {
-        border-top-color: #c7d2fe;
-    }
-
-    .tree-branch-family > ul {
-        justify-content: flex-start;
-        padding-top: 16px;
-    }
-
-    .tree-branch-label {
-        display: inline-block;
-        margin-bottom: 8px;
-        padding: 6px 10px;
+    .line-connector {
+        width: 22px;
+        height: 2px;
+        background: #64748b;
         border-radius: 999px;
-        background: #eef2ff;
-        color: #4338ca;
-        font-size: 0.78rem;
-        font-weight: 700;
-        border: 1px solid #c7d2fe;
+        flex-shrink: 0;
     }
 
-    .tree-branch-empty {
-        display: inline-block;
-        padding: 8px 12px;
-        border-radius: 10px;
+    .marriage-bridge { background: #ef4444; }
+
+    .children-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 20px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+    }
+
+    .marriage-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        min-width: 190px;
+    }
+
+    .marriage-line-down {
+        width: 2px;
+        height: 24px;
+        background: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .mom-label {
+        font-size: 0.72rem;
+        color: #475569;
         background: #f8fafc;
-        border: 1px dashed #cbd5e1;
-        color: #64748b;
-        font-size: 0.78rem;
-        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin-bottom: 8px;
+        font-weight: 700;
+        border: 1px solid #dbeafe;
+        max-width: 230px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .children-list {
+        display: flex;
+        gap: 10px;
+        padding-top: 12px;
+        position: relative;
+        margin: 0;
+    }
+
+    .children-list::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 12%;
+        right: 12%;
+        height: 2px;
+        background: #cbd5e1;
+    }
+
+    .children-list > li {
+        position: relative;
+        padding-top: 22px;
+    }
+
+    .children-list > li::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 2px;
+        height: 22px;
+        background: #cbd5e1;
+    }
+
+    .tree-node-web {
+        text-decoration: none;
+        display: inline-block;
+        margin: 0 2px;
+        position: relative;
+    }
+
+    .tree-node-web.node-deceased .node-card-content { opacity: 0.72; background: #f8fafc; }
+    .tree-node-web.node-deceased .web-photo { filter: grayscale(100%); opacity: 0.85; border-color: #94a3b8; }
+    .tree-node-web.node-deceased .web-name { color: #64748b; font-weight: 700; }
+    .tree-node-web.node-deceased::after {
+        content: '†';
+        position: absolute;
+        top: -7px;
+        right: -7px;
+        background: #dc2626;
+        color: #fff;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25);
+    }
+
+    .node-card-content {
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid #cbd5e1;
+        border-radius: 14px;
+        padding: 10px 10px 8px;
+        min-width: 112px;
+        max-width: 150px;
+        box-shadow: 0 7px 16px rgba(15, 23, 42, 0.12);
+        position: relative;
+        z-index: 2;
+        transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .node-card-content:hover {
+        transform: translateY(-2px);
+        border-color: #6366f1;
+        box-shadow: 0 12px 20px rgba(79, 70, 229, 0.16);
+    }
+
+    .node-card-content.highlight {
+        border-color: #4f46e5;
+        background: #eef2ff;
+        border-width: 2px;
+    }
+
+    .web-photo {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 4px 9px rgba(15, 23, 42, 0.15);
+        transition: filter 0.2s;
+    }
+
+    .web-name {
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: block;
+        line-height: 1.25;
+        margin-top: 7px;
+        color: #1e293b;
+        transition: all 0.2s;
+        word-break: break-word;
+    }
+
+    @media (max-width: 900px) {
+        .tree-container { padding: 16px 12px 22px; }
+        .horizontal-parents-wrapper {
+            gap: 6px;
+            padding: 8px 8px;
+            border-radius: 14px;
+        }
+        .line-connector { width: 14px; }
+        .node-card-content {
+            min-width: 96px;
+            max-width: 120px;
+            padding: 8px 8px 7px;
+        }
+        .web-photo { width: 48px; height: 48px; }
+        .web-name { font-size: 0.74rem; }
+        .children-container { gap: 14px; }
+        .marriage-block { min-width: 160px; }
     }
     
     /* Other Styles */
