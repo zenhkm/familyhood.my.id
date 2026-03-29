@@ -3934,9 +3934,7 @@ if ($action === 'bio') {
                 Object.keys(spouseMap).forEach((sid) => {
                     const spouseId = Number(sid);
                     if (!spouseId) return;
-                    const alreadyVisible = visible.has(spouseId);
-                    visible.add(spouseId);
-                    if (!alreadyVisible) stack.push(spouseId);
+                    if (!visible.has(spouseId)) stack.push(spouseId);
                 });
             }
 
@@ -3944,6 +3942,67 @@ if ($action === 'bio') {
                 if (fallback) fallback.style.display = 'block';
                 return;
             }
+
+            // Tetapkan level generasi agar pasangan selalu sejajar.
+            const levels = {};
+            const queue = [];
+            roots.forEach((rid) => {
+                const rootId = Number(rid);
+                if (!rootId || !visible.has(rootId)) return;
+                if (levels[rootId] == null) {
+                    levels[rootId] = 0;
+                    queue.push(rootId);
+                }
+            });
+
+            while (queue.length) {
+                const parentId = Number(queue.shift());
+                const baseLevel = Number(levels[parentId] ?? 0);
+                const childrenMap = parentChildren[parentId] || {};
+                Object.keys(childrenMap).forEach((cid) => {
+                    const childId = Number(cid);
+                    if (!visible.has(childId)) return;
+                    const nextLevel = baseLevel + 1;
+                    if (levels[childId] == null || levels[childId] > nextLevel) {
+                        levels[childId] = nextLevel;
+                        queue.push(childId);
+                    }
+                });
+            }
+
+            let changed = true;
+            let guard = 0;
+            while (changed && guard < 30) {
+                changed = false;
+                guard++;
+                visible.forEach((id) => {
+                    const spouseMap = spouses[id] || {};
+                    Object.keys(spouseMap).forEach((sid) => {
+                        const spouseId = Number(sid);
+                        if (!visible.has(spouseId)) return;
+
+                        const a = levels[id];
+                        const b = levels[spouseId];
+                        if (a == null && b == null) return;
+
+                        const targetLevel = (a == null) ? b : ((b == null) ? a : Math.min(a, b));
+                        if (targetLevel == null) return;
+
+                        if (levels[id] == null || levels[id] !== targetLevel) {
+                            levels[id] = targetLevel;
+                            changed = true;
+                        }
+                        if (levels[spouseId] == null || levels[spouseId] !== targetLevel) {
+                            levels[spouseId] = targetLevel;
+                            changed = true;
+                        }
+                    });
+                });
+            }
+
+            visible.forEach((id) => {
+                if (levels[id] == null) levels[id] = 0;
+            });
 
             const nodes = [];
             const edges = [];
@@ -3958,6 +4017,7 @@ if ($action === 'bio') {
                     label: `${alivePrefix}${p.name}`,
                     shape: 'circularImage',
                     image: p.photo,
+                    level: levels[id] ?? 0,
                     size: focusId === id ? 44 : 36,
                     font: { size: focusId === id ? 16 : 13, face: 'Segoe UI', color: '#0f172a' },
                     borderWidth: focusId === id ? 4 : 2,
