@@ -4202,12 +4202,13 @@ if ($action === 'bio') {
                         enabled: true,
                         direction: 'UD',
                         sortMethod: 'directed',
-                        nodeSpacing: 200,
-                        levelSeparation: 220,
-                        treeSpacing: 280,
+                        levelSeparation: 180,
+                        nodeSpacing: 100,
+                        treeSpacing: 140,
                         parentCentralization: true,
-                        blockShifting: true,
-                        edgeMinimization: true
+                        blockShifting: false,
+                        edgeMinimization: false,
+                        shakeTowards: 'leaves'
                     }
                 },
                 nodes: { shapeProperties: { useBorderWithImage: true } },
