@@ -1336,6 +1336,26 @@ if (isset($_GET['export'])) {
     justify-content: center;
     gap: 20px;
 }
+
+
+
+.children-root {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding-top: 20px;
+    position: relative;
+}
+
+.children-root::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 20px;
+    background: #64748b;
+}
         </style></head><body onload="window.print()">';
         echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
         
