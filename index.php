@@ -3984,65 +3984,28 @@ if ($action === 'bio') {
                 return;
             }
 
-            // Tetapkan level generasi agar pasangan selalu sejajar.
+            const generationData = <?= json_encode($generationData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+
+            // Tetapkan level berdasarkan data generasi dari backend (steady 1->2->3->4)
             const levels = {};
-            const queue = [];
-            roots.forEach((rid) => {
-                const rootId = Number(rid);
-                if (!rootId || !visible.has(rootId)) return;
-                if (levels[rootId] == null) {
-                    levels[rootId] = 0;
-                    queue.push(rootId);
+            visible.forEach((id) => {
+                if (generationData[id] != null) {
+                    levels[id] = Math.max(0, Number(generationData[id]) - 1);
+                } else {
+                    levels[id] = 0;
                 }
             });
 
-            while (queue.length) {
-                const parentId = Number(queue.shift());
-                const baseLevel = Number(levels[parentId] ?? 0);
-                const childrenMap = parentChildren[parentId] || {};
-                Object.keys(childrenMap).forEach((cid) => {
-                    const childId = Number(cid);
-                    if (!visible.has(childId)) return;
-                    const nextLevel = baseLevel + 1;
-                    if (levels[childId] == null || levels[childId] > nextLevel) {
-                        levels[childId] = nextLevel;
-                        queue.push(childId);
-                    }
-                });
-            }
-
-            let changed = true;
-            let guard = 0;
-            while (changed && guard < 30) {
-                changed = false;
-                guard++;
-                visible.forEach((id) => {
-                    const spouseMap = spouses[id] || {};
-                    Object.keys(spouseMap).forEach((sid) => {
-                        const spouseId = Number(sid);
-                        if (!visible.has(spouseId)) return;
-
-                        const a = levels[id];
-                        const b = levels[spouseId];
-                        if (a == null && b == null) return;
-
-                        const targetLevel = (a == null) ? b : ((b == null) ? a : Math.min(a, b));
-                        if (targetLevel == null) return;
-
-                        if (levels[id] == null || levels[id] !== targetLevel) {
-                            levels[id] = targetLevel;
-                            changed = true;
-                        }
-                        if (levels[spouseId] == null || levels[spouseId] !== targetLevel) {
-                            levels[spouseId] = targetLevel;
-                            changed = true;
-                        }
-                    });
-                });
-            }
-
+            // Pastikan pasangan tetap sejajar (level sama atau minimum)
             visible.forEach((id) => {
-                if (levels[id] == null) levels[id] = 0;
+                const spouseMap = spouses[id] || {};
+                Object.keys(spouseMap).forEach((sid) => {
+                    const spouseId = Number(sid);
+                    if (!visible.has(spouseId)) return;
+                    const mergedLevel = Math.min(levels[id], levels[spouseId]);
+                    levels[id] = mergedLevel;
+                    levels[spouseId] = mergedLevel;
+                });
             });
 
             const nodes = [];
