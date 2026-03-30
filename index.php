@@ -339,140 +339,81 @@ function fh_compute_generations($mysqli, $treeId) {
     $childParents = []; $parentChildren = []; 
     $spouses = []; $parents = []; $children = [];
 
-    if (!$mysqli) return [[], 0, 0, [], [], [], []];
+    if (!$mysqli) return [[], 0, 0, [], [], [], [], []];
 
-    // 1. Ambil Data Orang di Tree Ini
+    // 1. Ambil Data Orang
     $sqlPersons = "SELECT id, name, date_of_birth, gender, photo, is_alive, child_order FROM persons WHERE tree_id = $treeId ORDER BY id ASC";
     if ($res = $mysqli->query($sqlPersons)) {
         while ($row = $res->fetch_assoc()) {
             $id = (int)$row['id'];
             $persons[$id] = [
-                'id' => $id, 
-                'name' => $row['name'], 
-                'dob' => $row['date_of_birth'] ?? null,
-                'gender' => $row['gender'], 
-                'photo' => $row['photo'],
-                'is_alive' => $row['is_alive'] ?? 1,
-                'child_order' => $row['child_order'] ?? null
+                'id' => $id, 'name' => $row['name'], 'dob' => $row['date_of_birth'],
+                'gender' => $row['gender'], 'photo' => $row['photo'],
+                'is_alive' => $row['is_alive'], 'child_order' => $row['child_order']
             ];
         }
-        $res->free();
     }
     
-    // Jika tidak ada orang, kembalikan kosong
-    if (empty($persons)) return [[], 0, 0, [], [], [], []];
+    if (empty($persons)) return [[], 0, 0, [], [], [], [], []];
+    $idsStr = implode(',', array_keys($persons));
 
-    // 2. Kumpulkan ID orang untuk filter relasi
-    $personIds = array_keys($persons);
-    $idsStr = implode(',', $personIds); // Contoh hasil: "10,11,12"
-
-    // 3. Ambil Relasi Orang Tua (Filter by Person ID, BUKAN User ID)
-    // Gunakan "WHERE person_id IN (...)"
-    $sqlRelParent = "SELECT person_id, related_person_id, relation_type FROM relations 
-                     WHERE person_id IN ($idsStr) AND relation_type IN ('ayah','ibu')";
-    
+    // 2. Ambil Relasi Orang Tua
+    $sqlRelParent = "SELECT person_id, related_person_id FROM relations WHERE person_id IN ($idsStr) AND relation_type IN ('ayah','ibu')";
     if ($res = $mysqli->query($sqlRelParent)) {
         while ($row = $res->fetch_assoc()) {
-            $child = (int)$row['person_id']; 
-            $parent = (int)$row['related_person_id'];
-            
-            // Validasi: Pastikan kedua orang ada di tree ini
-            if (isset($persons[$child]) && isset($persons[$parent])) {
-                if (!isset($childParents[$child])) $childParents[$child] = [];
-                $childParents[$child][$parent] = true;
-                
-                if (!isset($parentChildren[$parent])) $parentChildren[$parent] = [];
-                $parentChildren[$parent][$child] = true;
-                
-                $parents[$parent] = true; 
-                $children[$child] = true;
+            $c = (int)$row['person_id']; $p = (int)$row['related_person_id'];
+            if (isset($persons[$c]) && isset($persons[$p])) {
+                $childParents[$c][$p] = true;
+                $parentChildren[$p][$c] = true;
+                $parents[$p] = true; $children[$c] = true;
             }
         }
-        $res->free();
     }
 
-    // 4. Ambil Relasi Pasangan (Filter by Person ID)
-    $sqlRelSpouse = "SELECT person_id, related_person_id, spouse_order FROM relations 
-                     WHERE person_id IN ($idsStr) AND relation_type = 'pasangan'";
-                     
-    if ($res = $mysqli->query($sqlRelSpouse)) {
-        while ($row = $res->fetch_assoc()) {
-            $a = (int)$row['person_id']; 
-            $b = (int)$row['related_person_id'];
-            $order = (int)($row['spouse_order'] ?? 0);
-            
-            if (isset($persons[$a]) && isset($persons[$b])) {
-                if (!isset($spouses[$a])) $spouses[$a] = [];
-                if (!isset($spouses[$b])) $spouses[$b] = [];
-                $spouses[$a][$b] = ['order' => $order];
-                $spouses[$b][$a] = ['order' => $order]; // Simpan juga kebalikannya
-            }
-        }
-        $res->free();
-    }
-
-    // --- LOGIKA PERHITUNGAN GENERASI (TIDAK BERUBAH DARI SINI KE BAWAH) ---
+    // 3. Algoritma Leveling (BFS)
+    $generation = [];
+    $queue = [];
     
-    // Cari Root
-    $rootPersons = [];
-    foreach ($persons as $pid => $p) {
-        $isParent = !empty($parents[$pid]);
-        $isChild  = !empty($children[$pid]);
-        if ($isParent && !$isChild) {
-            $rootPersons[] = $pid;
-        }
-    }
-    if (empty($rootPersons)) {
-        foreach ($persons as $pid => $p) {
-            if (empty($childParents[$pid])) $rootPersons[] = $pid;
+    // Cari Root Real (Orang tua yang bukan anak dari siapapun di tree ini)
+    foreach ($persons as $id => $p) {
+        if (!isset($children[$id])) {
+            $generation[$id] = 0;
+            $queue[] = $id;
         }
     }
 
-    $generation = []; $queue = [];
-    foreach ($rootPersons as $rid) {
-        if (!isset($generation[$rid])) { $generation[$rid] = 1; $queue[] = $rid; }
-    }
+    // Jika semua saling terhubung (loop), ambil ID pertama sebagai fallback
+    if (empty($queue)) { $firstId = key($persons); $generation[$firstId] = 0; $queue[] = $firstId; }
 
-    for ($i = 0; $i < count($queue); $i++) {
-        $person = $queue[$i]; $g = $generation[$person];
-        if (!empty($spouses[$person])) {
-            foreach ($spouses[$person] as $spouseId => $_) {
-                if (!isset($generation[$spouseId])) { $generation[$spouseId] = $g; $queue[] = $spouseId; }
-            }
-        }
-        if (!empty($parentChildren[$person])) {
-            foreach ($parentChildren[$person] as $childId => $_) {
-                $newGen = $g + 1;
-                if (!isset($generation[$childId]) || $generation[$childId] < $newGen) {
-                    $generation[$childId] = $newGen; $queue[] = $childId;
+    while (!empty($queue)) {
+        $curr = array_shift($queue);
+        if (isset($parentChildren[$curr])) {
+            foreach ($parentChildren[$curr] as $childId => $_) {
+                // Anak HARUS selalu level Orang Tua + 1
+                $newLevel = $generation[$curr] + 1;
+                if (!isset($generation[$childId]) || $generation[$childId] < $newLevel) {
+                    $generation[$childId] = $newLevel;
+                    $queue[] = $childId;
                 }
             }
         }
     }
 
-    $changed = true;
-    while ($changed) {
-        $changed = false;
-        foreach ($spouses as $a => $list) {
-            foreach ($list as $b => $_) {
-                if (!isset($generation[$a]) || !isset($generation[$b])) continue;
-                $maxG = max($generation[$a], $generation[$b]);
-                if ($generation[$a] < $maxG) { $generation[$a] = $maxG; $changed = true; }
-                if ($generation[$b] < $maxG) { $generation[$b] = $maxG; $changed = true; }
-            }
+    // 4. Pastikan Pasangan Sejajar
+    // Ambil data pasangan
+    $sqlSpouse = "SELECT person_id, related_person_id FROM relations WHERE person_id IN ($idsStr) AND relation_type = 'pasangan'";
+    if ($res = $mysqli->query($sqlSpouse)) {
+        while ($row = $res->fetch_assoc()) {
+            $a = (int)$row['person_id']; $b = (int)$row['related_person_id'];
+            if (isset($generation[$a]) && !isset($generation[$b])) $generation[$b] = $generation[$a];
+            elseif (isset($generation[$b]) && !isset($generation[$a])) $generation[$a] = $generation[$b];
         }
     }
-    foreach ($persons as $pid => $_) { if (!isset($generation[$pid])) $generation[$pid] = 1; }
 
-    $personsByGen = []; $maxGen = 0;
-    foreach ($generation as $pid => $g) {
-        if ($g < 1) $g = 1;
-        if (!isset($personsByGen[$g])) $personsByGen[$g] = [];
-        $personsByGen[$g][] = $persons[$pid]['name'];
-        if ($g > $maxGen) $maxGen = $g;
-    }
-    
-    return [$personsByGen, $maxGen, 0, $generation, $persons, $parentChildren, $spouses, $childParents];
+    // Default level untuk yang terputus
+    foreach ($persons as $id => $_) { if (!isset($generation[$id])) $generation[$id] = 0; }
+
+    return [null, 0, 0, $generation, $persons, $parentChildren, null, $childParents];
 }
 
 // --- FUNGSI PENGGABUNG KELUARGA (UNION-FIND) ---
@@ -4149,26 +4090,35 @@ if ($action === 'bio') {
                 }
             });
 
-            const network = new vis.Network(container, {
-                nodes: new vis.DataSet(nodes),
-                edges: new vis.DataSet(edges)
-            }, {
-                autoResize: true,
-                physics: false,
-                interaction: { hover: true, navigationButtons: true, keyboard: true },
-                layout: {
-                    hierarchical: {
-                        enabled: true,
-                        direction: 'UD',
-                        sortMethod: 'directed',
-                        nodeSpacing: 190,
-                        levelSeparation: 180,
-                        treeSpacing: 240
-                    }
-                },
-                nodes: { shapeProperties: { useBorderWithImage: true } },
-                edges: { selectionWidth: 0, hoverWidth: 0.3 }
-            });
+            cconst network = new vis.Network(container, {
+    nodes: new vis.DataSet(nodes),
+    edges: new vis.DataSet(edges)
+}, {
+    layout: {
+        hierarchical: {
+            enabled: true,
+            levelSeparation: 150,
+            nodeSpacing: 200,
+            treeSpacing: 200,
+            blockShifting: true,
+            edgeMinimization: true,
+            parentCentralization: true,
+            direction: 'UD',        // Up-Down (Atas ke Bawah)
+            sortMethod: 'directed'  // Mengikuti arah panah/level
+        }
+    },
+    physics: {
+        enabled: false // Matikan physics agar tidak goyang setelah layout jadi
+    },
+    edges: {
+        smooth: {
+            enabled: true,
+            type: 'cubicBezier', // Garis melengkung yang rapi
+            forceDirection: 'vertical',
+            roundness: 0.4
+        }
+    }
+});
 
             network.once('stabilizationIterationsDone', () => network.fit({ animation: { duration: 500 } }));
             setTimeout(() => network.fit({ animation: { duration: 500 } }), 350);
