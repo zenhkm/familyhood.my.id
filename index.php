@@ -4182,9 +4182,12 @@ if ($action === 'bio') {
                         enabled: true,
                         direction: 'UD',
                         sortMethod: 'directed',
-                        nodeSpacing: 190,
-                        levelSeparation: 180,
-                        treeSpacing: 240
+                        nodeSpacing: 200,
+                        levelSeparation: 220,
+                        treeSpacing: 280,
+                        parentCentralization: true,
+                        blockShifting: true,
+                        edgeMinimization: true
                     }
                 },
                 nodes: { shapeProperties: { useBorderWithImage: true } },
