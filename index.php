@@ -4078,6 +4078,67 @@ if ($action === 'bio') {
                 });
             });
 
+            // helper untuk membuat edge pasutri dan child di marriage node
+            function addMarriageChildEdge(parentA, parentB, childId) {
+                const a = Math.min(parentA, parentB);
+                const b = Math.max(parentA, parentB);
+                if (a <= 0 || b <= 0 || a === b) return;
+
+                const marriageId = `m-${a}-${b}`;
+                if (!marriageNodeSet.has(marriageId)) {
+                    marriageNodeSet.add(marriageId);
+                    nodes.push({
+                        id: marriageId,
+                        label: '',
+                        shape: 'dot',
+                        size: 1,
+                        level: Math.min(levels[a] ?? 0, levels[b] ?? 0),
+                        color: {
+                            border: 'rgba(0,0,0,0)',
+                            background: 'rgba(0,0,0,0)',
+                            highlight: { border: 'rgba(0,0,0,0)', background: 'rgba(0,0,0,0)' }
+                        },
+                        physics: false
+                    });
+                }
+
+                const linkA = `p-${a}-${marriageId}`;
+                const linkB = `p-${b}-${marriageId}`;
+
+                if (!marriageLinkSet.has(linkA)) {
+                    marriageLinkSet.add(linkA);
+                    edges.push({
+                        from: a,
+                        to: marriageId,
+                        color: { color: 'rgba(148,163,184,0.45)' },
+                        width: 1.2,
+                        smooth: { enabled: true, type: 'straightCross', roundness: 0 },
+                        arrows: { to: { enabled: false } }
+                    });
+                }
+
+                if (!marriageLinkSet.has(linkB)) {
+                    marriageLinkSet.add(linkB);
+                    edges.push({
+                        from: b,
+                        to: marriageId,
+                        color: { color: 'rgba(148,163,184,0.45)' },
+                        width: 1.2,
+                        smooth: { enabled: true, type: 'straightCross', roundness: 0 },
+                        arrows: { to: { enabled: false } }
+                    });
+                }
+
+                edges.push({
+                    from: marriageId,
+                    to: childId,
+                    arrows: { to: { enabled: false } },
+                    color: { color: '#94a3b8' },
+                    width: 2.2,
+                    smooth: { enabled: true, type: 'cubicBezier', roundness: 0.08 }
+                });
+            }
+
             // Garis parent-child: jika ayah+ibu lengkap, anak ditarik dari node pasangan (tengah).
             childSet.forEach((childId) => {
                 const parentMap = childParents[childId] || {};
@@ -4094,72 +4155,38 @@ if ($action === 'bio') {
                         p1 = parentIds[0];
                         p2 = parentIds[1];
                     }
-                    const a = Math.min(p1, p2);
-                    const b = Math.max(p1, p2);
-                    const marriageId = `m-${a}-${b}`;
 
-                    if (!marriageNodeSet.has(marriageId)) {
-                        marriageNodeSet.add(marriageId);
-                        nodes.push({
-                            id: marriageId,
-                            label: '',
-                            shape: 'dot',
-                            size: 1,
-                            level: Math.min(levels[a] ?? 0, levels[b] ?? 0),
-                            color: {
-                                border: 'rgba(0,0,0,0)',
-                                background: 'rgba(0,0,0,0)',
-                                highlight: { border: 'rgba(0,0,0,0)', background: 'rgba(0,0,0,0)' }
-                            },
-                            physics: false
-                        });
-                    }
-
-                    const lm1 = `p-${a}-${marriageId}`;
-                    const lm2 = `p-${b}-${marriageId}`;
-                    if (!marriageLinkSet.has(lm1)) {
-                        marriageLinkSet.add(lm1);
-                        edges.push({
-                            from: a,
-                            to: marriageId,
-                            color: { color: 'rgba(148,163,184,0.45)' },
-                            width: 1.2,
-                            smooth: { enabled: true, type: 'straightCross', roundness: 0 },
-                            arrows: { to: { enabled: false } }
-                        });
-                    }
-                    if (!marriageLinkSet.has(lm2)) {
-                        marriageLinkSet.add(lm2);
-                        edges.push({
-                            from: b,
-                            to: marriageId,
-                            color: { color: 'rgba(148,163,184,0.45)' },
-                            width: 1.2,
-                            smooth: { enabled: true, type: 'straightCross', roundness: 0 },
-                            arrows: { to: { enabled: false } }
-                        });
-                    }
-
-                    edges.push({
-                        from: marriageId,
-                        to: childId,
-                        arrows: { to: { enabled: false } },
-                        color: { color: '#94a3b8' },
-                        width: 2.2,
-                        smooth: { enabled: true, type: 'cubicBezier', roundness: 0.08 }
-                    });
+                    addMarriageChildEdge(p1, p2, childId);
                     return;
                 }
 
                 if (parentIds.length === 1) {
-                    edges.push({
-                        from: parentIds[0],
-                        to: childId,
-                        arrows: { to: { enabled: false } },
-                        color: { color: '#94a3b8' },
-                        width: 2,
-                        smooth: { enabled: true, type: 'cubicBezier', roundness: 0.22 }
-                    });
+                    // If one parent only, try infer spouse co-parent for better centering
+                    const parentId = parentIds[0];
+                    const parentGender = persons[parentId]?.gender || '';
+
+                    const spouseCandidates = Object.keys(spouses[parentId] || {})
+                        .map((id) => Number(id))
+                        .filter((id) => visible.has(id));
+
+                    // Prefer opposite gender, else first available
+                    let inferredSpouse = spouseCandidates.find((id) => {
+                        const g = (persons[id]?.gender || '');
+                        return parentGender && g && g !== parentGender;
+                    }) || spouseCandidates[0];
+
+                    if (inferredSpouse && inferredSpouse !== parentId) {
+                        addMarriageChildEdge(parentId, inferredSpouse, childId);
+                    } else {
+                        edges.push({
+                            from: parentId,
+                            to: childId,
+                            arrows: { to: { enabled: false } },
+                            color: { color: '#94a3b8' },
+                            width: 2,
+                            smooth: { enabled: true, type: 'cubicBezier', roundness: 0.22 }
+                        });
+                    }
                 }
             });
 
