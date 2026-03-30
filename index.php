@@ -367,24 +367,35 @@ function fh_compute_generations($mysqli, $treeId) {
     $idsStr = implode(',', $personIds); // Contoh hasil: "10,11,12"
 
     // 3. Ambil Relasi Orang Tua (Filter by Person ID, BUKAN User ID)
-    // Gunakan "WHERE person_id IN (...)"
+    // (Termasuk kemungkinan relasi 'anak' / parent->child dari data lama)
     $sqlRelParent = "SELECT person_id, related_person_id, relation_type FROM relations 
-                     WHERE person_id IN ($idsStr) AND relation_type IN ('ayah','ibu')";
+                     WHERE person_id IN ($idsStr) OR related_person_id IN ($idsStr)";
     
     if ($res = $mysqli->query($sqlRelParent)) {
         while ($row = $res->fetch_assoc()) {
-            $child = (int)$row['person_id']; 
-            $parent = (int)$row['related_person_id'];
-            
+            $relationType = strtolower(trim($row['relation_type']));
+            $child = null;
+            $parent = null;
+
+            if ($relationType === 'ayah' || $relationType === 'ibu') {
+                $child = (int)$row['person_id'];
+                $parent = (int)$row['related_person_id'];
+            } elseif ($relationType === 'anak') {
+                $parent = (int)$row['person_id'];
+                $child = (int)$row['related_person_id'];
+            } else {
+                continue;
+            }
+
             // Validasi: Pastikan kedua orang ada di tree ini
-            if (isset($persons[$child]) && isset($persons[$parent])) {
+            if ($child > 0 && $parent > 0 && isset($persons[$child]) && isset($persons[$parent])) {
                 if (!isset($childParents[$child])) $childParents[$child] = [];
                 $childParents[$child][$parent] = true;
-                
+
                 if (!isset($parentChildren[$parent])) $parentChildren[$parent] = [];
                 $parentChildren[$parent][$child] = true;
-                
-                $parents[$parent] = true; 
+
+                $parents[$parent] = true;
                 $children[$child] = true;
             }
         }
