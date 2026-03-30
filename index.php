@@ -742,18 +742,17 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     $hasChildren = false;
     foreach ($branches as $b) { if(!empty($b['child_ids'])) $hasChildren = true; }
 
-    if ($hasChildren) {
-    echo '<div class="children-container">';
+if ($hasChildren) {
+    echo '<ul class="children-root">'; // ⬅️ WAJIB UL
 
     foreach ($branches as $branch) {
         if (!empty($branch['child_ids'])) {
 
-            echo '<div class="marriage-block">';
+            echo '<li>'; // ⬅️ WAJIB LI
 
-            // GARIS TURUN DARI PASANGAN
+            echo '<div class="marriage-block">';
             echo '<div class="marriage-line-down"></div>';
 
-            // LABEL IBU (opsional)
             if ($branch['spouse_id']) {
                 echo '<div class="mom-label">Keturunan ' . htmlspecialchars($persons[$branch['spouse_id']]['name']) . '</div>';
             }
@@ -765,10 +764,12 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
             echo '</ul>';
 
             echo '</div>';
+
+            echo '</li>'; // ⬅️ WAJIB LI
         }
     }
 
-    echo '</div>';
+    echo '</ul>'; // ⬅️ WAJIB UL
 }
 
     echo '</li>';
