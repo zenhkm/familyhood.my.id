@@ -771,12 +771,6 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
 
     echo '</ul>'; // ⬅️ WAJIB UL
 }
-
-    echo '</div>';
-}
-
-    echo '</li>';
-}
 // --- DATA EXPORT HELPERS (Sama seperti sebelumnya) ---
 function fh_get_group_label_for_person($id, $gen, $generation, $persons, $spouses) {
     if (!isset($persons[$id])) return '';
