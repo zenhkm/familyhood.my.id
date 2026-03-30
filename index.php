@@ -3788,30 +3788,49 @@ if ($action === 'bio') {
         $focusId = isset($_GET['focus_id']) ? intval($_GET['focus_id']) : 0;
         $targetRootId = null;
 
-        if ($focusId > 0 && isset($allPersonsData[$focusId])) {
-            // Algoritma: Naik ke atas (Ayah/Ibu) terus menerus sampai mentok
-            $curr = $focusId;
-            $safety = 0;
-            while($safety < 100) { // Safety break agar tidak infinite loop
-                // Cari ortu di array relasi memori (lebih cepat drpd query ulang)
-                $foundParent = false;
-                // Cari di array $parentChildren (Parent -> Child), kita butuh reverse
-                // Kita scan manual generationData atau parents logic
-                
-                // Query Database langsung untuk mencari ortu (paling akurat)
-                $resP = $mysqli->query("SELECT related_person_id FROM relations WHERE person_id=$curr AND relation_type IN ('ayah','ibu') LIMIT 1");
-                if ($rowP = $resP->fetch_assoc()) {
-                    $curr = $rowP['related_person_id']; // Naik ke ortu
-                    $foundParent = true;
+        // Helper kecil: cari leluhur teratas di dalam tree yang sedang diload
+        function fh_find_top_ancestor($startId, $childParents, $generationData) {
+            $visited = [];
+            $current = [$startId];
+            $best = $startId;
+            while (!empty($current)) {
+                $next = [];
+                foreach ($current as $pid) {
+                    if (isset($visited[$pid])) continue;
+                    $visited[$pid] = true;
+
+                    if (isset($generationData[$pid]) && isset($generationData[$best])) {
+                        if ($generationData[$pid] < $generationData[$best]) {
+                            $best = $pid;
+                        }
+                    }
+
+                    $parents = array_keys($childParents[$pid] ?? []);
+                    foreach ($parents as $p) {
+                        if (!isset($visited[$p])) $next[] = $p;
+                    }
                 }
-                
-                if (!$foundParent) break; // Sudah paling atas (Root)
-                $safety++;
+                $current = array_unique($next);
             }
-            $targetRootId = $curr; // Ini adalah leluhur tertinggi dari orang yg diklik
-        } 
-        // Jika tidak ada focus, cek filter manual
-        else {
+
+            if (isset($generationData[$best]) && $generationData[$best] == 1) {
+                return $best;
+            }
+
+            // Jika belum ada data generasi 1, cari nilai minimum
+            $minGen = PHP_INT_MAX; $minId = $startId;
+            foreach ($visited as $pid => $_) {
+                if (isset($generationData[$pid]) && $generationData[$pid] < $minGen) {
+                    $minGen = $generationData[$pid];
+                    $minId = $pid;
+                }
+            }
+            return $minId;
+        }
+
+        if ($focusId > 0 && isset($allPersonsData[$focusId])) {
+            $targetRootId = fh_find_top_ancestor($focusId, $childParents, $generationData);
+        } else {
             $targetRootId = isset($_GET['filter_root']) ? intval($_GET['filter_root']) : null;
         }
 
