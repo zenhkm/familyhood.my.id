@@ -569,6 +569,7 @@ function fh_get_family_branches($personId, $persons, $spouses, $childParents) {
     }
 
     // Jika punya istri, iterasi per istri
+    $assignedChildIds = [];
     foreach ($sortedSpouseIds as $spouseId) {
         $childIds = [];
         foreach ($childParents as $childId => $parentMap) {
@@ -580,30 +581,37 @@ function fh_get_family_branches($personId, $persons, $spouses, $childParents) {
             // 2. ATAU hanya terhubung ke IBU (Mungkin Ayah lupa diinput di tabel relations)
             if (($hasAyah && $hasIbu) || $hasIbu) {
                 $childIds[] = $childId;
+                $assignedChildIds[$childId] = true;
             }
         }
         fh_sort_child_ids($childIds, $persons);
         $branches[] = ['spouse_id' => $spouseId, 'child_ids' => $childIds];
     }
 
-    // Tambahan: Anak yang HANYA terhubung ke Ayah (Tanpa Ibu)
-    // Masukkan ke kategori "Tanpa Ibu" agar tidak hilang dari silsilah
-    $onlyAyahIds = [];
+    // Anak yang hanya terhubung ke orang tua ini (tanpa pasangan lain),
+    // sebaiknya ikut pasangan utama agar posisinya lebih dekat (antara ayah & ibu).
+    $onlyParentIds = [];
     foreach ($childParents as $childId => $parentMap) {
-        $hasAyah = isset($parentMap[$personId]);
+        if (!isset($parentMap[$personId])) continue;
+        if (isset($assignedChildIds[$childId])) continue;
+
         $hasAnySpouse = false;
         foreach ($sortedSpouseIds as $sid) {
             if (isset($parentMap[$sid])) { $hasAnySpouse = true; break; }
         }
-
-        if ($hasAyah && !$hasAnySpouse) {
-            $onlyAyahIds[] = $childId;
+        if (!$hasAnySpouse) {
+            $onlyParentIds[] = $childId;
         }
     }
 
-    if (!empty($onlyAyahIds)) {
-        fh_sort_child_ids($onlyAyahIds, $persons);
-        $branches[] = ['spouse_id' => null, 'child_ids' => $onlyAyahIds];
+    if (!empty($onlyParentIds)) {
+        fh_sort_child_ids($onlyParentIds, $persons);
+        if (!empty($branches)) {
+            // Tempatkan anak ini pada cabang pasangan pertama supaya tidak berada di kanan jauh.
+            $branches[0]['child_ids'] = array_merge($onlyParentIds, $branches[0]['child_ids']);
+        } else {
+            $branches[] = ['spouse_id' => null, 'child_ids' => $onlyParentIds];
+        }
     }
 
     return $branches;
@@ -4112,7 +4120,7 @@ if ($action === 'bio') {
                         to: marriageId,
                         color: { color: 'rgba(148,163,184,0.45)' },
                         width: 1.2,
-                        smooth: { enabled: true, type: 'straightCross', roundness: 0 },
+                        smooth: false,
                         arrows: { to: { enabled: false } }
                     });
                 }
@@ -4124,7 +4132,7 @@ if ($action === 'bio') {
                         to: marriageId,
                         color: { color: 'rgba(148,163,184,0.45)' },
                         width: 1.2,
-                        smooth: { enabled: true, type: 'straightCross', roundness: 0 },
+                        smooth: false,
                         arrows: { to: { enabled: false } }
                     });
                 }
@@ -4135,7 +4143,7 @@ if ($action === 'bio') {
                     arrows: { to: { enabled: false } },
                     color: { color: '#94a3b8' },
                     width: 2.2,
-                    smooth: { enabled: true, type: 'cubicBezier', roundness: 0.08 }
+                    smooth: false
                 });
             }
 
@@ -4184,7 +4192,7 @@ if ($action === 'bio') {
                             arrows: { to: { enabled: false } },
                             color: { color: '#94a3b8' },
                             width: 2,
-                            smooth: { enabled: true, type: 'cubicBezier', roundness: 0.22 }
+                            smooth: false
                         });
                     }
                 }
