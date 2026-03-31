@@ -4175,17 +4175,19 @@ if ($action === 'bio') {
 
                     const spouseCandidates = Object.keys(spouses[parentId] || {})
                         .map((id) => Number(id))
-                        .filter((id) => visible.has(id));
+                        .filter((id) => visible.has(id) && !childSet.has(Number(id)));
 
-                    // Prefer opposite gender, else first available
+                    // Prioritas: pasangan dengan gender berlawanan, lalu pasangan pertama yang ada
                     let inferredSpouse = spouseCandidates.find((id) => {
                         const g = (persons[id]?.gender || '');
                         return parentGender && g && g !== parentGender;
                     }) || spouseCandidates[0];
 
                     if (inferredSpouse && inferredSpouse !== parentId) {
+                        // Anak akan ditarik dari tengah pasangan, menciptakan visual "antara ayah & ibu"
                         addMarriageChildEdge(parentId, inferredSpouse, childId);
                     } else {
+                        // Jika tidak ada pasangan, tarik langsung dari parent node
                         edges.push({
                             from: parentId,
                             to: childId,
