@@ -3409,12 +3409,55 @@ if ($action === 'bio') {
                 });
             }
 
+            // === FASE 4: SNAP PASANGAN SUAMI-ISTRI AGAR BERDEKATAN ===
+            // Setelah resolveAllOverlaps memisahkan mereka, kembalikan pasangan agar bersebelahan
+            function snapSpousesTogether() {
+                const pos = network.getPositions();
+                const SPOUSE_GAP = 140; // Jarak suami-istri
+
+                // Kumpulkan semua pasangan
+                const processed = new Set();
+                visible.forEach(personId => {
+                    const p = persons[personId];
+                    if (!p || p.gender !== 'L') return; // Hanya proses suami
+
+                    const spouseMap = spouses[personId] || {};
+                    const validWives = Object.keys(spouseMap)
+                        .map(Number)
+                        .filter(sid => visible.has(sid));
+
+                    if (validWives.length === 0) return;
+                    const pairKey = personId + '-' + validWives.sort().join(',');
+                    if (processed.has(pairKey)) return;
+                    processed.add(pairKey);
+
+                    const hPos = pos[personId];
+                    if (!hPos) return;
+
+                    const centerX = hPos.x;
+                    const splitAt = Math.ceil(validWives.length / 2);
+
+                    validWives.forEach((wifeId, i) => {
+                        const wifePos = pos[wifeId];
+                        if (!wifePos) return;
+                        const targetX = i < splitAt
+                            ? centerX - (splitAt - i) * SPOUSE_GAP
+                            : centerX + (i - splitAt + 1) * SPOUSE_GAP;
+                        network.moveNode(wifeId, targetX, wifePos.y);
+                    });
+
+                    // Pastikan suami tetap di posisi tengah
+                    network.moveNode(personId, centerX, hPos.y);
+                });
+            }
+
             // === EKSEKUSI SEMUA FASE BERURUTAN ===
             network.once('afterDrawing', function() {
                 setTimeout(() => {
                     centerHusbandsAmongWives();    // Fase 1: Suami di tengah istri
                     positionChildrenGrouped();      // Fase 2: Anak dikelompokkan per ibu
                     resolveAllOverlaps();           // Fase 3: Pastikan tidak ada overlap
+                    snapSpousesTogether();          // Fase 4: Kembalikan pasangan agar berdekatan
                     network.fit({ animation: { duration: 600 } });
                 }, 150);
             });
