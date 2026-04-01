@@ -3200,13 +3200,29 @@ if ($action === 'bio') {
                 edges: new vis.DataSet(edges)
             }, {
                 autoResize: true,
-                physics: false,
+                physics: {
+                    enabled: true,
+                    hierarchicalRepulsion: {
+                        centralGravity: 0.0,
+                        springLength: 100,
+                        springConstant: 0.01,
+                        nodeDistance: 130,
+                        damping: 0.09,
+                        avoidOverlap: 1
+                    },
+                    solver: 'hierarchicalRepulsion',
+                    stabilization: {
+                        enabled: true,
+                        iterations: 500,
+                        fit: true
+                    }
+                },
                 interaction: { hover: true, navigationButtons: true, keyboard: true },
                 layout: {
                     hierarchical: {
                         enabled: true,
                         direction: 'UD',
-                        sortMethod: 'hubsize',
+                        sortMethod: 'directed',
                         levelSeparation: 90,
                         nodeSpacing: 100,
                         treeSpacing: 140,
