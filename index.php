@@ -3344,33 +3344,34 @@ if ($action === 'bio') {
             // === FASE 3: RESOLUSI TUMPANG TINDIH ===
             function resolveOverlaps() {
                 const pos = network.getPositions();
-                const MIN_DIST = 110; // Jarak minimum antar node (px)
-                const LEVEL_TOLERANCE = 30; // Toleransi Y untuk dianggap 1 level
+                const MIN_DIST = 140; // Jarak minimum antar person node (px)
+                const LEVEL_TOLERANCE = 50; // Toleransi Y untuk dianggap 1 level
 
-                // Kelompokkan node per level (berdasarkan posisi Y)
+                // Kelompokkan HANYA person node (bukan marriage node 'm-*')
                 const levelGroups = {};
                 Object.keys(pos).forEach(nodeId => {
+                    // Skip marriage nodes (invisible, bentuknya "m-123-456")
+                    if (String(nodeId).startsWith('m-')) return;
+                    
                     const p = pos[nodeId];
-                    // Bulatkan Y ke level terdekat
                     const levelKey = Math.round(p.y / LEVEL_TOLERANCE) * LEVEL_TOLERANCE;
                     if (!levelGroups[levelKey]) levelGroups[levelKey] = [];
                     levelGroups[levelKey].push({ id: nodeId, x: p.x, y: p.y });
                 });
 
-                // Untuk setiap level, sortir node berdasarkan X dan dorong yang bertabrakan
+                // Untuk setiap level, paksa jarak minimum antar node
                 Object.values(levelGroups).forEach(group => {
                     if (group.length < 2) return;
 
-                    // Sort berdasarkan posisi X saat ini
                     group.sort((a, b) => a.x - b.x);
 
-                    // Iterasi beberapa kali untuk menangani efek domino
-                    for (let pass = 0; pass < 3; pass++) {
+                    // Banyak iterasi untuk menangani efek domino pada keluarga besar
+                    for (let pass = 0; pass < 15; pass++) {
                         let moved = false;
                         for (let i = 1; i < group.length; i++) {
                             const gap = group[i].x - group[i - 1].x;
                             if (gap < MIN_DIST) {
-                                const shift = (MIN_DIST - gap) / 2;
+                                const shift = (MIN_DIST - gap) / 2 + 1;
                                 group[i - 1].x -= shift;
                                 group[i].x += shift;
                                 moved = true;
