@@ -606,12 +606,9 @@ function fh_get_family_branches($personId, $persons, $spouses, $childParents) {
 
     if (!empty($onlyParentIds)) {
         fh_sort_child_ids($onlyParentIds, $persons);
-        if (!empty($branches)) {
-            // Tempatkan anak ini pada cabang pasangan pertama supaya tidak berada di kanan jauh.
-            $branches[0]['child_ids'] = array_merge($onlyParentIds, $branches[0]['child_ids']);
-        } else {
-            $branches[] = ['spouse_id' => null, 'child_ids' => $onlyParentIds];
-        }
+        // Buat cabang terpisah meskipun parent punya istri/suami lain
+        // Supaya anak tanpa ibu yang spesifik dipisah secara visual
+        $branches[] = ['spouse_id' => null, 'child_ids' => $onlyParentIds];
     }
 
     return $branches;
