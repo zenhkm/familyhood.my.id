@@ -3451,14 +3451,73 @@ if ($action === 'bio') {
                 });
             }
 
+            // === FASE 2.5: POSISIKAN ISTRI DI ATAS ANAK-ANAKNYA SENDIRI ===
+            function repositionWivesAboveChildren() {
+                Object.keys(husbandWives).map(Number).forEach(husbandId => {
+                    const wives = (husbandWives[husbandId] || []).filter(wid => visible.has(wid));
+                    if (wives.length < 2) return; // Hanya relevan untuk suami dengan >1 istri
+
+                    const pos = network.getPositions();
+                    const hPos = pos[husbandId];
+                    if (!hPos) return;
+
+                    const newWifePosX = {};
+
+                    wives.forEach(wifeId => {
+                        // Temukan semua anak dari pasangan (husbandId + wifeId)
+                        const coupleKids = [];
+                        childSet.forEach(childId => {
+                            const pMap = childParents[childId] || {};
+                            const pIds = Object.keys(pMap).map(Number).filter(id => visible.has(id));
+                            if (pIds.includes(husbandId) && pIds.includes(wifeId)) {
+                                coupleKids.push(childId);
+                            }
+                        });
+
+                        if (coupleKids.length > 0) {
+                            const updatedPos = network.getPositions();
+                            const kidXs = coupleKids.map(cid => updatedPos[cid]?.x).filter(x => x !== undefined);
+                            if (kidXs.length > 0) {
+                                // Posisi istri = rata-rata X anak-anaknya
+                                const avgX = kidXs.reduce((sum, x) => sum + x, 0) / kidXs.length;
+                                newWifePosX[wifeId] = avgX;
+                            }
+                        }
+                    });
+
+                    // Terapkan posisi baru untuk istri yang punya anak
+                    let anyMoved = false;
+                    wives.forEach(wifeId => {
+                        if (newWifePosX[wifeId] !== undefined) {
+                            const wifePos = pos[wifeId];
+                            if (wifePos) {
+                                network.moveNode(wifeId, newWifePosX[wifeId], wifePos.y);
+                                anyMoved = true;
+                            }
+                        }
+                    });
+
+                    // Reposisi suami ke rata-rata X semua istrinya yang sudah dipindah
+                    if (anyMoved) {
+                        const updatedPos2 = network.getPositions();
+                        const wivesX = wives.map(wid => updatedPos2[wid]?.x).filter(x => x !== undefined);
+                        if (wivesX.length > 0) {
+                            const avgHusbandX = wivesX.reduce((sum, x) => sum + x, 0) / wivesX.length;
+                            network.moveNode(husbandId, avgHusbandX, hPos.y);
+                        }
+                    }
+                });
+            }
+
             // === EKSEKUSI SEMUA FASE BERURUTAN ===
             network.once('afterDrawing', function() {
                 setTimeout(() => {
-                    centerHusbandsAmongWives();    // Fase 1: Suami di tengah istri
-                    positionChildrenGrouped();      // Fase 2: Anak dikelompokkan per ibu
-                    resolveAllOverlaps();           // Fase 3: Pastikan tidak ada overlap
-                    snapSpousesTogether();          // Fase 4: Kembalikan pasangan agar berdekatan
-                    resolveAllOverlaps();           // Fase 5: Resolve overlap baru akibat Fase 4
+                    centerHusbandsAmongWives();       // Fase 1: Suami di tengah istri (awal)
+                    positionChildrenGrouped();         // Fase 2: Anak dikelompokkan per ibu
+                    repositionWivesAboveChildren();    // Fase 2.5: Istri di atas anaknya, suami menyesuaikan
+                    resolveAllOverlaps();              // Fase 3: Pastikan tidak ada overlap
+                    snapSpousesTogether();             // Fase 4: Kembalikan pasangan agar berdekatan
+                    resolveAllOverlaps();              // Fase 5: Resolve overlap baru akibat Fase 4
                     network.fit({ animation: { duration: 600 } });
                 }, 150);
             });
