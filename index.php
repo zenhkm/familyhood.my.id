@@ -3193,20 +3193,7 @@ if ($action === 'bio') {
                 autoResize: true,
                 physics: false,
                 interaction: { hover: true, navigationButtons: true, keyboard: true },
-                layout: {
-                    hierarchical: {
-                        enabled: true,
-                        direction: 'UD',
-                        sortMethod: 'directed',
-                        levelSeparation: 90,
-                        nodeSpacing: 100,
-                        treeSpacing: 140,
-                        parentCentralization: true,
-                        blockShifting: true,
-                        edgeMinimization: true,
-                        shakeTowards: 'roots'
-                    }
-                },
+                layout: { hierarchical: false },
                 nodes: { shapeProperties: { useBorderWithImage: true } },
                 edges: { selectionWidth: 0, hoverWidth: 0.3 }
             });
@@ -3216,288 +3203,208 @@ if ($action === 'bio') {
             // 1. Suami-istri TIDAK BOLEH dipisah oleh saudara
             // 2. Anak HARUS lurus di bawah orang tuanya
             // =====================================================
+            // =====================================================
+            // CUSTOM FAMILY TREE LAYOUT - sepenuhnya berbasis generationData
+            // 1. Y ditentukan dari generationData (PHP), bukan dari vis
+            // 2. Anak tepat di bawah pasangan orang tuanya
+            // 3. Istri SELALU di sebelah suami, tidak terpisah saudara
+            // =====================================================
             function customFamilyTreeLayout() {
-                const NODE_GAP = 120;    // Jarak minimum antar node (hanya mencegah overlap)
-                const SPOUSE_GAP = 100;  // Jarak suami-istri (lebih rapat)
+                const GEN_Y_GAP  = 160;  // Jarak vertikal antar generasi (px)
+                const NODE_GAP   = 160;  // Jarak horizontal minimum antar node
+                const SPOUSE_GAP = 110;  // Jarak suami - istri
 
-                // --- Helper: Cari anak dari pasangan tertentu ---
-                function getChildrenOfCouple(fId, mId) {
-                    const kids = [];
-                    childSet.forEach(cid => {
-                        const pMap = childParents[cid] || {};
-                        const pIds = Object.keys(pMap).map(Number).filter(id => visible.has(id));
-                        if (fId && mId) {
-                            if (pIds.includes(fId) && pIds.includes(mId)) kids.push(cid);
-                        } else if (fId) {
-                            if (pIds.includes(fId)) kids.push(cid);
-                        } else if (mId) {
-                            if (pIds.includes(mId)) kids.push(cid);
-                        }
-                    });
-                    return kids;
-                }
+                // === LANGKAH 1: Hitung Y tetap dari generationData ===
+                const genNums = [...visible].map(id => generationData[id] ?? 1);
+                const maxGen = Math.max(...genNums);
+                const genY = {};
+                for (let g = 1; g <= maxGen; g++) genY[g] = (g - 1) * GEN_Y_GAP;
 
-                // --- Helper: Resolve overlap per level ---
-                function resolveLevel(pos) {
-                    const LEVEL_TOL = 50;
-                    const levelGroups = {};
-                    Object.keys(pos).forEach(nid => {
-                        if (String(nid).startsWith('m-')) return;
-                        const p = pos[nid];
-                        const lk = Math.round(p.y / LEVEL_TOL) * LEVEL_TOL;
-                        if (!levelGroups[lk]) levelGroups[lk] = [];
-                        levelGroups[lk].push({ id: nid, x: p.x, y: p.y });
-                    });
-
-                    Object.values(levelGroups).forEach(group => {
-                        if (group.length < 2) return;
-                        group.sort((a, b) => a.x - b.x);
-                        for (let pass = 0; pass < 30; pass++) {
-                            let moved = false;
-                            for (let i = 1; i < group.length; i++) {
-                                const gap = group[i].x - group[i - 1].x;
-                                if (gap < NODE_GAP) {
-                                    const shift = (NODE_GAP - gap) / 2 + 1;
-                                    group[i - 1].x -= shift;
-                                    group[i].x += shift;
-                                    moved = true;
-                                }
-                            }
-                            if (!moved) break;
-                        }
-                        group.forEach(n => {
-                            pos[n.id] = { x: n.x, y: pos[n.id].y };
-                        });
-                    });
-                    return pos;
-                }
-
-                // ========== LANGKAH 1: Ambil posisi awal dari vis.js ==========
-                let pos = {};
-                const rawPos = network.getPositions();
-                Object.keys(rawPos).forEach(nid => {
-                    pos[nid] = { x: rawPos[nid].x, y: rawPos[nid].y };
+                // === LANGKAH 2: Kelompokkan node visible per generasi ===
+                const nodesByGen = {};
+                visible.forEach(id => {
+                    const g = generationData[id] ?? 1;
+                    if (!nodesByGen[g]) nodesByGen[g] = [];
+                    nodesByGen[g].push(id);
                 });
+                const sortedGens = Object.keys(nodesByGen).map(Number).sort((a, b) => a - b);
 
-                // ========== LANGKAH 2: Kelompokkan node per level Y ==========
-                const LEVEL_TOL = 50;
-                const nodeLevels = {};
-                Object.keys(pos).forEach(nid => {
-                    if (String(nid).startsWith('m-')) return;
-                    nodeLevels[nid] = Math.round(pos[nid].y / LEVEL_TOL) * LEVEL_TOL;
-                });
+                // === LANGKAH 3: Bangun pasangan (couple) → children ===
+                const couples = [];
+                const assignedCids = new Set();
 
-                // Level unik, diurutkan dari bawah ke atas
-                const uniqueLevels = [...new Set(Object.values(nodeLevels))].sort((a, b) => b - a);
-
-                // ========== LANGKAH 3: Bangun data couple → children ==========
-                const coupleData = []; // { father, mother, children[], coupleKey }
-                const processedChildren = new Set();
-
-                // Kumpulkan semua pasangan yang punya anak visible
                 visible.forEach(personId => {
                     const p = persons[personId];
                     if (!p || p.gender !== 'L') return;
 
                     const wifeList = Object.keys(spouses[personId] || {})
-                        .map(Number).filter(sid => visible.has(sid));
+                        .map(Number).filter(sid => visible.has(sid))
+                        .sort((a, b) => a - b);
 
                     if (wifeList.length === 0) {
-                        // Suami tanpa istri visible, cari anak langsung
-                        const kids = getChildrenOfCouple(personId, null)
-                            .filter(c => !processedChildren.has(c));
+                        const kids = [...childSet].filter(cid => {
+                            if (assignedCids.has(cid)) return false;
+                            const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(id => visible.has(id));
+                            return pIds.includes(personId);
+                        });
                         if (kids.length > 0) {
-                            kids.forEach(c => processedChildren.add(c));
-                            coupleData.push({ father: personId, mother: null, children: kids });
+                            kids.forEach(c => assignedCids.add(c));
+                            couples.push({ husband: personId, wife: null, children: kids });
                         }
                         return;
                     }
 
                     wifeList.forEach(wifeId => {
-                        const kids = getChildrenOfCouple(personId, wifeId)
-                            .filter(c => !processedChildren.has(c));
-                        if (kids.length > 0) {
-                            kids.forEach(c => processedChildren.add(c));
-                            coupleData.push({ father: personId, mother: wifeId, children: kids });
-                        }
-                    });
-                });
-
-                // ========== LANGKAH 4: BOTTOM-UP — atur anak, lalu sesuaikan orang tua ==========
-                
-                // Proses setiap level dari bawah ke atas
-                uniqueLevels.forEach(levelY => {
-                    // Cari couple yang punya anak di level ini
-                    const couplesAtLevel = coupleData.filter(cd => {
-                        return cd.children.some(cid => nodeLevels[cid] == levelY);
-                    });
-
-                    if (couplesAtLevel.length === 0) return;
-
-                    // Sortir couple berdasarkan posisi X saat ini (rata-rata orang tua)
-                    couplesAtLevel.forEach(cd => {
-                        let pX = 0, count = 0;
-                        if (cd.father && pos[cd.father]) { pX += pos[cd.father].x; count++; }
-                        if (cd.mother && pos[cd.mother]) { pX += pos[cd.mother].x; count++; }
-                        cd._sortX = count > 0 ? pX / count : 0;
-                    });
-                    couplesAtLevel.sort((a, b) => a._sortX - b._sortX);
-
-                    // Tempatkan grup anak berurutan dari kiri ke kanan
-                    let cursor = -Infinity;
-                    couplesAtLevel.forEach(cd => {
-                        const kids = cd.children.filter(cid => nodeLevels[cid] == levelY);
-                        if (kids.length === 0) return;
-
-                        // Hitung posisi ideal = rata-rata X orang tua
-                        let idealX = cd._sortX;
-                        
-                        const totalWidth = (kids.length - 1) * NODE_GAP;
-                        let startX = idealX - totalWidth / 2;
-
-                        // Pastikan tidak overlap dengan grup sebelumnya
-                        if (startX < cursor + NODE_GAP) {
-                            startX = cursor + NODE_GAP;
-                        }
-
-                        // Tempatkan anak-anak
-                        kids.forEach((cid, i) => {
-                            pos[cid] = { x: startX + i * NODE_GAP, y: pos[cid].y };
+                        const kids = [...childSet].filter(cid => {
+                            if (assignedCids.has(cid)) return false;
+                            const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(id => visible.has(id));
+                            return pIds.includes(personId) && pIds.includes(wifeId);
                         });
-
-                        cursor = startX + totalWidth;
-
-                        // === ATURAN 2: Orang tua menyesuaikan ke atas anak ===
-                        // Hitung center X anak-anak yang baru ditempatkan
-                        const childCenterX = startX + totalWidth / 2;
-
-                        // Pindahkan marriage node
-                        if (cd.father && cd.mother) {
-                            const a = Math.min(cd.father, cd.mother);
-                            const b = Math.max(cd.father, cd.mother);
-                            const mId = `m-${a}-${b}`;
-                            if (pos[mId]) {
-                                pos[mId] = { x: childCenterX, y: pos[mId].y };
-                            }
-                        }
-                    });
-                });
-
-                // ========== LANGKAH 5: Posisikan orang tua di atas anak-anaknya ==========
-                // Untuk suami dengan banyak istri: setiap istri di atas anak-anaknya,
-                // suami di rata-rata semua istri
-                
-                const husbandProcessed = new Set();
-                coupleData.forEach(cd => {
-                    if (!cd.father) return;
-                    if (husbandProcessed.has(cd.father)) return;
-                    
-                    const husbandId = cd.father;
-                    const wifeList = Object.keys(spouses[husbandId] || {})
-                        .map(Number).filter(sid => visible.has(sid));
-
-                    // Kumpulkan semua couple data untuk suami ini
-                    const allCouplesForHusband = coupleData.filter(c => c.father === husbandId);
-                    
-                    const wifePositions = {};
-
-                    allCouplesForHusband.forEach(cd2 => {
-                        if (!cd2.mother) return;
-                        const kids = cd2.children;
-                        if (kids.length === 0) return;
-
-                        // Hitung center X anak-anak
-                        const kidXs = kids.map(cid => pos[cid]?.x).filter(x => x !== undefined);
-                        if (kidXs.length > 0) {
-                            const avgX = kidXs.reduce((s, x) => s + x, 0) / kidXs.length;
-                            wifePositions[cd2.mother] = avgX;
+                        if (kids.length > 0) {
+                            kids.forEach(c => assignedCids.add(c));
+                            couples.push({ husband: personId, wife: wifeId, children: kids });
                         }
                     });
 
-                    // Posisikan istri yang punya anak di atas anak-anaknya
-                    Object.keys(wifePositions).forEach(wid => {
-                        const wifeId = Number(wid);
-                        if (pos[wifeId]) {
-                            pos[wifeId] = { x: wifePositions[wid], y: pos[wifeId].y };
-                        }
+                    // Anak hanya dari suami (tanpa istri spesifik)
+                    const solo = [...childSet].filter(cid => {
+                        if (assignedCids.has(cid)) return false;
+                        const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(id => visible.has(id));
+                        return pIds.includes(personId);
                     });
-
-                    // Istri tanpa anak: biarkan di posisi vis.js awal
-                    // Suami: posisikan di rata-rata X semua istri visible
-                    const allWifeXs = wifeList.map(wid => pos[wid]?.x).filter(x => x !== undefined);
-                    if (allWifeXs.length > 0 && pos[husbandId]) {
-                        const avgX = allWifeXs.reduce((s, x) => s + x, 0) / allWifeXs.length;
-                        pos[husbandId] = { x: avgX, y: pos[husbandId].y };
-                    }
-
-                    husbandProcessed.add(husbandId);
-                });
-
-                // ========== LANGKAH 6: Resolve overlap semua level ==========
-                pos = resolveLevel(pos);
-
-                // ========== LANGKAH 7: ATURAN 1 — Snap pasangan agar bersebelahan ==========
-                // Setelah resolve overlap, pasangan mungkin dipisah oleh saudara.
-                // Pindahkan istri ke samping suami sebagai UNIT.
-                const processed2 = new Set();
-                visible.forEach(personId => {
-                    const p = persons[personId];
-                    if (!p || p.gender !== 'L') return;
-                    if (processed2.has(personId)) return;
-                    processed2.add(personId);
-
-                    const wifeList = Object.keys(spouses[personId] || {})
-                        .map(Number).filter(sid => visible.has(sid) && pos[sid]);
-
-                    if (wifeList.length === 0) return;
-                    if (!pos[personId]) return;
-
-                    // Sortir istri berdasarkan posisi X saat ini
-                    wifeList.sort((a, b) => (pos[a]?.x || 0) - (pos[b]?.x || 0));
-
-                    const hX = pos[personId].x;
-                    const splitAt = Math.ceil(wifeList.length / 2);
-
-                    // Istri di kiri suami
-                    for (let i = 0; i < splitAt; i++) {
-                        const wid = wifeList[i];
-                        pos[wid] = { x: hX - (splitAt - i) * SPOUSE_GAP, y: pos[wid].y };
-                    }
-                    // Istri di kanan suami
-                    for (let i = splitAt; i < wifeList.length; i++) {
-                        const wid = wifeList[i];
-                        pos[wid] = { x: hX + (i - splitAt + 1) * SPOUSE_GAP, y: pos[wid].y };
+                    if (solo.length > 0) {
+                        solo.forEach(c => assignedCids.add(c));
+                        couples.push({ husband: personId, wife: null, children: solo });
                     }
                 });
 
-                // ========== LANGKAH 8: Resolve overlap FINAL ==========
-                pos = resolveLevel(pos);
+                // === LANGKAH 4: Inisialisasi pos dengan Y tetap ===
+                const pos = {};
+                visible.forEach(id => {
+                    pos[id] = { x: 0, y: genY[generationData[id] ?? 1] };
+                });
 
-                // ========== LANGKAH 9: Center generasi pertama (root) ==========
-                // Cari level paling atas (Y terkecil)
-                const topLevel = Math.min(...uniqueLevels);
-                const rootNodes = Object.keys(nodeLevels).filter(nid => nodeLevels[nid] === topLevel);
-                
-                if (rootNodes.length > 0) {
-                    // Hitung center X dari seluruh tree
-                    const allX = Object.keys(pos).filter(nid => !String(nid).startsWith('m-')).map(nid => pos[nid].x);
-                    const treeCenter = (Math.min(...allX) + Math.max(...allX)) / 2;
-                    
-                    // Hitung center X root generation saat ini
-                    const rootXs = rootNodes.map(nid => pos[nid].x);
-                    const rootCenter = (Math.min(...rootXs) + Math.max(...rootXs)) / 2;
-                    
-                    // Geser seluruh tree agar root di tengah
-                    const shiftX = treeCenter - rootCenter;
-                    rootNodes.forEach(nid => {
-                        pos[nid] = { x: pos[nid].x + shiftX, y: pos[nid].y };
-                    });
+                // Helper: rata-rata X
+                function avgXOf(ids) {
+                    const valid = ids.filter(id => pos[id]);
+                    if (!valid.length) return 0;
+                    return valid.reduce((s, id) => s + pos[id].x, 0) / valid.length;
                 }
 
-                // ========== LANGKAH 10: Terapkan semua posisi ke network ==========
-                // MATIKAN setelan hierarchical vis-network agar TIDAK BERTENTANGAN dengan koordinat manual
-                network.setOptions({ layout: { hierarchical: false }, physics: false });
+                // Helper: resolve overlap satu generasi
+                function resolveGenOverlap(ids) {
+                    if (ids.length < 2) return;
+                    ids.sort((a, b) => pos[a].x - pos[b].x);
+                    for (let pass = 0; pass < 80; pass++) {
+                        let moved = false;
+                        for (let i = 1; i < ids.length; i++) {
+                            const gap = pos[ids[i]].x - pos[ids[i-1]].x;
+                            if (gap < NODE_GAP) {
+                                const shift = (NODE_GAP - gap) / 2 + 0.5;
+                                pos[ids[i-1]].x -= shift;
+                                pos[ids[i]].x   += shift;
+                                moved = true;
+                            }
+                        }
+                        if (!moved) break;
+                    }
+                }
 
+                // === LANGKAH 5: Posisi awal gen 1 (root): merata kiri→kanan ===
+                const gen1 = nodesByGen[1] || [];
+                gen1.forEach((id, i) => { pos[id].x = i * NODE_GAP; });
+
+                // === LANGKAH 6: TOP-DOWN sementara — posisi awal berdasarkan parent ===
+                sortedGens.forEach(g => {
+                    if (g === 1) return;
+                    const ids = nodesByGen[g] || [];
+                    ids.forEach((id, idx) => {
+                        const pIds = Object.keys(childParents[id] || {}).map(Number).filter(x => visible.has(x));
+                        pos[id].x = pIds.length > 0 ? avgXOf(pIds) + (idx - ids.length/2) * 0.01 : idx * NODE_GAP;
+                    });
+                    resolveGenOverlap(ids);
+                });
+
+                // === LANGKAH 7: BOTTOM-UP — anak ditempatkan di bawah orang tua ===
+                for (let g = maxGen; g >= 2; g--) {
+                    const couplesHere = couples.filter(c => (generationData[c.husband] ?? 1) === g - 1);
+                    if (couplesHere.length === 0) continue;
+
+                    // Urutkan couple berdasarkan posisi X suami saat ini
+                    couplesHere.sort((a, b) => pos[a.husband].x - pos[b.husband].x);
+
+                    let cursor = -Infinity;
+                    couplesHere.forEach(cd => {
+                        const kidsAtG = cd.children.filter(c => (generationData[c] ?? 1) === g && visible.has(c));
+                        if (kidsAtG.length === 0) return;
+
+                        const parentX = pos[cd.husband].x;
+                        const totalW = (kidsAtG.length - 1) * NODE_GAP;
+                        let startX = parentX - totalW / 2;
+                        if (startX < cursor + NODE_GAP) startX = cursor + NODE_GAP;
+
+                        kidsAtG.forEach((cid, i) => { pos[cid].x = startX + i * NODE_GAP; });
+                        cursor = startX + totalW;
+                    });
+
+                    resolveGenOverlap(nodesByGen[g] || []);
+
+                    // Sesuaikan orang tua ke tengah anak-anaknya
+                    couplesHere.forEach(cd => {
+                        const kidsAtG = cd.children.filter(c => (generationData[c] ?? 1) === g && visible.has(c) && pos[c]);
+                        if (kidsAtG.length === 0) return;
+                        const cx = avgXOf(kidsAtG);
+                        if (cd.wife) {
+                            pos[cd.husband].x = cx + SPOUSE_GAP / 2;
+                            pos[cd.wife].x    = cx - SPOUSE_GAP / 2;
+                        } else {
+                            pos[cd.husband].x = cx;
+                        }
+                    });
+
+                    resolveGenOverlap(nodesByGen[g - 1] || []);
+                }
+
+                // === LANGKAH 8: Snap istri ke dekat suami (final snap) ===
+                const doneH = new Set();
+                visible.forEach(id => {
+                    const p = persons[id];
+                    if (!p || p.gender !== 'L' || doneH.has(id)) return;
+                    doneH.add(id);
+
+                    const wifeList = Object.keys(spouses[id] || {})
+                        .map(Number).filter(wid => visible.has(wid))
+                        .sort((a, b) => a - b);
+                    if (wifeList.length === 0) return;
+
+                    const hX = pos[id].x;
+                    const half = Math.ceil(wifeList.length / 2);
+                    for (let i = 0; i < half; i++) {
+                        pos[wifeList[i]].x = hX - (half - i) * SPOUSE_GAP;
+                    }
+                    for (let i = half; i < wifeList.length; i++) {
+                        pos[wifeList[i]].x = hX + (i - half + 1) * SPOUSE_GAP;
+                    }
+                });
+
+                // === LANGKAH 9: Resolve overlap final ===
+                sortedGens.forEach(g => resolveGenOverlap(nodesByGen[g] || []));
+
+                // === LANGKAH 10: Posisikan marriage nodes ===
+                marriageNodeSet.forEach(mId => {
+                    const parts = mId.split('-');
+                    const a = Number(parts[1]), b = Number(parts[2]);
+                    if (!pos[a] || !pos[b]) return;
+                    pos[mId] = { x: (pos[a].x + pos[b].x) / 2, y: pos[a].y + GEN_Y_GAP * 0.35 };
+                });
+
+                // === LANGKAH 11: Center seluruh tree ===
+                const allXVals = [...visible].map(id => pos[id].x);
+                const centerShift = -(Math.min(...allXVals) + Math.max(...allXVals)) / 2;
+                [...visible].forEach(id => { pos[id].x += centerShift; });
+                marriageNodeSet.forEach(mId => { if (pos[mId]) pos[mId].x += centerShift; });
+
+                // === LANGKAH 12: Terapkan ke network ===
                 Object.keys(pos).forEach(nid => {
                     network.moveNode(nid, pos[nid].x, pos[nid].y);
                 });
@@ -3507,7 +3414,7 @@ if ($action === 'bio') {
 
             // === EKSEKUSI ===
             network.once('afterDrawing', function() {
-                setTimeout(customFamilyTreeLayout, 150);
+                setTimeout(customFamilyTreeLayout, 80);
             });
 
             network.on('doubleClick', (params) => {
