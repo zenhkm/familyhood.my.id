@@ -3001,7 +3001,54 @@ if ($action === 'bio') {
                 });
             });
 
-            // Garis pernikahan.
+            // Garis pernikahan (diakali arah panahnya agar suami di tengah).
+            // Kumpulkan data suami -> istri-istri
+            const husbandWives = {};
+            visible.forEach((parentId) => {
+                const p = persons[parentId];
+                // Idealnya suami (L) berada di tengah. Jika gender tidak diset, tidak di-tweak.
+                if (!p || p.gender !== 'L') return;
+                
+                const spouseMap = spouses[parentId] || {};
+                const validWives = Object.keys(spouseMap)
+                    .map(Number)
+                    .filter(sid => visible.has(sid));
+                
+                if (validWives.length > 0) {
+                    husbandWives[parentId] = validWives;
+                }
+            });
+
+            // Proses suami dan istri-istrinya, paruh kiri dan kanan
+            Object.keys(husbandWives).forEach(hId => {
+                const husbandId = Number(hId);
+                const wives = husbandWives[husbandId];
+                const split = Math.ceil(wives.length / 2);
+                
+                wives.forEach((wifeId, index) => {
+                    const a = Math.min(husbandId, wifeId);
+                    const b = Math.max(husbandId, wifeId);
+                    const key = `${a}-${b}`;
+                    if (spouseEdgeSet.has(key)) return;
+                    spouseEdgeSet.add(key);
+                    
+                    // Supaya vis.js mengatur urutan kiri/kanan berdasarkan edge
+                    const fromNode = (index < split) ? wifeId : husbandId;
+                    const toNode = (index < split) ? husbandId : wifeId;
+                    
+                    edges.push({
+                        from: fromNode,
+                        to: toNode,
+                        dashes: [7, 6],
+                        color: { color: '#ef4444' },
+                        width: 2.4,
+                        arrows: { to: { enabled: false } },
+                        smooth: { enabled: true, type: 'curvedCW', roundness: 0.16 }
+                    });
+                });
+            });
+
+            // Fallback untuk relasi spouse yang tersisa (misal istri yg polyandry atau invalid gender)
             visible.forEach((parentId) => {
                 const spouseMap = spouses[parentId] || {};
                 Object.keys(spouseMap).forEach((sid) => {
@@ -3018,6 +3065,7 @@ if ($action === 'bio') {
                         dashes: [7, 6],
                         color: { color: '#ef4444' },
                         width: 2.4,
+                        arrows: { to: { enabled: false } },
                         smooth: { enabled: true, type: 'curvedCW', roundness: 0.16 }
                     });
                 });
