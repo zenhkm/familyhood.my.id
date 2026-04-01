@@ -43,22 +43,16 @@ if (isset($_GET['email']) && isset($_GET['code'])) {
     <meta charset="UTF-8">
     <title>Aktivasi Akun</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; font-family: sans-serif; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
-        h1 { margin-bottom: 10px; color: #333; }
-        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #4f46e5; color: white; text-decoration: none; border-radius: 5px; }
-        .success { color: #065f46; } .error { color: #991b1b; }
-    </style>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
+<body class="auth-body">
     <div class="card">
         <?php if ($type == 'success'): ?>
-            <h1 class="success">🎉 Aktivasi Berhasil</h1>
+            <h1 class="success-text">🎉 Aktivasi Berhasil</h1>
             <p><?= $msg ?></p>
             <a href="login.php" class="btn">Login Sekarang</a>
         <?php else: ?>
-            <h1 class="error">⚠️ Gagal</h1>
+            <h1 class="error-text">⚠️ Gagal</h1>
             <p><?= $msg ?></p>
             <a href="index.php" class="btn">Kembali ke Home</a>
         <?php endif; ?>

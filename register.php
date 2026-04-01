@@ -74,28 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Daftar Akun - FamilyHood</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        /* Styling disamakan dengan login.php Anda agar konsisten */
-        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f3f4f6; font-family: sans-serif; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h1 { color: #4f46e5; margin-bottom: 5px; text-align: center; }
-        p { color: #6b7280; font-size: 0.9rem; text-align: center; margin-bottom: 20px; }
-        
-        form label { display: block; font-size: 0.9rem; margin-bottom: 5px; color: #374151; font-weight: 600; }
-        form input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; }
-        
-        .btn-primary { width: 100%; background: #4f46e5; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-primary:hover { background: #4338ca; }
-        
-        .alert { padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9rem; text-align: center; }
-        .alert-error { background: #fee2e2; color: #991b1b; }
-        .alert-success { background: #d1fae5; color: #065f46; }
-        
-        .link-text { text-align: center; margin-top: 15px; font-size: 0.9rem; }
-        .link-text a { color: #4f46e5; text-decoration: none; font-weight: 600; }
-    </style>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
+<body class="auth-body">
     <div class="login-card">
         <h1>Daftar Akun</h1>
         <p>Bergabung dengan FamilyHood</p>
