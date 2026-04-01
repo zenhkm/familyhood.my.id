@@ -2956,7 +2956,7 @@ if ($action === 'bio') {
             const levels = {};
             visible.forEach((id) => {
                 if (generationData[id] != null) {
-                    levels[id] = Math.max(0, Number(generationData[id]) - 1);
+                    levels[id] = Math.max(0, Number(generationData[id]) - 1) * 2;
                 } else {
                     levels[id] = 0;
                 }
@@ -3095,7 +3095,7 @@ if ($action === 'bio') {
                         label: '',
                         shape: 'dot',
                         size: 1,
-                        level: Math.min(levels[a] ?? 0, levels[b] ?? 0),
+                        level: Math.min(levels[a] ?? 0, levels[b] ?? 0) + 1,
                         color: {
                             border: 'rgba(0,0,0,0)',
                             background: 'rgba(0,0,0,0)',
@@ -3207,13 +3207,13 @@ if ($action === 'bio') {
                         enabled: true,
                         direction: 'UD',
                         sortMethod: 'directed',
-                        levelSeparation: 180,
+                        levelSeparation: 90,
                         nodeSpacing: 100,
                         treeSpacing: 140,
                         parentCentralization: true,
-                        blockShifting: false,
-                        edgeMinimization: false,
-                        shakeTowards: 'leaves'
+                        blockShifting: true,
+                        edgeMinimization: true,
+                        shakeTowards: 'roots'
                     }
                 },
                 nodes: { shapeProperties: { useBorderWithImage: true } },
