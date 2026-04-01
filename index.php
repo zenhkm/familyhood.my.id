@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 ob_start();
 
 //bagus k
@@ -203,7 +203,7 @@ function fh_send_notification($mysqli, $userId, $title, $message, $type='info') 
 // 1. Cek Selamat Datang (Jika User Baru belum punya notifikasi sama sekali)
 $checkWelcome = $mysqli->query("SELECT id FROM notifications WHERE user_id = $myUserId LIMIT 1");
 if ($checkWelcome->num_rows == 0) {
-    fh_send_notification($mysqli, $myUserId, "Selamat Datang! 👋", "Selamat datang di FamilyHood! Mulailah dengan menambahkan diri Anda atau orang tua Anda di menu 'Tambah'.", "info");
+    fh_send_notification($mysqli, $myUserId, "Selamat Datang! ًں‘‹", "Selamat datang di FamilyHood! Mulailah dengan menambahkan diri Anda atau orang tua Anda di menu 'Tambah'.", "info");
 }
 
 // 2. Cek Ulang Tahun Keluarga (Hari Ini)
@@ -218,7 +218,7 @@ if ($action === 'home') {
     
     while ($p = $resBday->fetch_assoc()) {
         // Cek apakah sudah dikirimi notif tahun ini? (Supaya tidak spam tiap refresh)
-        $msgTitle = "Selamat Ulang Tahun, " . $p['name'] . "! 🎂";
+        $msgTitle = "Selamat Ulang Tahun, " . $p['name'] . "! ًںژ‚";
         $checkSent = $mysqli->query("SELECT id FROM notifications WHERE user_id = $myUserId AND title = '$msgTitle' AND YEAR(created_at) = '$yearNow'");
         
         if ($checkSent->num_rows == 0) {
@@ -291,7 +291,7 @@ function fh_render_single_web_card($p, $currentActiveId) {
     
     // --- 1. TOMBOL EDIT (KIRI ATAS) ---
     // Mengarah langsung ke halaman edit profil
-    echo '      <a href="?action=bio&id='.$p['id'].'&mode=edit" class="tree-action-btn btn-tree-edit" title="Edit Profil">✎</a>';
+    echo '      <a href="?action=bio&id='.$p['id'].'&mode=edit" class="tree-action-btn btn-tree-edit" title="Edit Profil">âœژ</a>';
 
     // --- 2. TOMBOL TAMBAH RELASI (KANAN ATAS) ---
     // Membuka Modal via Javascript
@@ -728,7 +728,7 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
                 echo '  <div class="node-wrapper spouse-node">';
                 fh_render_single_web_card($persons[$sid], $currentActiveId);
                 echo '  </div>';
-                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">❤</span></div>';
+                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">â‌¤</span></div>';
                 echo '</div>';
             }
             echo '  </div>';
@@ -738,7 +738,7 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
             echo '  <div class="wives-inline wives-inline-right">';
             foreach ($rightSpouses as $sid) {
                 echo '<div class="marriage-inline-unit marriage-inline-unit-right">';
-                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">❤</span></div>';
+                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">â‌¤</span></div>';
                 echo '  <div class="node-wrapper spouse-node">';
                 fh_render_single_web_card($persons[$sid], $currentActiveId);
                 echo '  </div>';
@@ -759,12 +759,12 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
     foreach ($branches as $b) { if(!empty($b['child_ids'])) $hasChildren = true; }
 
 if ($hasChildren) {
-    echo '<ul class="children-root">'; // ⬅️ WAJIB UL
+    echo '<ul class="children-root">'; // â¬…ï¸ڈ WAJIB UL
 
     foreach ($branches as $branch) {
         if (!empty($branch['child_ids'])) {
 
-            echo '<li>'; // ⬅️ WAJIB LI
+            echo '<li>'; // â¬…ï¸ڈ WAJIB LI
 
             echo '<div class="marriage-block">';
             echo '<div class="marriage-line-down"></div>';
@@ -781,11 +781,11 @@ if ($hasChildren) {
 
             echo '</div>';
 
-            echo '</li>'; // ⬅️ WAJIB LI
+            echo '</li>'; // â¬…ï¸ڈ WAJIB LI
         }
     }
 
-    echo '</ul>'; // ⬅️ WAJIB UL
+    echo '</ul>'; // â¬…ï¸ڈ WAJIB UL
 }
 
     echo '</li>';
@@ -936,9 +936,7 @@ if (isset($_GET['export'])) {
             die('Error: Library PhpSpreadsheet / PhpWord tidak terdeteksi.');
         }
 
-        // ==========================
         // OPSI 1: EXPORT EXCEL
-        // ==========================
         if ($_GET['export'] === 'excel') {
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
@@ -979,9 +977,7 @@ if (isset($_GET['export'])) {
             exit;
         } 
         
-        // ==========================
         // OPSI 2: EXPORT WORD (FIXED)
-        // ==========================
         else {
             $phpWord = new \PhpOffice\PhpWord\PhpWord();
             
@@ -1100,7 +1096,7 @@ if (isset($_GET['export'])) {
                 fh_render_single_card_pdf($persons[$personId]);
                 if (!empty($spouses[$personId])) {
                     foreach ($spouses[$personId] as $spouseId => $_) {
-                        echo '<div class="spouse-connector">❤</div>';
+                        echo '<div class="spouse-connector">â‌¤</div>';
                         if (isset($persons[$spouseId])) fh_render_single_card_pdf($persons[$spouseId]);
                     }
                 }
@@ -1373,7 +1369,7 @@ if (isset($_GET['export'])) {
     background: #64748b;
 }
         </style></head><body onload="window.print()">';
-        echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨️ Cetak PDF</a>';
+        echo '<a href="#" onclick="window.print(); return false;" class="no-print">ًں–¨ï¸ڈ Cetak PDF</a>';
         
         $title = "Diagram Keluarga Besar";
         if ($filterRootId > 0 && isset($persons[$filterRootId])) {
@@ -1485,10 +1481,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // --- LOGIKA NOTIFIKASI TAMBAH ---
                 if ($countCheck == 0) {
                     // Ini adalah anggota PERTAMA (Keluarga Baru)
-                    fh_send_notification($mysqli, $targetUserId, "Keluarga Baru Terbentuk! 🌱", "Selamat! Anda telah memulai pohon keluarga baru dengan menambahkan $name.", "success");
+                    fh_send_notification($mysqli, $targetUserId, "Keluarga Baru Terbentuk! ًںŒ±", "Selamat! Anda telah memulai pohon keluarga baru dengan menambahkan $name.", "success");
                 } else {
                     // Ini adalah penambahan anggota selanjutnya
-                    fh_send_notification($mysqli, $targetUserId, "Anggota Baru Ditambahkan 👶", "$name berhasilat ditambahkan ke dalam silsilah keluarga.", "success");
+                    fh_send_notification($mysqli, $targetUserId, "Anggota Baru Ditambahkan ًں‘¶", "$name berhasilat ditambahkan ke dalam silsilah keluarga.", "success");
                 }
                 // --------------------------------
                 
@@ -1859,7 +1855,7 @@ if (isset($_POST['share_tree'])) {
                 
                 if ($stmt->affected_rows > 0) {
                     $shareStatus = ['icon'=>'success', 'title'=>'Berhasil!', 'text'=>'User '.htmlspecialchars($uData['name']).' telah ditambahkan sebagai editor.'];
-                    fh_send_notification($mysqli, $collabId, "Undangan Kolaborasi 🤝", "Anda diundang untuk mengedit pohon keluarga.", "success");
+                    fh_send_notification($mysqli, $collabId, "Undangan Kolaborasi ًں¤‌", "Anda diundang untuk mengedit pohon keluarga.", "success");
                 } else {
                     $shareStatus = ['icon'=>'warning', 'title'=>'Sudah Ada', 'text'=>'User tersebut sudah menjadi kolaborator.'];
                 }
@@ -2089,17 +2085,17 @@ if ($action === 'bio') {
 
     <div class="desktop-nav">
         <div class="nav-inner">
-            <a href="?action=home" class="d-link <?= ($action === 'home') ? 'active' : '' ?>">📋 Home</a>
-            <a href="?action=add_person" class="d-link <?= ($action === 'add_person') ? 'active' : '' ?>">➕ Tambah Baru</a>
-            <a href="?action=tree" class="d-link <?= ($action === 'tree') ? 'active' : '' ?>">🌳 Pohon Keluarga</a>
+            <a href="?action=home" class="d-link <?= ($action === 'home') ? 'active' : '' ?>">ًں“‹ Home</a>
+            <a href="?action=add_person" class="d-link <?= ($action === 'add_person') ? 'active' : '' ?>">â‍• Tambah Baru</a>
+            <a href="?action=tree" class="d-link <?= ($action === 'tree') ? 'active' : '' ?>">ًںŒ³ Pohon Keluarga</a>
             
             <?php if ($isAdmin): ?>
-                <a href="?action=admin_users" class="d-link <?= ($action === 'admin_users') ? 'active' : '' ?>">👑 Admin</a>
+                <a href="?action=admin_users" class="d-link <?= ($action === 'admin_users') ? 'active' : '' ?>">ًں‘‘ Admin</a>
             <?php endif; ?>
             
-            <a href="?action=settings" class="d-link <?= ($action === 'settings' || $action === 'support') ? 'active' : '' ?>" style="margin-left:auto;">⚙️ Akun & Bantuan</a>
-            <a href="?action=notifications" class="d-link <?= ($action === 'notifications') ? 'active' : '' ?>">🔔 Info</a>
-            <a href="?action=logout" class="d-link" onclick="return confirm('Keluar?')" style="color:#dc2626;">🚪 Logout</a>
+            <a href="?action=settings" class="d-link <?= ($action === 'settings' || $action === 'support') ? 'active' : '' ?>" style="margin-left:auto;">âڑ™ï¸ڈ Akun & Bantuan</a>
+            <a href="?action=notifications" class="d-link <?= ($action === 'notifications') ? 'active' : '' ?>">ًں”” Info</a>
+            <a href="?action=logout" class="d-link" onclick="return confirm('Keluar?')" style="color:#dc2626;">ًںڑھ Logout</a>
         </div>
     </div>
 
@@ -2146,17 +2142,17 @@ if ($action === 'bio') {
                                     <?php if($t['role'] === 'owner'): ?>
                                         <button onclick="openShareModal(<?= $t['id'] ?>, '<?= htmlspecialchars($t['name'], ENT_QUOTES) ?>')" 
                                                 style="border:none; background:#e0e7ff; width:30px; height:30px; border-radius:50%; cursor:pointer; color:#4338ca; display:flex; align-items:center; justify-content:center;" title="Bagikan / Share">
-                                            🔗
+                                            ًں”—
                                         </button>
                                         
                                         <button onclick="editTree(<?= $t['id'] ?>, '<?= htmlspecialchars($t['name'], ENT_QUOTES) ?>')" 
                                                 style="border:none; background:#f3f4f6; width:30px; height:30px; border-radius:50%; cursor:pointer; color:#4b5563; display:flex; align-items:center; justify-content:center;">
-                                            ✎
+                                            âœژ
                                         </button>
                                         
                                         <button onclick="deleteTree(<?= $t['id'] ?>, '<?= htmlspecialchars($t['name'], ENT_QUOTES) ?>')" 
                                                 style="border:none; background:#fee2e2; width:30px; height:30px; border-radius:50%; cursor:pointer; color:#991b1b; display:flex; align-items:center; justify-content:center;">
-                                            🗑
+                                            ًں—‘
                                         </button>
                                     
                                     <?php else: ?>
@@ -2165,7 +2161,7 @@ if ($action === 'bio') {
                                 </div>
                                 
                                 <a href="?action=view_tree&tree_id=<?= $t['id'] ?>" style="text-decoration:none; color:inherit; display:block; padding-top:10px;">
-                                    <div style="font-size:2rem; margin-bottom:10px;">🌳</div>
+                                    <div style="font-size:2rem; margin-bottom:10px;">ًںŒ³</div>
                                     <h3 style="margin:0 0 5px; font-size:1.1rem; color:#4f46e5; padding-right:80px;"><?= htmlspecialchars($t['name']) ?></h3>
                                     <p style="margin:0; font-size:0.85rem; color:#6b7280;"><?= $t['total'] ?> Anggota</p>
                                 </a>
@@ -2226,7 +2222,7 @@ if ($action === 'bio') {
                     </form>
             
                     <div style="margin-top:25px; border-top:1px solid #f3f4f6; padding-top:15px;">
-                        <h4 style="margin:0 0 10px; font-size:0.9rem; color:#374151;">👥 Siapa yang punya akses?</h4>
+                        <h4 style="margin:0 0 10px; font-size:0.9rem; color:#374151;">ًں‘¥ Siapa yang punya akses?</h4>
                         
                         <ul id="collab_list_container" style="list-style:none; padding:0; margin:0; max-height:200px; overflow-y:auto;">
                             <li style="text-align:center; color:#9ca3af; font-size:0.85rem; padding:10px;">Memuat data...</li>
@@ -2238,7 +2234,7 @@ if ($action === 'bio') {
             <div id="modalDelete" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(2px);">
                 <div style="background:#fff; padding:25px; border-radius:12px; width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
                     <div style="text-align:center; margin-bottom:15px;">
-                        <div style="font-size:3rem; margin-bottom:10px;">⚠️</div>
+                        <div style="font-size:3rem; margin-bottom:10px;">âڑ ï¸ڈ</div>
                         <h3 style="margin:0; color:#991b1b;">Hapus Keluarga?</h3>
                         <p style="color:#6b7280; font-size:0.9rem; margin-top:5px;">Anda akan menghapus: <br><strong id="del_tree_name_disp" style="color:#1f2937;"></strong></p>
                     </div>
@@ -2257,7 +2253,7 @@ if ($action === 'bio') {
             
                         <div style="display:flex; gap:10px;">
                             <button type="button" onclick="document.getElementById('modalDelete').style.display='none'" class="btn btn-secondary flex-1">Batal</button>
-                            <button type="submit" id="btn_delete_submit" class="btn btn-danger flex-1" disabled style="opacity:0.5; cursor:not-allowed;">🗑 Hapus</button>
+                            <button type="submit" id="btn_delete_submit" class="btn btn-danger flex-1" disabled style="opacity:0.5; cursor:not-allowed;">ًں—‘ Hapus</button>
                         </div>
                     </form>
                 </div>
@@ -2282,7 +2278,7 @@ if ($action === 'bio') {
 
             <div class="card modern-card">
                 <div class="page-header">
-                    <a href="?action=reset_tree" class="back-button-link">← Kembali</a>
+                    <a href="?action=reset_tree" class="back-button-link">â†گ Kembali</a>
                     <h2 class="tree-title"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
                     <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?>
                         <a href="?action=add_person" class="btn btn-primary btn-add-member">+ Anggota</a>
@@ -2331,7 +2327,7 @@ if ($action === 'bio') {
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <div>
-                        <a href="?action=home" style="font-size:0.8rem; color:#6b7280;">← Kembali</a>
+                        <a href="?action=home" style="font-size:0.8rem; color:#6b7280;">â†گ Kembali</a>
                         <h2 style="margin-top:5px;"><?= htmlspecialchars($_SESSION['current_tree_name'] ?? 'Home') ?></h2>
                     </div>
                     <a href="?action=add_person" class="btn btn-primary btn-sm">+ Anggota</a>
@@ -2502,14 +2498,14 @@ if ($action === 'bio') {
                         <?php endif; ?>
                         
                         <div style="margin-top:20px;">
-                            <button type="submit" class="btn btn-primary btn-block">💾 Simpan Perubahan</button>
+                            <button type="submit" class="btn btn-primary btn-block">ًں’¾ Simpan Perubahan</button>
                             <a href="?action=bio&id=<?= $currentPerson['id'] ?>&mode=view" class="btn btn-secondary btn-block" style="margin-top:8px;">Batal</a>
                             
                             <div style="margin-top: 25px; border-top: 1px dashed #cbd5e1; padding-top: 20px;">
                                 <a href="?delete_person=<?= $currentPerson['id'] ?>" 
                                    onclick="return confirm('PERINGATAN: \nApakah Anda yakin ingin menghapus <?= htmlspecialchars($currentPerson['name']) ?>?\n\nData yang dihapus tidak bisa dikembalikan.')" 
                                    class="btn btn-danger btn-block">
-                                    🗑️ Hapus Orang Ini
+                                    ًں—‘ï¸ڈ Hapus Orang Ini
                                 </a>
                             </div>
                         </div>
@@ -2526,7 +2522,7 @@ if ($action === 'bio') {
                     <div style="background:#f9fafb; padding:15px; border-radius:10px; font-size:0.9rem;">
                     <?php if (!empty($currentPerson['last_editor_name'])): ?>
                         <div style="margin-top:10px; text-align:right; font-size:0.75rem; color:#9ca3af; font-style:italic;">
-                            📝 Terakhir diedit oleh: <strong><?= htmlspecialchars($currentPerson['last_editor_name']) ?></strong>
+                            ًں“‌ Terakhir diedit oleh: <strong><?= htmlspecialchars($currentPerson['last_editor_name']) ?></strong>
                             <?php if(!empty($currentPerson['last_updated_at'])) echo ' (' . date('d/m H:i', strtotime($currentPerson['last_updated_at'])) . ')'; ?>
                         </div>
                     <?php endif; ?>    
@@ -2542,7 +2538,7 @@ if ($action === 'bio') {
                                 <div style="display:inline-block; text-align:left; background:#fff; border:1px solid #e5e7eb; padding:5px 10px; border-radius:8px;">
                                     <div style="font-size:0.7rem; color:#9ca3af; text-transform:uppercase; letter-spacing:0.5px;">Terakhir diedit oleh:</div>
                                     <div style="font-weight:bold; color:#4b5563; font-size:0.85rem;">
-                                        ✏️ <?= htmlspecialchars($currentPerson['last_editor_name']) ?>
+                                        âœڈï¸ڈ <?= htmlspecialchars($currentPerson['last_editor_name']) ?>
                                     </div>
                                     <?php if(!empty($currentPerson['last_updated_at'])): ?>
                                         <div style="font-size:0.7rem; color:#9ca3af; margin-top:2px;">
@@ -2554,7 +2550,7 @@ if ($action === 'bio') {
                         <?php endif; ?>
                         </div>
                         <?php if (!$isViewingOthers): ?>
-                        <a href="?action=bio&id=<?= $currentPerson['id'] ?>&mode=edit" class="btn btn-primary btn-block" style="margin-top:15px;">✏️ Edit Profil</a>
+                        <a href="?action=bio&id=<?= $currentPerson['id'] ?>&mode=edit" class="btn btn-primary btn-block" style="margin-top:15px;">âœڈï¸ڈ Edit Profil</a>
                         <?php endif; ?>
                 <?php endif; ?>
             </div>
@@ -2609,7 +2605,7 @@ if ($action === 'bio') {
         
             <?php if (empty($relations)): ?>
                 <div class="empty-relations">
-                    <div class="empty-icon">🤝</div>
+                    <div class="empty-icon">ًں¤‌</div>
                     <p>Belum ada relasi yang tercatat untuk anggota ini.</p>
                 </div>
             <?php else: ?>
@@ -2658,7 +2654,7 @@ if ($action === 'bio') {
                                         <a href="?action=bio&id=<?= $currentPerson['id'] ?>&delete_rel=<?= $r['id'] ?>" 
                                            class="btn-chip btn-chip-delete"
                                            onclick="event.stopPropagation(); return confirm('Hapus relasi ini?');">
-                                            ✖ Hapus
+                                            âœ– Hapus
                                         </a>
                                         <?php endif; ?>
                                     </div>
@@ -2677,16 +2673,16 @@ if ($action === 'bio') {
     <div class="card">
         <div class="export-toolbar">
             <div class="export-label">
-                <span style="font-size: 1.2rem;">🌳</span> 
+                <span style="font-size: 1.2rem;">ًںŒ³</span> 
                 <span style="font-weight:600; color:#374151;">Pohon Keluarga</span>
             </div>
             <?php 
                 $fr = isset($_GET['filter_root']) ? '&filter_root='.intval($_GET['filter_root']) : ''; 
             ?>
             <div class="export-actions">
-                <a href="?export=excel<?= $fr ?>" class="btn btn-success btn-sm">📊 Excel</a>
-                <a href="?export=word<?= $fr ?>" class="btn btn-primary btn-sm">📝 Word</a>
-                <a href="?export=pdf<?= $fr ?>" class="btn btn-danger btn-sm" target="_blank">📄 PDF</a>
+                <a href="?export=excel<?= $fr ?>" class="btn btn-success btn-sm">ًں“ٹ Excel</a>
+                <a href="?export=word<?= $fr ?>" class="btn btn-primary btn-sm">ًں“‌ Word</a>
+                <a href="?export=pdf<?= $fr ?>" class="btn btn-danger btn-sm" target="_blank">ًں“„ PDF</a>
             </div>
         </div>
 
@@ -2708,7 +2704,7 @@ if ($action === 'bio') {
                     iconColor: '#4f46e5',
                     
                     // Tampilan Tombol Modern
-                    confirmButtonText: '🔍 Pilih Sekarang',
+                    confirmButtonText: 'ًں”چ Pilih Sekarang',
                     confirmButtonColor: '#4f46e5',
                     buttonsStyling: true,
                     
@@ -2846,11 +2842,11 @@ if ($action === 'bio') {
                 Filter Bani / Leluhur:
             </div>
             <div class="pill-menu">
-                <a href="?action=tree" class="pill-item <?= ($targetRootId === null) ? 'active' : '' ?>">🌍 Semua</a>
+                <a href="?action=tree" class="pill-item <?= ($targetRootId === null) ? 'active' : '' ?>">ًںŒچ Semua</a>
                 <?php foreach ($menuList as $menu): ?>
                     <a href="?action=tree&filter_root=<?= $menu['id'] ?>" 
                        class="pill-item <?= ($targetRootId == $menu['id']) ? 'active' : '' ?>">
-                       👤 <?= htmlspecialchars($menu['label']) ?> 
+                       ًں‘¤ <?= htmlspecialchars($menu['label']) ?> 
                        <span style="font-size:0.75em; opacity:0.8;">(<?= $menu['count'] ?>)</span>
                     </a>
                 <?php endforeach; ?>
@@ -3197,218 +3193,213 @@ if ($action === 'bio') {
                 nodes: { shapeProperties: { useBorderWithImage: true } },
                 edges: { selectionWidth: 0, hoverWidth: 0.3 }
             });
-            // =====================================================
-            // CUSTOM FAMILY TREE LAYOUT
-            // Aturan:
-            // 1. Suami-istri TIDAK BOLEH dipisah oleh saudara
-            // 2. Anak HARUS lurus di bawah orang tuanya
-            // =====================================================
-            // =====================================================
+
             // CUSTOM FAMILY TREE LAYOUT - sepenuhnya berbasis generationData
             // 1. Y ditentukan dari generationData (PHP), bukan dari vis
             // 2. Anak tepat di bawah pasangan orang tuanya
             // 3. Istri SELALU di sebelah suami, tidak terpisah saudara
-            // =====================================================
+            // CUSTOM FAMILY TREE LAYOUT â€” Reingold-Tilford style
+            // 1. Y tetap per generasi dari generationData PHP
+            // 2. Subtree width dihitung rekursif (bottom-up)
+            // 3. Penempatan node dilakukan top-down agar tidak crossing
+            // 4. Istri selalu di sebelah suami, tidak terpisah saudara
             function customFamilyTreeLayout() {
-                const GEN_Y_GAP  = 160;  // Jarak vertikal antar generasi (px)
-                const NODE_GAP   = 160;  // Jarak horizontal minimum antar node
-                const SPOUSE_GAP = 110;  // Jarak suami - istri
+                const GEN_Y_GAP  = 170;   // jarak vertikal antar generasi (px)
+                const NODE_W     = 120;   // lebar minimum per node / leaf
+                const COUPLE_GAP = 105;   // jarak suami â†” istri
 
-                // === LANGKAH 1: Hitung Y tetap dari generationData ===
-                const genNums = [...visible].map(id => generationData[id] ?? 1);
-                const maxGen = Math.max(...genNums);
-                const genY = {};
-                for (let g = 1; g <= maxGen; g++) genY[g] = (g - 1) * GEN_Y_GAP;
-
-                // === LANGKAH 2: Kelompokkan node visible per generasi ===
-                const nodesByGen = {};
+                // â”€â”€ Y tetap per generasi â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                const pos = {};
                 visible.forEach(id => {
-                    const g = generationData[id] ?? 1;
-                    if (!nodesByGen[g]) nodesByGen[g] = [];
-                    nodesByGen[g].push(id);
+                    pos[id] = { x: 0, y: ((generationData[id] ?? 1) - 1) * GEN_Y_GAP };
                 });
-                const sortedGens = Object.keys(nodesByGen).map(Number).sort((a, b) => a - b);
 
-                // === LANGKAH 3: Bangun pasangan (couple) → children ===
-                const couples = [];
-                const assignedCids = new Set();
+                // â”€â”€ Bangun coupleMap: husbandId â†’ [{wife, children[]}] â”€â”€â”€â”€
+                // wife = null berarti tidak ada istri untuk grup ini
+                const coupleMap = {};
+                const assignedC  = new Set();
 
-                visible.forEach(personId => {
-                    const p = persons[personId];
+                visible.forEach(hId => {
+                    const p = persons[hId];
                     if (!p || p.gender !== 'L') return;
 
-                    const wifeList = Object.keys(spouses[personId] || {})
+                    const wives = Object.keys(spouses[hId] || {})
                         .map(Number).filter(sid => visible.has(sid))
                         .sort((a, b) => a - b);
 
-                    if (wifeList.length === 0) {
+                    coupleMap[hId] = [];
+
+                    if (wives.length === 0) {
+                        // Suami tanpa istri â†’ semua anak yang punya dia sebagai parent
                         const kids = [...childSet].filter(cid => {
-                            if (assignedCids.has(cid)) return false;
-                            const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(id => visible.has(id));
-                            return pIds.includes(personId);
+                            if (assignedC.has(cid)) return false;
+                            const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(x => visible.has(x));
+                            return pIds.includes(hId);
                         });
                         if (kids.length > 0) {
-                            kids.forEach(c => assignedCids.add(c));
-                            couples.push({ husband: personId, wife: null, children: kids });
+                            kids.forEach(c => assignedC.add(c));
+                            coupleMap[hId].push({ wife: null, children: kids });
                         }
                         return;
                     }
 
-                    wifeList.forEach(wifeId => {
+                    // Proses tiap istri
+                    wives.forEach(wId => {
                         const kids = [...childSet].filter(cid => {
-                            if (assignedCids.has(cid)) return false;
-                            const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(id => visible.has(id));
-                            return pIds.includes(personId) && pIds.includes(wifeId);
+                            if (assignedC.has(cid)) return false;
+                            const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(x => visible.has(x));
+                            return pIds.includes(hId) && pIds.includes(wId);
                         });
-                        if (kids.length > 0) {
-                            kids.forEach(c => assignedCids.add(c));
-                            couples.push({ husband: personId, wife: wifeId, children: kids });
-                        }
+                        kids.forEach(c => assignedC.add(c));
+                        coupleMap[hId].push({ wife: wId, children: kids }); // push meski 0 anak
                     });
 
-                    // Anak hanya dari suami (tanpa istri spesifik)
+                    // Anak yang hanya dari suami ini (tanpa istri spesifik)
                     const solo = [...childSet].filter(cid => {
-                        if (assignedCids.has(cid)) return false;
-                        const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(id => visible.has(id));
-                        return pIds.includes(personId);
+                        if (assignedC.has(cid)) return false;
+                        const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(x => visible.has(x));
+                        return pIds.includes(hId);
                     });
                     if (solo.length > 0) {
-                        solo.forEach(c => assignedCids.add(c));
-                        couples.push({ husband: personId, wife: null, children: solo });
+                        solo.forEach(c => assignedC.add(c));
+                        coupleMap[hId].push({ wife: null, children: solo });
                     }
                 });
 
-                // === LANGKAH 4: Inisialisasi pos dengan Y tetap ===
-                const pos = {};
-                visible.forEach(id => {
-                    pos[id] = { x: 0, y: genY[generationData[id] ?? 1] };
-                });
+                // â”€â”€ Hitung subtreeWidth rekursif â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                // subtW[id] = total lebar x (px) yang dibutuhkan oleh subtree orang ini
+                const subtW  = {};
+                const calcDone = new Set();
 
-                // Helper: rata-rata X
-                function avgXOf(ids) {
-                    const valid = ids.filter(id => pos[id]);
-                    if (!valid.length) return 0;
-                    return valid.reduce((s, id) => s + pos[id].x, 0) / valid.length;
-                }
+                function calcW(id) {
+                    if (calcDone.has(id)) return subtW[id] || NODE_W;
+                    calcDone.add(id);
 
-                // Helper: resolve overlap satu generasi
-                function resolveGenOverlap(ids) {
-                    if (ids.length < 2) return;
-                    ids.sort((a, b) => pos[a].x - pos[b].x);
-                    for (let pass = 0; pass < 80; pass++) {
-                        let moved = false;
-                        for (let i = 1; i < ids.length; i++) {
-                            const gap = pos[ids[i]].x - pos[ids[i-1]].x;
-                            if (gap < NODE_GAP) {
-                                const shift = (NODE_GAP - gap) / 2 + 0.5;
-                                pos[ids[i-1]].x -= shift;
-                                pos[ids[i]].x   += shift;
-                                moved = true;
-                            }
-                        }
-                        if (!moved) break;
+                    const groups   = coupleMap[id] || [];
+                    const allKids  = groups.flatMap(g => g.children);
+                    const numWives = groups.filter(g => g.wife).length;
+
+                    // Lebar pasangan: 1 suami + N istri berdekatan
+                    const coupleSpan = NODE_W + numWives * COUPLE_GAP;
+
+                    if (allKids.length === 0) {
+                        subtW[id] = Math.max(NODE_W, coupleSpan);
+                        return subtW[id];
                     }
+
+                    // Lebar anak-anak: jumlah lebar subtree masing-masing + celah antar anak
+                    const childSpan = allKids.reduce((s, c) => s + calcW(c), 0)
+                                    + Math.max(0, allKids.length - 1) * NODE_W;
+
+                    subtW[id] = Math.max(coupleSpan, childSpan);
+                    return subtW[id];
                 }
 
-                // === LANGKAH 5: Posisi awal gen 1 (root): merata kiri→kanan ===
-                const gen1 = nodesByGen[1] || [];
-                gen1.forEach((id, i) => { pos[id].x = i * NODE_GAP; });
+                visible.forEach(id => { if (!calcDone.has(id)) calcW(id); });
 
-                // === LANGKAH 6: TOP-DOWN sementara — posisi awal berdasarkan parent ===
-                sortedGens.forEach(g => {
-                    if (g === 1) return;
-                    const ids = nodesByGen[g] || [];
-                    ids.forEach((id, idx) => {
-                        const pIds = Object.keys(childParents[id] || {}).map(Number).filter(x => visible.has(x));
-                        pos[id].x = pIds.length > 0 ? avgXOf(pIds) + (idx - ids.length/2) * 0.01 : idx * NODE_GAP;
-                    });
-                    resolveGenOverlap(ids);
-                });
+                // â”€â”€ Tempatkan subtrees top-down â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                const placed = new Set();
 
-                // === LANGKAH 7: BOTTOM-UP — anak ditempatkan di bawah orang tua ===
-                for (let g = maxGen; g >= 2; g--) {
-                    const couplesHere = couples.filter(c => (generationData[c.husband] ?? 1) === g - 1);
-                    if (couplesHere.length === 0) continue;
+                function placeSubtree(id, cx) {
+                    if (placed.has(id)) return;
+                    placed.add(id);
+                    pos[id].x = cx;
 
-                    // Urutkan couple berdasarkan posisi X suami saat ini
-                    couplesHere.sort((a, b) => pos[a.husband].x - pos[b.husband].x);
+                    const groups    = coupleMap[id] || [];
+                    const wivesList = groups.map(g => g.wife).filter(Boolean);
+                    const half      = Math.ceil(wivesList.length / 2);
 
-                    let cursor = -Infinity;
-                    couplesHere.forEach(cd => {
-                        const kidsAtG = cd.children.filter(c => (generationData[c] ?? 1) === g && visible.has(c));
-                        if (kidsAtG.length === 0) return;
-
-                        const parentX = pos[cd.husband].x;
-                        const totalW = (kidsAtG.length - 1) * NODE_GAP;
-                        let startX = parentX - totalW / 2;
-                        if (startX < cursor + NODE_GAP) startX = cursor + NODE_GAP;
-
-                        kidsAtG.forEach((cid, i) => { pos[cid].x = startX + i * NODE_GAP; });
-                        cursor = startX + totalW;
-                    });
-
-                    resolveGenOverlap(nodesByGen[g] || []);
-
-                    // Sesuaikan orang tua ke tengah anak-anaknya
-                    couplesHere.forEach(cd => {
-                        const kidsAtG = cd.children.filter(c => (generationData[c] ?? 1) === g && visible.has(c) && pos[c]);
-                        if (kidsAtG.length === 0) return;
-                        const cx = avgXOf(kidsAtG);
-                        if (cd.wife) {
-                            pos[cd.husband].x = cx + SPOUSE_GAP / 2;
-                            pos[cd.wife].x    = cx - SPOUSE_GAP / 2;
-                        } else {
-                            pos[cd.husband].x = cx;
+                    // Tempatkan istri: kiri dan kanan suami
+                    wivesList.forEach((wId, idx) => {
+                        if (!placed.has(wId)) {
+                            placed.add(wId);
+                            pos[wId].x = idx < half
+                                ? cx - (half - idx) * COUPLE_GAP
+                                : cx + (idx - half + 1) * COUPLE_GAP;
                         }
                     });
 
-                    resolveGenOverlap(nodesByGen[g - 1] || []);
+                    // Semua anak (dari semua istri, berurutan)
+                    const allKids = groups.flatMap(g => g.children);
+                    if (allKids.length === 0) return;
+
+                    // Total lebar anak
+                    const totalChildW = allKids.reduce((s, c) => s + (subtW[c] || NODE_W), 0)
+                                      + Math.max(0, allKids.length - 1) * NODE_W;
+
+                    // Mulai dari kiri
+                    let childCx = cx - totalChildW / 2 + (subtW[allKids[0]] || NODE_W) / 2;
+                    allKids.forEach((cid, i) => {
+                        placeSubtree(cid, childCx);
+                        if (i < allKids.length - 1) {
+                            childCx += (subtW[allKids[i]]     || NODE_W) / 2
+                                     + NODE_W
+                                     + (subtW[allKids[i + 1]] || NODE_W) / 2;
+                        }
+                    });
                 }
 
-                // === LANGKAH 8: Snap istri ke dekat suami (final snap) ===
-                const doneH = new Set();
-                visible.forEach(id => {
-                    const p = persons[id];
-                    if (!p || p.gender !== 'L' || doneH.has(id)) return;
-                    doneH.add(id);
+                // Cari semua root (tidak punya parent visible)
+                const allRoots = [...visible].filter(id => {
+                    const pIds = Object.keys(childParents[id] || {}).map(Number).filter(x => visible.has(x));
+                    return pIds.length === 0;
+                });
 
-                    const wifeList = Object.keys(spouses[id] || {})
-                        .map(Number).filter(wid => visible.has(wid))
-                        .sort((a, b) => a - b);
-                    if (wifeList.length === 0) return;
-
-                    const hX = pos[id].x;
-                    const half = Math.ceil(wifeList.length / 2);
-                    for (let i = 0; i < half; i++) {
-                        pos[wifeList[i]].x = hX - (half - i) * SPOUSE_GAP;
+                // Deduplikasi: abaikan istri jika suaminya juga root
+                const rootSeen  = new Set();
+                const mainRoots = allRoots.filter(id => {
+                    if (rootSeen.has(id)) return false;
+                    rootSeen.add(id);
+                    Object.keys(spouses[id] || {}).map(Number).filter(x => visible.has(x))
+                          .forEach(sid => rootSeen.add(sid));
+                    // Jika ini istri (P) dan suaminya (L) juga root â†’ skip
+                    if ((persons[id]?.gender || '') !== 'L') {
+                        const hasHusbandRoot = allRoots.some(rid =>
+                            rid !== id &&
+                            Object.keys(spouses[rid] || {}).map(Number).includes(id) &&
+                            (persons[rid]?.gender || '') === 'L'
+                        );
+                        if (hasHusbandRoot) return false;
                     }
-                    for (let i = half; i < wifeList.length; i++) {
-                        pos[wifeList[i]].x = hX + (i - half + 1) * SPOUSE_GAP;
+                    return true;
+                });
+
+                // Tempatkan setiap root subtree berurutan kiriâ†’kanan
+                let curX = 0;
+                mainRoots.forEach(rootId => {
+                    const w = subtW[rootId] || NODE_W;
+                    placeSubtree(rootId, curX + w / 2);
+                    curX += w + NODE_W;
+                });
+
+                // Tempatkan node visible yang belum di-place (tanpa parent & bukan suami)
+                visible.forEach(id => {
+                    if (!placed.has(id)) {
+                        pos[id].x = curX;
+                        curX += NODE_W;
                     }
                 });
 
-                // === LANGKAH 9: Resolve overlap final ===
-                sortedGens.forEach(g => resolveGenOverlap(nodesByGen[g] || []));
+                // â”€â”€ Center seluruh tree â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                const allXV   = [...visible].map(id => pos[id].x);
+                const cShift  = -(Math.min(...allXV) + Math.max(...allXV)) / 2;
+                visible.forEach(id => { pos[id].x += cShift; });
 
-                // === LANGKAH 10: Posisikan marriage nodes ===
+                // â”€â”€ Posisikan marriage nodes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                 marriageNodeSet.forEach(mId => {
                     const parts = mId.split('-');
                     const a = Number(parts[1]), b = Number(parts[2]);
                     if (!pos[a] || !pos[b]) return;
-                    pos[mId] = { x: (pos[a].x + pos[b].x) / 2, y: pos[a].y + GEN_Y_GAP * 0.35 };
+                    pos[mId] = {
+                        x: (pos[a].x + pos[b].x) / 2 + cShift,
+                        y:  pos[a].y + GEN_Y_GAP * 0.38
+                    };
                 });
 
-                // === LANGKAH 11: Center seluruh tree ===
-                const allXVals = [...visible].map(id => pos[id].x);
-                const centerShift = -(Math.min(...allXVals) + Math.max(...allXVals)) / 2;
-                [...visible].forEach(id => { pos[id].x += centerShift; });
-                marriageNodeSet.forEach(mId => { if (pos[mId]) pos[mId].x += centerShift; });
-
-                // === LANGKAH 12: Terapkan ke network ===
+                // â”€â”€ Terapkan ke network â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                 Object.keys(pos).forEach(nid => {
                     network.moveNode(nid, pos[nid].x, pos[nid].y);
                 });
-
                 network.fit({ animation: { duration: 600 } });
             }
 
@@ -3450,11 +3441,11 @@ if ($action === 'bio') {
             </p>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <a href="#" id="btn_add_father" class="btn btn-secondary btn-sm" style="justify-content:center;">👴 Ayah</a>
-                <a href="#" id="btn_add_mother" class="btn btn-secondary btn-sm" style="justify-content:center;">👵 Ibu</a>
-                <a href="#" id="btn_add_spouse" class="btn btn-success btn-sm" style="justify-content:center;">💍 Pasangan</a>
-                <a href="#" id="btn_add_child"  class="btn btn-primary btn-sm" style="justify-content:center;">👶 Anak</a>
-                <a href="#" id="btn_add_sibling" class="btn btn-secondary btn-sm" style="justify-content:center; grid-column: span 2;">👥 Saudara</a>
+                <a href="#" id="btn_add_father" class="btn btn-secondary btn-sm" style="justify-content:center;">ًں‘´ Ayah</a>
+                <a href="#" id="btn_add_mother" class="btn btn-secondary btn-sm" style="justify-content:center;">ًں‘µ Ibu</a>
+                <a href="#" id="btn_add_spouse" class="btn btn-success btn-sm" style="justify-content:center;">ًں’چ Pasangan</a>
+                <a href="#" id="btn_add_child"  class="btn btn-primary btn-sm" style="justify-content:center;">ًں‘¶ Anak</a>
+                <a href="#" id="btn_add_sibling" class="btn btn-secondary btn-sm" style="justify-content:center; grid-column: span 2;">ًں‘¥ Saudara</a>
             </div>
         </div>
     </div>
@@ -3464,7 +3455,7 @@ if ($action === 'bio') {
     
 <?php elseif ($action === 'notifications'): ?>
     <div class="card" style="border:none; background:transparent; box-shadow:none; padding:0;">
-        <h2 style="margin-bottom:15px;">🔔 Notifikasi Anda</h2>
+        <h2 style="margin-bottom:15px;">ًں”” Notifikasi Anda</h2>
         
         <?php
         // Ambil notifikasi: Milik User Ini ATAU Broadcast (0)
@@ -3478,10 +3469,10 @@ if ($action === 'bio') {
             <div style="display:flex; flex-direction:column; gap:12px;">
                 <?php while ($row = $resNotif->fetch_assoc()): 
                     // Styling icon berdasarkan tipe
-                    $icon = 'ℹ️'; $color = '#3b82f6'; $bg = '#eff6ff';
-                    if($row['type'] == 'success') { $icon = '🌱'; $color = '#10b981'; $bg = '#ecfdf5'; }
-                    if($row['type'] == 'birthday') { $icon = '🎂'; $color = '#f43f5e'; $bg = '#fff1f2'; }
-                    if($row['type'] == 'warning') { $icon = '⚠️'; $color = '#f59e0b'; $bg = '#fffbeb'; }
+                    $icon = 'â„¹ï¸ڈ'; $color = '#3b82f6'; $bg = '#eff6ff';
+                    if($row['type'] == 'success') { $icon = 'ًںŒ±'; $color = '#10b981'; $bg = '#ecfdf5'; }
+                    if($row['type'] == 'birthday') { $icon = 'ًںژ‚'; $color = '#f43f5e'; $bg = '#fff1f2'; }
+                    if($row['type'] == 'warning') { $icon = 'âڑ ï¸ڈ'; $color = '#f59e0b'; $bg = '#fffbeb'; }
                 ?>
                     <div style="background:#fff; padding:15px; border-radius:12px; border-left: 5px solid <?= $color ?>; box-shadow:0 2px 4px rgba(0,0,0,0.05); display:flex; gap:12px;">
                         <div style="font-size:1.5rem; background:<?= $bg ?>; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -3503,7 +3494,7 @@ if ($action === 'bio') {
             </div>
         <?php else: ?>
             <div class="card" style="text-align:center; padding:50px 20px;">
-                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">📭</div>
+                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">ًں“­</div>
                 <h3 style="color:#374151; margin:0;">Belum ada notifikasi</h2>
                 <p style="color:#6b7280; font-size:0.9rem;">Info keluarga dan pengumuman akan muncul di sini.</p>
             </div>
@@ -3538,12 +3529,12 @@ if ($action === 'bio') {
         <div class="menu-list">
             <?php if ($isAdmin): ?>
             <a href="?action=admin_users" style="color:#4f46e5;">
-                <span class="menu-icon">👑</span> Dashboard Admin
+                <span class="menu-icon">ًں‘‘</span> Dashboard Admin
             </a>
             <?php endif; ?>
 
             <a href="?action=support">
-                <span class="menu-icon">📩</span> Pusat Bantuan / Feedback
+                <span class="menu-icon">ًں“©</span> Pusat Bantuan / Feedback
             </a>
             
             <div style="padding:15px; border-bottom:1px solid #f3f4f6;">
@@ -3569,14 +3560,14 @@ if ($action === 'bio') {
                                         <button type="submit" class="btn btn-sm" 
                                                 style="background:#dc2626; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                                 onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($t['name']) ?>?');">
-                                            🔒 Diizinkan
+                                            ًں”’ Diizinkan
                                         </button>
                                     <?php else: ?>
                                         <input type="hidden" name="new_status" value="1">
                                         <button type="submit" class="btn btn-sm" 
                                                 style="background:#10b981; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                                 onclick="return confirm('Yakin izinkan akses Admin untuk Keluarga <?= htmlspecialchars($t['name']) ?>?');">
-                                            ❌ Terkunci
+                                            â‌Œ Terkunci
                                         </button>
                                     <?php endif; ?>
                                 </form>
@@ -3592,21 +3583,21 @@ if ($action === 'bio') {
             </div>
 
             <a href="?action=logout" onclick="return confirm('Keluar dari aplikasi?')" style="color:#ef4444;">
-                <span class="menu-icon">🚪</span> Keluar Aplikasi
+                <span class="menu-icon">ًںڑھ</span> Keluar Aplikasi
             </a>
             <a href="?action=about">
-                <span class="menu-icon">ℹ️</span> Tentang Aplikasi
+                <span class="menu-icon">â„¹ï¸ڈ</span> Tentang Aplikasi
             </a>
             
             <a href="?action=privacy">
-                <span class="menu-icon">🛡️</span> Kebijakan Privasi
+                <span class="menu-icon">ًں›،ï¸ڈ</span> Kebijakan Privasi
             </a>
         </div>
     </div>
 
 <?php elseif ($action === 'support'): ?>
     <div class="card">
-        <h2>📩 Pusat Bantuan & Feedback</h2>
+        <h2>ًں“© Pusat Bantuan & Feedback</h2>
         
         <?php
         // Proses Kirim Tiket
@@ -3646,11 +3637,11 @@ if ($action === 'bio') {
                 
                 <?php if ($t['admin_reply']): ?>
                     <div style="background:#ecfdf5; padding:10px; border-radius:6px; border-left:4px solid #10b981; font-size:0.9rem;">
-                        <strong>👑 Balasan Admin:</strong><br>
+                        <strong>ًں‘‘ Balasan Admin:</strong><br>
                         <?= nl2br(htmlspecialchars($t['admin_reply'])) ?>
                     </div>
                 <?php else: ?>
-                    <div style="font-size:0.8rem; color:#d97706; background:#fffbeb; display:inline-block; padding:2px 8px; border-radius:99px;">⏳ Menunggu balasan</div>
+                    <div style="font-size:0.8rem; color:#d97706; background:#fffbeb; display:inline-block; padding:2px 8px; border-radius:99px;">âڈ³ Menunggu balasan</div>
                 <?php endif; ?>
             </div>
         <?php endwhile; else: ?>
@@ -3665,7 +3656,7 @@ elseif ($action === 'about'): ?>
     <div class="card">
         <div style="text-align:center; margin-bottom:20px;">
             <div style="width:60px; height:60px; background:#4f46e5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; color:#fff; font-size:1.5rem;">
-                👨‍👩‍👧‍👦
+                ًں‘¨â€چًں‘©â€چًں‘§â€چًں‘¦
             </div>
             <h2 style="margin:0;">Tentang FamilyHood</h2>
             <p style="color:#6b7280; font-size:0.9rem;">Menyambung Tali Silaturahmi Digital</p>
@@ -3677,50 +3668,50 @@ elseif ($action === 'about'): ?>
         
         <h3 class="section-title" style="margin-top:20px;">Misi Kami</h3>
         <ul style="padding-left:20px; line-height:1.6; color:#374151;">
-            <li>🌍 <strong>Menghubungkan Generasi:</strong> Memudahkan anak cucu mengenal leluhur mereka.</li>
-            <li>🔒 <strong>Menjaga Privasi:</strong> Data keluarga Anda aman dan hanya bisa diakses oleh Anda (dan admin sistem jika diizinkan).</li>
-            <li>📊 <strong>Visualisasi Mudah:</strong> Melihat hubungan keluarga dalam bentuk pohon visual yang interaktif.</li>
+            <li>ًںŒچ <strong>Menghubungkan Generasi:</strong> Memudahkan anak cucu mengenal leluhur mereka.</li>
+            <li>ًں”’ <strong>Menjaga Privasi:</strong> Data keluarga Anda aman dan hanya bisa diakses oleh Anda (dan admin sistem jika diizinkan).</li>
+            <li>ًں“ٹ <strong>Visualisasi Mudah:</strong> Melihat hubungan keluarga dalam bentuk pohon visual yang interaktif.</li>
         </ul>
 
         <h3 class="section-title" style="margin-top:20px;">Kontak Kami</h3>
         <div style="background:#f0f9ff; padding:15px; border-radius:10px; border:1px solid #bae6fd; margin-bottom:20px;">
             <p style="margin:0 0 8px; font-weight:600; color:#0c4a6e;">Informasi Pengembang/Admin:</p>
             <ul style="list-style:none; padding:0; margin:0; font-size:0.9rem;">
-                <li style="margin-bottom:5px;">📱 HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
-                <li style="margin-bottom:5px;">📧 Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
-                <li>📸 Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
+                <li style="margin-bottom:5px;">ًں“± HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
+                <li style="margin-bottom:5px;">ًں“§ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
+                <li>ًں“¸ Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
             </ul>
         </div>
         
         <h3 class="section-title" style="margin-top:20px;">Fitur Unggulan</h3>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>🌳 Pohon Dinamis</strong><br>Otomatis menyusun bagan keturunan.
+                <strong>ًںŒ³ Pohon Dinamis</strong><br>Otomatis menyusun bagan keturunan.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>📄 Export Data</strong><br>Unduh ke PDF, Word, atau Excel dengan mudah.
+                <strong>ًں“„ Export Data</strong><br>Unduh ke PDF, Word, atau Excel dengan mudah.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>🎂 Pengingat Ultah</strong><br>Notifikasi ulang tahun anggota keluarga.
+                <strong>ًںژ‚ Pengingat Ultah</strong><br>Notifikasi ulang tahun anggota keluarga.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>🖼️ Galeri Foto</strong><br>Simpan foto kenangan setiap anggota.
+                <strong>ًں–¼ï¸ڈ Galeri Foto</strong><br>Simpan foto kenangan setiap anggota.
             </div>
         </div>
 
         <div style="margin-top:30px; text-align:center; border-top:1px solid #eee; padding-top:20px;">
             <p style="font-size:0.8rem; color:#9ca3af;">
                 Versi Aplikasi: 1.0.0<br>
-                Dibuat dengan ❤️ oleh Tim Pengembang.
+                Dibuat dengan â‌¤ï¸ڈ oleh Tim Pengembang.
             </p>
-            <a href="?action=settings" class="btn btn-secondary btn-sm">← Kembali ke Pengaturan</a>
+            <a href="?action=settings" class="btn btn-secondary btn-sm">â†گ Kembali ke Pengaturan</a>
         </div>
     </div>
 <?
 // --- HALAMAN KEBIJAKAN PRIVASI (PRIVACY POLICY) ---
 elseif ($action === 'privacy'): ?>
     <div class="card">
-        <h2 style="margin-bottom:10px;">🔒 Kebijakan Privasi</h2>
+        <h2 style="margin-bottom:10px;">ًں”’ Kebijakan Privasi</h2>
         <p style="font-size:0.85rem; color:#6b7280; margin-bottom:20px;">Terakhir diperbarui: <?= date('d M Y') ?></p>
         
         <div style="font-size:0.9rem; line-height:1.6; color:#374151;">
@@ -3761,21 +3752,21 @@ elseif ($action === 'privacy'): ?>
                 <strong>Hubungi Kami</strong><br>
                 Jika ada pertanyaan mengenai privasi, Anda dapat menghubungi kami:<br>
                 <ul style="list-style:disc; padding-left:20px; margin:5px 0 0; font-size:0.9rem;">
-                    <li>📱 HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
-                    <li>📧 Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
-                    <li>📸 Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
+                    <li>ًں“± HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
+                    <li>ًں“§ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
+                    <li>ًں“¸ Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
                 </ul>
             </div>
         </div>
         
         <div style="margin-top:20px; text-align:center;">
-            <a href="?action=settings" class="btn btn-secondary btn-sm">← Kembali ke Pengaturan</a>
+            <a href="?action=settings" class="btn btn-secondary btn-sm">â†گ Kembali ke Pengaturan</a>
         </div>
     </div>
 
 <?php elseif ($action === 'admin_users' && $isAdmin): ?>
     <div class="card">
-        <h2>👑 Dashboard Admin</h2>
+        <h2>ًں‘‘ Dashboard Admin</h2>
         
         <h3 class="section-title">Daftar Pengguna</h3>
         <div style="overflow-x:auto;">
@@ -3815,10 +3806,10 @@ elseif ($action === 'privacy'): ?>
                                         class="btn btn-sm btn-primary"
                                         style="background:#4f46e5; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                         onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($u['name']) ?>?');">
-                                    ✅ <?= $viewableTreesCount ?> Keluarga Diizinkan
+                                    âœ… <?= $viewableTreesCount ?> Keluarga Diizinkan
                                 </button>
                             <?php else: ?>
-                                <span style="color:#9ca3af; font-size:0.85rem;">🔒 Private (0 Keluarga)</span>
+                                <span style="color:#9ca3af; font-size:0.85rem;">ًں”’ Private (0 Keluarga)</span>
                             <?php endif; ?>
                         </td>
 
@@ -3829,7 +3820,7 @@ elseif ($action === 'privacy'): ?>
         </div>
         
         <div style="margin-top:40px; padding-top:20px; border-top:2px dashed #e5e7eb;">
-            <h3 class="section-title">📢 Kirim Pengumuman / Notifikasi</h3>
+            <h3 class="section-title">ًں“¢ Kirim Pengumuman / Notifikasi</h3>
             
             <?php
             if (isset($_POST['send_broadcast'])) {
@@ -3850,12 +3841,12 @@ elseif ($action === 'privacy'): ?>
                 
                 <label>Tujuan:</label>
                 <select name="broadcast_target" required>
-                    <option value="0">📢 SEMUA USER (Broadcast)</option>
+                    <option value="0">ًں“¢ SEMUA USER (Broadcast)</option>
                     <?php 
                     // Ambil list user lagi untuk dropdown
                     $usersList = $mysqli->query("SELECT id, name FROM users WHERE role != 'admin'");
                     while($u = $usersList->fetch_assoc()) {
-                        echo "<option value='".$u['id']."'>👤 ".$u['name']."</option>";
+                        echo "<option value='".$u['id']."'>ًں‘¤ ".$u['name']."</option>";
                     }
                     ?>
                 </select>
@@ -4237,13 +4228,13 @@ function showAdminViewModal(userId, userName) {
                     li.style.borderBottom = '1px solid #eee';
                     
                     li.innerHTML = `
-                        <div style="font-weight:600; color:#1f2937;">🌳 ${tree.name}</div>
+                        <div style="font-weight:600; color:#1f2937;">ًںŒ³ ${tree.name}</div>
                         <div style="font-size:0.8rem; color:#6b7280;">ID: ${tree.id}</div>
                         <a href="?action=home&view_user_id=${userId}&view_tree_id=${tree.id}" 
                            target="_blank" 
                            class="btn btn-sm btn-primary" 
                            style="margin-top:5px; font-size:0.75rem; background:#10b981;">
-                            👁️ Lihat Pohon Ini
+                            ًں‘پï¸ڈ Lihat Pohon Ini
                         </a>
                     `;
                     listContainer.appendChild(li);
