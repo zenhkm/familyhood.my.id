@@ -3200,23 +3200,7 @@ if ($action === 'bio') {
                 edges: new vis.DataSet(edges)
             }, {
                 autoResize: true,
-                physics: {
-                    enabled: true,
-                    hierarchicalRepulsion: {
-                        centralGravity: 0.0,
-                        springLength: 100,
-                        springConstant: 0.01,
-                        nodeDistance: 130,
-                        damping: 0.09,
-                        avoidOverlap: 1
-                    },
-                    solver: 'hierarchicalRepulsion',
-                    stabilization: {
-                        enabled: true,
-                        iterations: 500,
-                        fit: true
-                    }
-                },
+                physics: false,
                 interaction: { hover: true, navigationButtons: true, keyboard: true },
                 layout: {
                     hierarchical: {
@@ -3236,7 +3220,34 @@ if ($action === 'bio') {
                 edges: { selectionWidth: 0, hoverWidth: 0.3 }
             });
 
-            network.once('stabilizationIterationsDone', () => network.fit({ animation: { duration: 500 } }));
+            // === PAKSA POSISI X SUAMI KE TENGAH ISTRI-ISTRINYA ===
+            // Jalankan setelah layout selesai dihitung oleh vis.js
+            function centerHusbandsAmongWives() {
+                const nodePositions = network.getPositions();
+
+                // Kumpulkan semua ID suami (gender L yang punya >1 istri visible)
+                const husbandIdsToFix = Object.keys(husbandWives).map(Number);
+
+                husbandIdsToFix.forEach(husbandId => {
+                    const wives = (husbandWives[husbandId] || []).filter(wid => nodePositions[wid] !== undefined);
+                    if (wives.length < 2) return; // Hanya bekerja jika istri lebih dari 1
+
+                    // Hitung rata-rata posisi X semua istri
+                    const avgX = wives.reduce((sum, wid) => sum + nodePositions[wid].x, 0) / wives.length;
+                    const currentY = nodePositions[husbandId] ? nodePositions[husbandId].y : 0;
+
+                    // Pindahkan suami ke posisi X rata-rata tersebut
+                    network.moveNode(husbandId, avgX, currentY);
+                });
+
+                network.fit({ animation: { duration: 600 } });
+            }
+
+            // Tunggu sampai layout selesai dihitung, lalu jalankan centering
+            network.once('afterDrawing', function() {
+                setTimeout(centerHusbandsAmongWives, 100);
+            });
+
             setTimeout(() => network.fit({ animation: { duration: 500 } }), 350);
 
             network.on('doubleClick', (params) => {
