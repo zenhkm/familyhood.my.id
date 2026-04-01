@@ -3226,8 +3226,8 @@ if ($action === 'bio') {
             // 2. Anak HARUS lurus di bawah orang tuanya
             // =====================================================
             function customFamilyTreeLayout() {
-                const NODE_GAP = 140;   // Jarak minimum antar node
-                const SPOUSE_GAP = 140; // Jarak suami-istri
+                const NODE_GAP = 120;    // Jarak minimum antar node (hanya mencegah overlap)
+                const SPOUSE_GAP = 100;  // Jarak suami-istri (lebih rapat)
 
                 // --- Helper: Cari anak dari pasangan tertentu ---
                 function getChildrenOfCouple(fId, mId) {
@@ -3482,7 +3482,28 @@ if ($action === 'bio') {
                 // ========== LANGKAH 8: Resolve overlap FINAL ==========
                 pos = resolveLevel(pos);
 
-                // ========== LANGKAH 9: Terapkan semua posisi ke network ==========
+                // ========== LANGKAH 9: Center generasi pertama (root) ==========
+                // Cari level paling atas (Y terkecil)
+                const topLevel = Math.min(...uniqueLevels);
+                const rootNodes = Object.keys(nodeLevels).filter(nid => nodeLevels[nid] === topLevel);
+                
+                if (rootNodes.length > 0) {
+                    // Hitung center X dari seluruh tree
+                    const allX = Object.keys(pos).filter(nid => !String(nid).startsWith('m-')).map(nid => pos[nid].x);
+                    const treeCenter = (Math.min(...allX) + Math.max(...allX)) / 2;
+                    
+                    // Hitung center X root generation saat ini
+                    const rootXs = rootNodes.map(nid => pos[nid].x);
+                    const rootCenter = (Math.min(...rootXs) + Math.max(...rootXs)) / 2;
+                    
+                    // Geser seluruh tree agar root di tengah
+                    const shiftX = treeCenter - rootCenter;
+                    rootNodes.forEach(nid => {
+                        pos[nid] = { x: pos[nid].x + shiftX, y: pos[nid].y };
+                    });
+                }
+
+                // ========== LANGKAH 10: Terapkan semua posisi ke network ==========
                 Object.keys(pos).forEach(nid => {
                     network.moveNode(nid, pos[nid].x, pos[nid].y);
                 });
