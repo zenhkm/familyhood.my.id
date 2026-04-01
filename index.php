@@ -3220,35 +3220,56 @@ if ($action === 'bio') {
                 edges: { selectionWidth: 0, hoverWidth: 0.3 }
             });
 
-            // === PAKSA POSISI X SUAMI KE TENGAH ISTRI-ISTRINYA ===
-            // Jalankan setelah layout selesai dihitung oleh vis.js
+            // === PAKSA POSISI: SUAMI DI TENGAH, ISTRI MENYEBAR KIRI-KANAN ===
             function centerHusbandsAmongWives() {
                 const nodePositions = network.getPositions();
+                const SPACING = 130; // Jarak minimum antar node (px)
 
-                // Kumpulkan semua ID suami (gender L yang punya >1 istri visible)
                 const husbandIdsToFix = Object.keys(husbandWives).map(Number);
 
                 husbandIdsToFix.forEach(husbandId => {
                     const wives = (husbandWives[husbandId] || []).filter(wid => nodePositions[wid] !== undefined);
-                    if (wives.length < 2) return; // Hanya bekerja jika istri lebih dari 1
+                    if (wives.length < 2) return;
 
-                    // Hitung rata-rata posisi X semua istri
-                    const avgX = wives.reduce((sum, wid) => sum + nodePositions[wid].x, 0) / wives.length;
-                    const currentY = nodePositions[husbandId] ? nodePositions[husbandId].y : 0;
+                    const hPos = nodePositions[husbandId];
+                    if (!hPos) return;
 
-                    // Pindahkan suami ke posisi X rata-rata tersebut
-                    network.moveNode(husbandId, avgX, currentY);
+                    // Titik pusat = posisi X suami saat ini (dari vis.js)
+                    const centerX = hPos.x;
+                    const centerY = hPos.y;
+
+                    // Bagi istri: separuh kiri, separuh kanan
+                    const splitAt = Math.ceil(wives.length / 2);
+                    const leftWives = wives.slice(0, splitAt);
+                    const rightWives = wives.slice(splitAt);
+
+                    // Tempatkan istri kiri: dari posisi suami ke kiri
+                    leftWives.forEach((wid, i) => {
+                        const offset = (i + 1) * SPACING;
+                        const wifeY = nodePositions[wid] ? nodePositions[wid].y : centerY;
+                        network.moveNode(wid, centerX - offset, wifeY);
+                    });
+
+                    // Tempatkan istri kanan: dari posisi suami ke kanan
+                    rightWives.forEach((wid, i) => {
+                        const offset = (i + 1) * SPACING;
+                        const wifeY = nodePositions[wid] ? nodePositions[wid].y : centerY;
+                        network.moveNode(wid, centerX + offset, wifeY);
+                    });
+
+                    // Pastikan suami tetap di tengah (tidak bergeser)
+                    network.moveNode(husbandId, centerX, centerY);
                 });
 
                 network.fit({ animation: { duration: 600 } });
             }
 
-            // Tunggu sampai layout selesai dihitung, lalu jalankan centering
+            // Jalankan setelah vis.js selesai menggambar
             network.once('afterDrawing', function() {
-                setTimeout(centerHusbandsAmongWives, 100);
+                setTimeout(centerHusbandsAmongWives, 150);
             });
 
-            setTimeout(() => network.fit({ animation: { duration: 500 } }), 350);
+            setTimeout(() => network.fit({ animation: { duration: 500 } }), 600);
 
             network.on('doubleClick', (params) => {
                 if (!params.nodes || !params.nodes.length) return;
