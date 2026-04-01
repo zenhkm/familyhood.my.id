@@ -3253,8 +3253,8 @@ if ($action === 'bio') {
 
             // === FASE 2 & 3: ANAK DIKELOMPOKKAN PER IBU, TIDAK BERCAMPUR ===
             function positionChildrenGrouped() {
-                const CHILD_SPACING = 130;  // Jarak antar saudara
-                const GROUP_GAP = 60;       // Jarak ekstra antar kelompok istri berbeda
+                const CHILD_SPACING = 140;  // Jarak antar saudara
+                const GROUP_GAP = 140;      // Jarak antar kelompok istri berbeda
 
                 // --- Langkah A: Kelompokkan anak berdasarkan pasangan orang tua ---
                 const coupleChildren = {};
@@ -3370,11 +3370,51 @@ if ($action === 'bio') {
                 });
             }
 
+            // === FASE 3: RESOLUSI TUMPANG TINDIH SEMUA LEVEL ===
+            function resolveAllOverlaps() {
+                const pos = network.getPositions();
+                const MIN_DIST = 140;
+                const LEVEL_TOLERANCE = 50;
+
+                const levelGroups = {};
+                Object.keys(pos).forEach(nodeId => {
+                    if (String(nodeId).startsWith('m-')) return;
+                    const p = pos[nodeId];
+                    const levelKey = Math.round(p.y / LEVEL_TOLERANCE) * LEVEL_TOLERANCE;
+                    if (!levelGroups[levelKey]) levelGroups[levelKey] = [];
+                    levelGroups[levelKey].push({ id: nodeId, x: p.x, y: p.y });
+                });
+
+                Object.values(levelGroups).forEach(group => {
+                    if (group.length < 2) return;
+                    group.sort((a, b) => a.x - b.x);
+
+                    for (let pass = 0; pass < 20; pass++) {
+                        let moved = false;
+                        for (let i = 1; i < group.length; i++) {
+                            const gap = group[i].x - group[i - 1].x;
+                            if (gap < MIN_DIST) {
+                                const shift = (MIN_DIST - gap) / 2 + 1;
+                                group[i - 1].x -= shift;
+                                group[i].x += shift;
+                                moved = true;
+                            }
+                        }
+                        if (!moved) break;
+                    }
+
+                    group.forEach(node => {
+                        network.moveNode(node.id, node.x, node.y);
+                    });
+                });
+            }
+
             // === EKSEKUSI SEMUA FASE BERURUTAN ===
             network.once('afterDrawing', function() {
                 setTimeout(() => {
-                    centerHusbandsAmongWives();        // Fase 1: Suami di tengah istri
-                    positionChildrenGrouped();          // Fase 2+3: Anak dikelompokkan per ibu
+                    centerHusbandsAmongWives();    // Fase 1: Suami di tengah istri
+                    positionChildrenGrouped();      // Fase 2: Anak dikelompokkan per ibu
+                    resolveAllOverlaps();           // Fase 3: Pastikan tidak ada overlap
                     network.fit({ animation: { duration: 600 } });
                 }, 150);
             });
