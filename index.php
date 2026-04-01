@@ -3458,6 +3458,7 @@ if ($action === 'bio') {
                     positionChildrenGrouped();      // Fase 2: Anak dikelompokkan per ibu
                     resolveAllOverlaps();           // Fase 3: Pastikan tidak ada overlap
                     snapSpousesTogether();          // Fase 4: Kembalikan pasangan agar berdekatan
+                    resolveAllOverlaps();           // Fase 5: Resolve overlap baru akibat Fase 4
                     network.fit({ animation: { duration: 600 } });
                 }, 150);
             });
