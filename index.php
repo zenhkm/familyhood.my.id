@@ -3206,7 +3206,7 @@ if ($action === 'bio') {
                     hierarchical: {
                         enabled: true,
                         direction: 'UD',
-                        sortMethod: 'directed',
+                        sortMethod: 'hubsize',
                         levelSeparation: 90,
                         nodeSpacing: 100,
                         treeSpacing: 140,
