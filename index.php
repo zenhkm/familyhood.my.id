@@ -3019,6 +3019,25 @@ if ($action === 'bio') {
                 }
             });
 
+            // Helper untuk menambahkan edge relasi spouse tanpa duplikasi
+            function addSpouseEdge(fromNode, toNode) {
+                const a = Math.min(fromNode, toNode);
+                const b = Math.max(fromNode, toNode);
+                const key = `${a}-${b}`;
+                if (spouseEdgeSet.has(key)) return;
+                spouseEdgeSet.add(key);
+                
+                edges.push({
+                    from: fromNode,
+                    to: toNode,
+                    dashes: [7, 6],
+                    color: { color: '#ef4444' },
+                    width: 2.4,
+                    arrows: { to: { enabled: false } },
+                    smooth: { enabled: true, type: 'curvedCW', roundness: 0.16 }
+                });
+            }
+
             // Proses suami dan istri-istrinya, paruh kiri dan kanan
             Object.keys(husbandWives).forEach(hId => {
                 const husbandId = Number(hId);
@@ -3026,25 +3045,10 @@ if ($action === 'bio') {
                 const split = Math.ceil(wives.length / 2);
                 
                 wives.forEach((wifeId, index) => {
-                    const a = Math.min(husbandId, wifeId);
-                    const b = Math.max(husbandId, wifeId);
-                    const key = `${a}-${b}`;
-                    if (spouseEdgeSet.has(key)) return;
-                    spouseEdgeSet.add(key);
-                    
                     // Supaya vis.js mengatur urutan kiri/kanan berdasarkan edge
                     const fromNode = (index < split) ? wifeId : husbandId;
                     const toNode = (index < split) ? husbandId : wifeId;
-                    
-                    edges.push({
-                        from: fromNode,
-                        to: toNode,
-                        dashes: [7, 6],
-                        color: { color: '#ef4444' },
-                        width: 2.4,
-                        arrows: { to: { enabled: false } },
-                        smooth: { enabled: true, type: 'curvedCW', roundness: 0.16 }
-                    });
+                    addSpouseEdge(fromNode, toNode);
                 });
             });
 
@@ -3054,20 +3058,7 @@ if ($action === 'bio') {
                 Object.keys(spouseMap).forEach((sid) => {
                     const spouseId = Number(sid);
                     if (!visible.has(spouseId)) return;
-                    const a = Math.min(Number(parentId), spouseId);
-                    const b = Math.max(Number(parentId), spouseId);
-                    const key = `${a}-${b}`;
-                    if (spouseEdgeSet.has(key)) return;
-                    spouseEdgeSet.add(key);
-                    edges.push({
-                        from: a,
-                        to: b,
-                        dashes: [7, 6],
-                        color: { color: '#ef4444' },
-                        width: 2.4,
-                        arrows: { to: { enabled: false } },
-                        smooth: { enabled: true, type: 'curvedCW', roundness: 0.16 }
-                    });
+                    addSpouseEdge(Number(parentId), spouseId);
                 });
             });
 
@@ -3504,6 +3495,9 @@ if ($action === 'bio') {
                 }
 
                 // ========== LANGKAH 10: Terapkan semua posisi ke network ==========
+                // MATIKAN setelan hierarchical vis-network agar TIDAK BERTENTANGAN dengan koordinat manual
+                network.setOptions({ layout: { hierarchical: false }, physics: false });
+
                 Object.keys(pos).forEach(nid => {
                     network.moveNode(nid, pos[nid].x, pos[nid].y);
                 });
@@ -3515,8 +3509,6 @@ if ($action === 'bio') {
             network.once('afterDrawing', function() {
                 setTimeout(customFamilyTreeLayout, 150);
             });
-
-            setTimeout(() => network.fit({ animation: { duration: 500 } }), 800);
 
             network.on('doubleClick', (params) => {
                 if (!params.nodes || !params.nodes.length) return;
