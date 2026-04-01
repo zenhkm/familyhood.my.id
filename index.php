@@ -2085,17 +2085,17 @@ if ($action === 'bio') {
 
     <div class="desktop-nav">
         <div class="nav-inner">
-            <a href="?action=home" class="d-link <?= ($action === 'home') ? 'active' : '' ?>">ًں“‹ Home</a>
-            <a href="?action=add_person" class="d-link <?= ($action === 'add_person') ? 'active' : '' ?>">â‍• Tambah Baru</a>
-            <a href="?action=tree" class="d-link <?= ($action === 'tree') ? 'active' : '' ?>">ًںŒ³ Pohon Keluarga</a>
+            <a href="?action=home" class="d-link <?= ($action === 'home') ? 'active' : '' ?>">🏠 Home</a>
+            <a href="?action=add_person" class="d-link <?= ($action === 'add_person') ? 'active' : '' ?>">➕ Tambah Baru</a>
+            <a href="?action=tree" class="d-link <?= ($action === 'tree') ? 'active' : '' ?>">🌳 Pohon Keluarga</a>
             
             <?php if ($isAdmin): ?>
-                <a href="?action=admin_users" class="d-link <?= ($action === 'admin_users') ? 'active' : '' ?>">ًں‘‘ Admin</a>
+                <a href="?action=admin_users" class="d-link <?= ($action === 'admin_users') ? 'active' : '' ?>">👤 Admin</a>
             <?php endif; ?>
             
-            <a href="?action=settings" class="d-link <?= ($action === 'settings' || $action === 'support') ? 'active' : '' ?>" style="margin-left:auto;">âڑ™ï¸ڈ Akun & Bantuan</a>
-            <a href="?action=notifications" class="d-link <?= ($action === 'notifications') ? 'active' : '' ?>">ًں”” Info</a>
-            <a href="?action=logout" class="d-link" onclick="return confirm('Keluar?')" style="color:#dc2626;">ًںڑھ Logout</a>
+            <a href="?action=settings" class="d-link <?= ($action === 'settings' || $action === 'support') ? 'active' : '' ?>" style="margin-left:auto;">⚙️ Akun &amp; Bantuan</a>
+            <a href="?action=notifications" class="d-link <?= ($action === 'notifications') ? 'active' : '' ?>">🔔 Info</a>
+            <a href="?action=logout" class="d-link" onclick="return confirm('Keluar?')" style="color:#dc2626;">🚪 Logout</a>
         </div>
     </div>
 
