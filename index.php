@@ -3220,18 +3220,16 @@ if ($action === 'bio') {
                 edges: { selectionWidth: 0, hoverWidth: 0.3 }
             });
 
-            // === PAKSA POSISI: SUAMI DI TENGAH, ISTRI MENYEBAR KIRI-KANAN ===
+            // === FASE 1: SUAMI DI TENGAH, ISTRI MENYEBAR KIRI-KANAN ===
             function centerHusbandsAmongWives() {
-                const nodePositions = network.getPositions();
-                const SPACING = 130; // Jarak minimum antar node (px)
+                const pos = network.getPositions();
+                const SPACING = 130;
 
-                const husbandIdsToFix = Object.keys(husbandWives).map(Number);
-
-                husbandIdsToFix.forEach(husbandId => {
-                    const wives = (husbandWives[husbandId] || []).filter(wid => nodePositions[wid] !== undefined);
+                Object.keys(husbandWives).map(Number).forEach(husbandId => {
+                    const wives = (husbandWives[husbandId] || []).filter(wid => pos[wid] !== undefined);
                     if (wives.length < 2) return;
 
-                    const hPos = nodePositions[husbandId];
+                    const hPos = pos[husbandId];
                     if (!hPos) return;
 
                     const centerX = hPos.x;
@@ -3242,28 +3240,24 @@ if ($action === 'bio') {
                     const rightWives = wives.slice(splitAt);
 
                     leftWives.forEach((wid, i) => {
-                        const offset = (i + 1) * SPACING;
-                        const wifeY = nodePositions[wid] ? nodePositions[wid].y : centerY;
-                        network.moveNode(wid, centerX - offset, wifeY);
+                        const wifeY = pos[wid] ? pos[wid].y : centerY;
+                        network.moveNode(wid, centerX - (i + 1) * SPACING, wifeY);
                     });
-
                     rightWives.forEach((wid, i) => {
-                        const offset = (i + 1) * SPACING;
-                        const wifeY = nodePositions[wid] ? nodePositions[wid].y : centerY;
-                        network.moveNode(wid, centerX + offset, wifeY);
+                        const wifeY = pos[wid] ? pos[wid].y : centerY;
+                        network.moveNode(wid, centerX + (i + 1) * SPACING, wifeY);
                     });
-
                     network.moveNode(husbandId, centerX, centerY);
                 });
             }
 
-            // === POSISIKAN ANAK DI TENGAH ANTARA AYAH & IBU ===
+            // === FASE 2: ANAK DI TENGAH ANTARA AYAH & IBU ===
             function centerChildrenBetweenParents() {
                 const pos = network.getPositions();
                 const CHILD_SPACING = 120;
 
-                // Kelompokkan anak berdasarkan pasangan orang tua (ayah-ibu)
-                const coupleChildren = {}; // key: "fatherId-motherId" -> [childId, ...]
+                // Kelompokkan anak berdasarkan pasangan orang tua
+                const coupleChildren = {};
 
                 childSet.forEach(childId => {
                     const parentMap = childParents[childId] || {};
@@ -3272,67 +3266,133 @@ if ($action === 'bio') {
                     let fatherId = parentIds.find(id => (persons[id]?.gender || '') === 'L');
                     let motherId = parentIds.find(id => (persons[id]?.gender || '') === 'P');
 
-                    if (fatherId && motherId) {
-                        const key = Math.min(fatherId, motherId) + '-' + Math.max(fatherId, motherId);
-                        if (!coupleChildren[key]) coupleChildren[key] = { father: fatherId, mother: motherId, children: [] };
-                        coupleChildren[key].children.push(childId);
-                    } else if (parentIds.length === 1) {
-                        // Coba cari pasangan dari data spouses
+                    // Jika hanya punya 1 orang tua, coba cari pasangan dari data spouses
+                    if (!fatherId && !motherId && parentIds.length === 1) {
                         const pid = parentIds[0];
-                        const spouseList = Object.keys(spouses[pid] || {}).map(Number).filter(s => visible.has(s));
-                        if (spouseList.length > 0) {
-                            const sid = spouseList[0];
-                            const a = Math.min(pid, sid);
-                            const b = Math.max(pid, sid);
-                            const key = a + '-' + b;
-                            if (!coupleChildren[key]) coupleChildren[key] = { father: (persons[pid]?.gender === 'L') ? pid : sid, mother: (persons[pid]?.gender === 'P') ? pid : sid, children: [] };
-                            coupleChildren[key].children.push(childId);
-                        }
+                        if ((persons[pid]?.gender || '') === 'L') fatherId = pid;
+                        else motherId = pid;
+                    } else if (fatherId && !motherId && parentIds.length === 1) {
+                        // Ada ayah saja
+                    } else if (!fatherId && motherId && parentIds.length === 1) {
+                        // Ada ibu saja
                     }
+
+                    // Buat key unik untuk pasangan
+                    let key;
+                    if (fatherId && motherId) {
+                        key = Math.min(fatherId, motherId) + '-' + Math.max(fatherId, motherId);
+                        if (!coupleChildren[key]) coupleChildren[key] = { father: fatherId, mother: motherId, children: [] };
+                    } else if (fatherId) {
+                        key = 'f-' + fatherId;
+                        if (!coupleChildren[key]) coupleChildren[key] = { father: fatherId, mother: null, children: [] };
+                    } else if (motherId) {
+                        key = 'm-' + motherId;
+                        if (!coupleChildren[key]) coupleChildren[key] = { father: null, mother: motherId, children: [] };
+                    } else {
+                        return; // skip jika tidak ada orang tua
+                    }
+                    coupleChildren[key].children.push(childId);
                 });
 
-                // Untuk setiap pasangan, posisikan anak di tengah antara ayah dan ibu
+                // Posisikan anak di tengah antara ayah dan ibu (atau di bawah single parent)
                 Object.values(coupleChildren).forEach(couple => {
-                    const fPos = pos[couple.father];
-                    const mPos = pos[couple.mother];
-                    if (!fPos || !mPos) return;
+                    let midX;
+                    const updatedPos = network.getPositions();
 
-                    // Titik tengah antara ayah dan ibu
-                    const midX = (fPos.x + mPos.x) / 2;
+                    if (couple.father && couple.mother) {
+                        const fPos = updatedPos[couple.father];
+                        const mPos = updatedPos[couple.mother];
+                        if (!fPos || !mPos) return;
+                        midX = (fPos.x + mPos.x) / 2;
+                    } else if (couple.father) {
+                        const fPos = updatedPos[couple.father];
+                        if (!fPos) return;
+                        midX = fPos.x;
+                    } else if (couple.mother) {
+                        const mPos = updatedPos[couple.mother];
+                        if (!mPos) return;
+                        midX = mPos.x;
+                    } else {
+                        return;
+                    }
 
                     const kids = couple.children;
                     if (kids.length === 0) return;
 
-                    // Hitung posisi anak-anak secara simetris di sekitar midX
                     const totalWidth = (kids.length - 1) * CHILD_SPACING;
                     const startX = midX - totalWidth / 2;
 
                     kids.forEach((childId, i) => {
-                        const childPos = pos[childId];
+                        const childPos = updatedPos[childId];
                         if (!childPos) return;
                         network.moveNode(childId, startX + i * CHILD_SPACING, childPos.y);
                     });
 
-                    // Pindahkan juga marriage node (m-X-Y) ke titik tengah
-                    const a = Math.min(couple.father, couple.mother);
-                    const b = Math.max(couple.father, couple.mother);
-                    const marriageId = `m-${a}-${b}`;
-                    const mNodePos = pos[marriageId];
-                    if (mNodePos) {
-                        network.moveNode(marriageId, midX, mNodePos.y);
+                    // Pindahkan marriage node juga
+                    if (couple.father && couple.mother) {
+                        const a = Math.min(couple.father, couple.mother);
+                        const b = Math.max(couple.father, couple.mother);
+                        const marriageId = `m-${a}-${b}`;
+                        const mNodePos = updatedPos[marriageId];
+                        if (mNodePos) {
+                            network.moveNode(marriageId, midX, mNodePos.y);
+                        }
                     }
                 });
             }
 
-            // Jalankan setelah vis.js selesai menggambar
+            // === FASE 3: RESOLUSI TUMPANG TINDIH ===
+            function resolveOverlaps() {
+                const pos = network.getPositions();
+                const MIN_DIST = 110; // Jarak minimum antar node (px)
+                const LEVEL_TOLERANCE = 30; // Toleransi Y untuk dianggap 1 level
+
+                // Kelompokkan node per level (berdasarkan posisi Y)
+                const levelGroups = {};
+                Object.keys(pos).forEach(nodeId => {
+                    const p = pos[nodeId];
+                    // Bulatkan Y ke level terdekat
+                    const levelKey = Math.round(p.y / LEVEL_TOLERANCE) * LEVEL_TOLERANCE;
+                    if (!levelGroups[levelKey]) levelGroups[levelKey] = [];
+                    levelGroups[levelKey].push({ id: nodeId, x: p.x, y: p.y });
+                });
+
+                // Untuk setiap level, sortir node berdasarkan X dan dorong yang bertabrakan
+                Object.values(levelGroups).forEach(group => {
+                    if (group.length < 2) return;
+
+                    // Sort berdasarkan posisi X saat ini
+                    group.sort((a, b) => a.x - b.x);
+
+                    // Iterasi beberapa kali untuk menangani efek domino
+                    for (let pass = 0; pass < 3; pass++) {
+                        let moved = false;
+                        for (let i = 1; i < group.length; i++) {
+                            const gap = group[i].x - group[i - 1].x;
+                            if (gap < MIN_DIST) {
+                                const shift = (MIN_DIST - gap) / 2;
+                                group[i - 1].x -= shift;
+                                group[i].x += shift;
+                                moved = true;
+                            }
+                        }
+                        if (!moved) break;
+                    }
+
+                    // Terapkan posisi baru
+                    group.forEach(node => {
+                        network.moveNode(node.id, node.x, node.y);
+                    });
+                });
+            }
+
+            // === EKSEKUSI SEMUA FASE BERURUTAN ===
             network.once('afterDrawing', function() {
                 setTimeout(() => {
-                    centerHusbandsAmongWives();
-                    // Jalankan centering anak setelah posisi orang tua sudah final
-                    setTimeout(() => {
-                        centerChildrenBetweenParents();
-                        network.fit({ animation: { duration: 600 } });
-                    }, 50);
+                    centerHusbandsAmongWives();        // Fase 1
+                    centerChildrenBetweenParents();     // Fase 2
+                    resolveOverlaps();                  // Fase 3
+                    network.fit({ animation: { duration: 600 } });
                 }, 150);
             });
 
