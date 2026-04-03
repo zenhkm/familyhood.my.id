@@ -3049,7 +3049,8 @@ if ($action === 'bio') {
                     color: { color: '#ef4444' },
                     width: 2.4,
                     arrows: { to: { enabled: false } },
-                    smooth: { enabled: true, type: 'curvedCW', roundness: 0.16 }
+                    // use dynamic smoothing so curve direction adapts to node positions
+                    smooth: { enabled: true, type: 'dynamic' }
                 });
             }
 
