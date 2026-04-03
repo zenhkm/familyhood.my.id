@@ -2878,6 +2878,9 @@ if ($action === 'bio') {
         <div class="tree-container">
             <div class="tree-graph-wrapper">
                 <div id="family-graph"></div>
+                <div class="graph-controls">
+                    <button id="btn-reset-graph" class="btn btn-sm" title="Reset tampilan pohon">🔄 Reset</button>
+                </div>
             </div>
 
             <div id="tree-fallback" style="display:none; margin-top:16px;">
@@ -3202,9 +3205,12 @@ if ($action === 'bio') {
                 }
             });
 
+            const nodesDS = new vis.DataSet(nodes);
+            const edgesDS = new vis.DataSet(edges);
+
             const network = new vis.Network(container, {
-                nodes: new vis.DataSet(nodes),
-                edges: new vis.DataSet(edges)
+                nodes: nodesDS,
+                edges: edgesDS
             }, {
                 autoResize: true,
                 physics: false,
@@ -3450,6 +3456,22 @@ if ($action === 'bio') {
                 if (!pid) return;
                 window.location.href = `?action=bio&id=${pid}&mode=view`;
             });
+
+            // Reset button handler: rerun layout and fit view
+            const btnReset = document.getElementById('btn-reset-graph');
+            if (btnReset) {
+                btnReset.addEventListener('click', function() {
+                    try {
+                        network.unselectAll();
+                        // recalc positions deterministically and fit
+                        customFamilyTreeLayout();
+                        setTimeout(function() { network.fit({ animation: { duration: 420 } }); }, 120);
+                    } catch (err) {
+                        console.error('Reset graph failed', err);
+                        try { network.fit(); } catch(e) {}
+                    }
+                });
+            }
         })();
         </script>
         
