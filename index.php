@@ -2913,6 +2913,25 @@ if ($action === 'bio') {
                 return;
             }
 
+            // small inline SVG avatar fallback (avoids broken image icons in vis nodes)
+            const defaultAvatarSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="100%" height="100%" fill="#ffffff"/><circle cx="100" cy="70" r="48" fill="#e5e7eb"/><rect x="40" y="130" rx="14" width="120" height="40" fill="#e5e7eb"/></svg>';
+            let defaultAvatar = '';
+            try {
+                defaultAvatar = 'data:image/svg+xml;base64,' + btoa(defaultAvatarSvg);
+            } catch (err) {
+                // fallback if btoa not allowed for some reason
+                defaultAvatar = 'data:image/svg+xml;utf8,' + encodeURIComponent(defaultAvatarSvg);
+            }
+
+            // debounce helper for resize/layout
+            function debounce(fn, t = 120) {
+                let to;
+                return function(...args) {
+                    clearTimeout(to);
+                    to = setTimeout(() => fn.apply(this, args), t);
+                };
+            }
+
             const persons = <?= json_encode($graphPersons, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const parentChildren = <?= json_encode($parentChildren, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const childParents = <?= json_encode($childParents, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
@@ -2984,7 +3003,7 @@ if ($action === 'bio') {
                     id: id,
                     label: `${alivePrefix}${p.name}`,
                     shape: 'circularImage',
-                    image: p.photo,
+                    image: p.photo || defaultAvatar,
                     level: levels[id] ?? 0,
                     size: focusId === id ? 44 : 36,
                     font: { size: focusId === id ? 16 : 13, face: 'Segoe UI', color: '#0f172a' },
@@ -3405,8 +3424,18 @@ if ($action === 'bio') {
 
             // === EKSEKUSI ===
             network.once('afterDrawing', function() {
+                // initial layout after first draw
                 setTimeout(customFamilyTreeLayout, 80);
+                // run again a bit later to allow images to finish loading
+                setTimeout(customFamilyTreeLayout, 450);
             });
+
+            // Recalculate layout on window resize (debounced)
+            window.addEventListener('resize', debounce(function() {
+                try { customFamilyTreeLayout(); } catch (e) { /* ignore */ }
+                // refit viewport after layout change
+                setTimeout(function() { network.fit({ animation: { duration: 400 } }); }, 120);
+            }, 200));
 
             network.on('doubleClick', (params) => {
                 if (!params.nodes || !params.nodes.length) return;

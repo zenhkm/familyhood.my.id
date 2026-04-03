@@ -188,10 +188,12 @@ input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db;
 }
 
 .tree-graph-wrapper {
-    width: 100%; min-height: 620px; border-radius: 14px; background: #ffffff;
+    width: 100%; min-height: 40vh; border-radius: 14px; background: #ffffff;
     border: 1px solid rgba(148, 163, 184, 0.35); box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08); overflow: hidden;
 }
-#family-graph { width: 100%; height: 620px; }
+
+/* family graph responsive height: prefer viewport-based sizing with sensible mins */
+#family-graph { width: 100%; height: min(72vh, 820px); min-height: 420px; }
 
 .tree-legend { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center; margin-bottom: 12px; font-size: 0.78rem; color: #475569; }
 .tree-legend-item { display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 999px; padding: 4px 10px; }
@@ -304,8 +306,9 @@ input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db;
 
 @media (max-width: 900px) {
     .tree-container { padding: 16px 12px 22px; }
-    .tree-graph-wrapper { min-height: 520px; }
-    #family-graph { height: 520px; }
+    .tree-graph-wrapper { min-height: 34vh; }
+    /* Allow family graph to scale on smaller screens while keeping minimum touchable area */
+    #family-graph { height: min(62vh, 680px); min-height: 360px; }
     .horizontal-parents-wrapper { gap: 0; padding: 8px 8px; border-radius: 14px; }
     .marriage-row { gap: 2px; } .marriage-grid { gap: 4px; } .wives-inline { gap: 4px; }
     .marriage-link { width: 42px; min-width: 42px; }
