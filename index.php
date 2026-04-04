@@ -2994,7 +2994,6 @@ if ($action === 'bio') {
 
             const nodes = [];
             const edges = [];
-            const spouseEdgeSet = new Set();
             const marriageNodeSet = new Set();
             const marriageLinkSet = new Set();
 
@@ -3037,24 +3036,63 @@ if ($action === 'bio') {
                 }
             });
 
-            // Helper untuk menambahkan edge relasi spouse tanpa duplikasi
-            function addSpouseEdge(fromNode, toNode) {
-                const a = Math.min(fromNode, toNode);
-                const b = Math.max(fromNode, toNode);
-                const key = `${a}-${b}`;
-                if (spouseEdgeSet.has(key)) return;
-                spouseEdgeSet.add(key);
-                
-                edges.push({
-                    from: fromNode,
-                    to: toNode,
-                    dashes: [7, 6],
-                    color: { color: '#ef4444' },
-                    width: 2.4,
-                    arrows: { to: { enabled: false } },
-                    // use dynamic smoothing so curve direction adapts to node positions
-                    smooth: { enabled: true, type: 'dynamic' }
-                });
+            // Helper: represent a spouse relationship using a small invisible "marriage" anchor node
+            // and two short links from each spouse to that anchor. This avoids long, crossing curved
+            // edges between spouses and keeps the visual compact (short bend near the couple).
+            function addSpouseEdge(aNode, bNode) {
+                const a = Math.min(Number(aNode), Number(bNode));
+                const b = Math.max(Number(aNode), Number(bNode));
+                if (!a || !b || a === b) return;
+
+                const marriageId = `m-${a}-${b}`;
+
+                if (!marriageNodeSet.has(marriageId)) {
+                    marriageNodeSet.add(marriageId);
+                    nodes.push({
+                        id: marriageId,
+                        label: '',
+                        shape: 'dot',
+                        size: 1,
+                        level: Math.min(levels[a] ?? 0, levels[b] ?? 0) + 1,
+                        color: {
+                            border: 'rgba(0,0,0,0)',
+                            background: 'rgba(0,0,0,0)',
+                            highlight: { border: 'rgba(0,0,0,0)', background: 'rgba(0,0,0,0)' }
+                        },
+                        physics: false
+                    });
+                }
+
+                const linkA = `p-${a}-${marriageId}`;
+                const linkB = `p-${b}-${marriageId}`;
+
+                if (!marriageLinkSet.has(linkA)) {
+                    marriageLinkSet.add(linkA);
+                    edges.push({
+                        from: a,
+                        to: marriageId,
+                        dashes: [7, 6],
+                        color: { color: '#ef4444' },
+                        width: 2.4,
+                        arrows: { to: { enabled: false } },
+                        // small curve towards center
+                        smooth: { enabled: true, type: 'curvedCW', roundness: 0.18 }
+                    });
+                }
+
+                if (!marriageLinkSet.has(linkB)) {
+                    marriageLinkSet.add(linkB);
+                    edges.push({
+                        from: b,
+                        to: marriageId,
+                        dashes: [7, 6],
+                        color: { color: '#ef4444' },
+                        width: 2.4,
+                        arrows: { to: { enabled: false } },
+                        // opposite curve so both links meet nicely at the anchor
+                        smooth: { enabled: true, type: 'curvedCCW', roundness: 0.18 }
+                    });
+                }
             }
 
             // Proses suami dan istri-istrinya, paruh kiri dan kanan
@@ -3230,9 +3268,10 @@ if ($action === 'bio') {
             // 3. Penempatan node dilakukan top-down agar tidak crossing
             // 4. Istri selalu di sebelah suami, tidak terpisah saudara
             function customFamilyTreeLayout() {
-                const GEN_Y_GAP  = 170;   // jarak vertikal antar generasi (px)
-                const NODE_W     = 120;   // lebar minimum per node / leaf
-                const COUPLE_GAP = 105;   // jarak suami â†” istri
+                // tuned layout parameters: reduce horizontal gaps to avoid long diagonal edges
+                const GEN_Y_GAP  = 150;   // jarak vertikal antar generasi (px)
+                const NODE_W     = 100;   // lebar minimum per node / leaf
+                const COUPLE_GAP = 80;    // jarak suami â†” istri
 
                 // â”€â”€ Y tetap per generasi â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                 const pos = {};
@@ -3416,8 +3455,9 @@ if ($action === 'bio') {
                     const parts = mId.split('-');
                     const a = Number(parts[1]), b = Number(parts[2]);
                     if (!pos[a] || !pos[b]) return;
+                    // pos[a].x and pos[b].x already include the center shift (cShift)
                     pos[mId] = {
-                        x: (pos[a].x + pos[b].x) / 2 + cShift,
+                        x: (pos[a].x + pos[b].x) / 2,
                         y:  pos[a].y + GEN_Y_GAP * 0.38
                     };
                 });
