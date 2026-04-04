@@ -202,8 +202,8 @@ function fh_send_notification($mysqli, $userId, $title, $message, $type='info') 
 
 // 1. Cek Selamat Datang (Jika User Baru belum punya notifikasi sama sekali)
 $checkWelcome = $mysqli->query("SELECT id FROM notifications WHERE user_id = $myUserId LIMIT 1");
-if ($checkWelcome->num_rows == 0) {
-    fh_send_notification($mysqli, $myUserId, "Selamat Datang! ًں‘‹", "Selamat datang di FamilyHood! Mulailah dengan menambahkan diri Anda atau orang tua Anda di menu 'Tambah'.", "info");
+    if ($checkWelcome->num_rows == 0) {
+    fh_send_notification($mysqli, $myUserId, "Selamat Datang! 🎉", "Selamat datang di FamilyHood! Mulailah dengan menambahkan diri Anda atau orang tua Anda di menu 'Tambah'.", "info");
 }
 
 // 2. Cek Ulang Tahun Keluarga (Hari Ini)
@@ -218,7 +218,7 @@ if ($action === 'home') {
     
     while ($p = $resBday->fetch_assoc()) {
         // Cek apakah sudah dikirimi notif tahun ini? (Supaya tidak spam tiap refresh)
-        $msgTitle = "Selamat Ulang Tahun, " . $p['name'] . "! ًںژ‚";
+        $msgTitle = "Selamat Ulang Tahun, " . $p['name'] . "! 🎂";
         $checkSent = $mysqli->query("SELECT id FROM notifications WHERE user_id = $myUserId AND title = '$msgTitle' AND YEAR(created_at) = '$yearNow'");
         
         if ($checkSent->num_rows == 0) {
@@ -291,7 +291,7 @@ function fh_render_single_web_card($p, $currentActiveId) {
     
     // --- 1. TOMBOL EDIT (KIRI ATAS) ---
     // Mengarah langsung ke halaman edit profil
-    echo '      <a href="?action=bio&id='.$p['id'].'&mode=edit" class="tree-action-btn btn-tree-edit" title="Edit Profil">âœژ</a>';
+    echo '      <a href="?action=bio&id='.$p['id'].'&mode=edit" class="tree-action-btn btn-tree-edit" title="Edit Profil">✏️</a>';
 
     // --- 2. TOMBOL TAMBAH RELASI (KANAN ATAS) ---
     // Membuka Modal via Javascript
@@ -728,7 +728,7 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
                 echo '  <div class="node-wrapper spouse-node">';
                 fh_render_single_web_card($persons[$sid], $currentActiveId);
                 echo '  </div>';
-                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">â‌¤</span></div>';
+                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">❤️</span></div>';
                 echo '</div>';
             }
             echo '  </div>';
@@ -738,7 +738,7 @@ function fh_render_tree_web($personId, $persons, $spouses, $parentChildren, $chi
             echo '  <div class="wives-inline wives-inline-right">';
             foreach ($rightSpouses as $sid) {
                 echo '<div class="marriage-inline-unit marriage-inline-unit-right">';
-                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">â‌¤</span></div>';
+                echo '  <div class="marriage-link marriage-link-zigzag"><span class="marriage-love">❤️</span></div>';
                 echo '  <div class="node-wrapper spouse-node">';
                 fh_render_single_web_card($persons[$sid], $currentActiveId);
                 echo '  </div>';
@@ -1096,7 +1096,7 @@ if (isset($_GET['export'])) {
                 fh_render_single_card_pdf($persons[$personId]);
                 if (!empty($spouses[$personId])) {
                     foreach ($spouses[$personId] as $spouseId => $_) {
-                        echo '<div class="spouse-connector">â‌¤</div>';
+                        echo '<div class="spouse-connector">❤</div>';
                         if (isset($persons[$spouseId])) fh_render_single_card_pdf($persons[$spouseId]);
                     }
                 }
@@ -1369,7 +1369,7 @@ if (isset($_GET['export'])) {
     background: #64748b;
 }
         </style></head><body onload="window.print()">';
-        echo '<a href="#" onclick="window.print(); return false;" class="no-print">ًں–¨ï¸ڈ Cetak PDF</a>';
+        echo '<a href="#" onclick="window.print(); return false;" class="no-print">🖨 Cetak PDF</a>';
         
         $title = "Diagram Keluarga Besar";
         if ($filterRootId > 0 && isset($persons[$filterRootId])) {
@@ -1481,10 +1481,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // --- LOGIKA NOTIFIKASI TAMBAH ---
                 if ($countCheck == 0) {
                     // Ini adalah anggota PERTAMA (Keluarga Baru)
-                    fh_send_notification($mysqli, $targetUserId, "Keluarga Baru Terbentuk! ًںŒ±", "Selamat! Anda telah memulai pohon keluarga baru dengan menambahkan $name.", "success");
+                    fh_send_notification($mysqli, $targetUserId, "Keluarga Baru Terbentuk! 🎉", "Selamat! Anda telah memulai pohon keluarga baru dengan menambahkan $name.", "success");
                 } else {
                     // Ini adalah penambahan anggota selanjutnya
-                    fh_send_notification($mysqli, $targetUserId, "Anggota Baru Ditambahkan ًں‘¶", "$name berhasilat ditambahkan ke dalam silsilah keluarga.", "success");
+                    fh_send_notification($mysqli, $targetUserId, "Anggota Baru Ditambahkan 🎉", "$name berhasil ditambahkan ke dalam silsilah keluarga.", "success");
                 }
                 // --------------------------------
                 
@@ -1853,9 +1853,9 @@ if (isset($_POST['share_tree'])) {
                 $stmt->bind_param("ii", $treeId, $collabId);
                 $stmt->execute();
                 
-                if ($stmt->affected_rows > 0) {
+                    if ($stmt->affected_rows > 0) {
                     $shareStatus = ['icon'=>'success', 'title'=>'Berhasil!', 'text'=>'User '.htmlspecialchars($uData['name']).' telah ditambahkan sebagai editor.'];
-                    fh_send_notification($mysqli, $collabId, "Undangan Kolaborasi ًں¤‌", "Anda diundang untuk mengedit pohon keluarga.", "success");
+                    fh_send_notification($mysqli, $collabId, "Undangan Kolaborasi 📩", "Anda diundang untuk mengedit pohon keluarga.", "success");
                 } else {
                     $shareStatus = ['icon'=>'warning', 'title'=>'Sudah Ada', 'text'=>'User tersebut sudah menjadi kolaborator.'];
                 }
@@ -2139,20 +2139,20 @@ if ($action === 'bio') {
                             <div style="border:1px solid #e5e7eb; border-radius:10px; padding:15px; background:#fff; position:relative;">
                                 
                                 <div style="position:absolute; top:10px; right:10px; display:flex; gap:5px;">
-                                    <?php if($t['role'] === 'owner'): ?>
+                                        <?php if($t['role'] === 'owner'): ?>
                                         <button onclick="openShareModal(<?= $t['id'] ?>, '<?= htmlspecialchars($t['name'], ENT_QUOTES) ?>')" 
                                                 style="border:none; background:#e0e7ff; width:30px; height:30px; border-radius:50%; cursor:pointer; color:#4338ca; display:flex; align-items:center; justify-content:center;" title="Bagikan / Share">
-                                            ًں”—
+                                            🔗
                                         </button>
                                         
                                         <button onclick="editTree(<?= $t['id'] ?>, '<?= htmlspecialchars($t['name'], ENT_QUOTES) ?>')" 
                                                 style="border:none; background:#f3f4f6; width:30px; height:30px; border-radius:50%; cursor:pointer; color:#4b5563; display:flex; align-items:center; justify-content:center;">
-                                            âœژ
+                                            ✏️
                                         </button>
                                         
                                         <button onclick="deleteTree(<?= $t['id'] ?>, '<?= htmlspecialchars($t['name'], ENT_QUOTES) ?>')" 
                                                 style="border:none; background:#fee2e2; width:30px; height:30px; border-radius:50%; cursor:pointer; color:#991b1b; display:flex; align-items:center; justify-content:center;">
-                                            ًں—‘
+                                            🗑
                                         </button>
                                     
                                     <?php else: ?>
@@ -2161,7 +2161,7 @@ if ($action === 'bio') {
                                 </div>
                                 
                                 <a href="?action=view_tree&tree_id=<?= $t['id'] ?>" style="text-decoration:none; color:inherit; display:block; padding-top:10px;">
-                                    <div style="font-size:2rem; margin-bottom:10px;">ًںŒ³</div>
+                                    <div style="font-size:2rem; margin-bottom:10px;">🌳</div>
                                     <h3 style="margin:0 0 5px; font-size:1.1rem; color:#4f46e5; padding-right:80px;"><?= htmlspecialchars($t['name']) ?></h3>
                                     <p style="margin:0; font-size:0.85rem; color:#6b7280;"><?= $t['total'] ?> Anggota</p>
                                 </a>
@@ -2222,7 +2222,7 @@ if ($action === 'bio') {
                     </form>
             
                     <div style="margin-top:25px; border-top:1px solid #f3f4f6; padding-top:15px;">
-                        <h4 style="margin:0 0 10px; font-size:0.9rem; color:#374151;">ًں‘¥ Siapa yang punya akses?</h4>
+                        <h4 style="margin:0 0 10px; font-size:0.9rem; color:#374151;">🔒 Siapa yang punya akses?</h4>
                         
                         <ul id="collab_list_container" style="list-style:none; padding:0; margin:0; max-height:200px; overflow-y:auto;">
                             <li style="text-align:center; color:#9ca3af; font-size:0.85rem; padding:10px;">Memuat data...</li>
@@ -2233,8 +2233,8 @@ if ($action === 'bio') {
             
             <div id="modalDelete" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999; backdrop-filter:blur(2px);">
                 <div style="background:#fff; padding:25px; border-radius:12px; width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-                    <div style="text-align:center; margin-bottom:15px;">
-                        <div style="font-size:3rem; margin-bottom:10px;">âڑ ï¸ڈ</div>
+                        <div style="text-align:center; margin-bottom:15px;">
+                        <div style="font-size:3rem; margin-bottom:10px;">⚠️</div>
                         <h3 style="margin:0; color:#991b1b;">Hapus Keluarga?</h3>
                         <p style="color:#6b7280; font-size:0.9rem; margin-top:5px;">Anda akan menghapus: <br><strong id="del_tree_name_disp" style="color:#1f2937;"></strong></p>
                     </div>
@@ -2253,7 +2253,7 @@ if ($action === 'bio') {
             
                         <div style="display:flex; gap:10px;">
                             <button type="button" onclick="document.getElementById('modalDelete').style.display='none'" class="btn btn-secondary flex-1">Batal</button>
-                            <button type="submit" id="btn_delete_submit" class="btn btn-danger flex-1" disabled style="opacity:0.5; cursor:not-allowed;">ًں—‘ Hapus</button>
+                            <button type="submit" id="btn_delete_submit" class="btn btn-danger flex-1" disabled style="opacity:0.5; cursor:not-allowed;">🗑 Hapus</button>
                         </div>
                     </form>
                 </div>
@@ -2278,7 +2278,7 @@ if ($action === 'bio') {
 
             <div class="card modern-card">
                 <div class="page-header">
-                    <a href="?action=reset_tree" class="back-button-link">â†گ Kembali</a>
+                    <a href="?action=reset_tree" class="back-button-link">← Kembali</a>
                     <h2 class="tree-title"><?= htmlspecialchars($treeNameToDisplay) ?></h2>
                     <?php if (!$isViewingOthers): // Hanya tampilkan tombol Tambah jika bukan mode intip Admin ?>
                         <a href="?action=add_person" class="btn btn-primary btn-add-member">+ Anggota</a>
@@ -2327,7 +2327,7 @@ if ($action === 'bio') {
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <div>
-                        <a href="?action=home" style="font-size:0.8rem; color:#6b7280;">â†گ Kembali</a>
+                        <a href="?action=home" style="font-size:0.8rem; color:#6b7280;">← Kembali</a>
                         <h2 style="margin-top:5px;"><?= htmlspecialchars($_SESSION['current_tree_name'] ?? 'Home') ?></h2>
                     </div>
                     <a href="?action=add_person" class="btn btn-primary btn-sm">+ Anggota</a>
@@ -2498,14 +2498,14 @@ if ($action === 'bio') {
                         <?php endif; ?>
                         
                         <div style="margin-top:20px;">
-                            <button type="submit" class="btn btn-primary btn-block">ًں’¾ Simpan Perubahan</button>
+                            <button type="submit" class="btn btn-primary btn-block">💾 Simpan Perubahan</button>
                             <a href="?action=bio&id=<?= $currentPerson['id'] ?>&mode=view" class="btn btn-secondary btn-block" style="margin-top:8px;">Batal</a>
                             
                             <div style="margin-top: 25px; border-top: 1px dashed #cbd5e1; padding-top: 20px;">
                                 <a href="?delete_person=<?= $currentPerson['id'] ?>" 
                                    onclick="return confirm('PERINGATAN: \nApakah Anda yakin ingin menghapus <?= htmlspecialchars($currentPerson['name']) ?>?\n\nData yang dihapus tidak bisa dikembalikan.')" 
                                    class="btn btn-danger btn-block">
-                                    ًں—‘ï¸ڈ Hapus Orang Ini
+                                    🗑 Hapus Orang Ini
                                 </a>
                             </div>
                         </div>
@@ -2522,7 +2522,7 @@ if ($action === 'bio') {
                     <div style="background:#f9fafb; padding:15px; border-radius:10px; font-size:0.9rem;">
                     <?php if (!empty($currentPerson['last_editor_name'])): ?>
                         <div style="margin-top:10px; text-align:right; font-size:0.75rem; color:#9ca3af; font-style:italic;">
-                            ًں“‌ Terakhir diedit oleh: <strong><?= htmlspecialchars($currentPerson['last_editor_name']) ?></strong>
+                            ✎ Terakhir diedit oleh: <strong><?= htmlspecialchars($currentPerson['last_editor_name']) ?></strong>
                             <?php if(!empty($currentPerson['last_updated_at'])) echo ' (' . date('d/m H:i', strtotime($currentPerson['last_updated_at'])) . ')'; ?>
                         </div>
                     <?php endif; ?>    
@@ -2538,7 +2538,7 @@ if ($action === 'bio') {
                                 <div style="display:inline-block; text-align:left; background:#fff; border:1px solid #e5e7eb; padding:5px 10px; border-radius:8px;">
                                     <div style="font-size:0.7rem; color:#9ca3af; text-transform:uppercase; letter-spacing:0.5px;">Terakhir diedit oleh:</div>
                                     <div style="font-weight:bold; color:#4b5563; font-size:0.85rem;">
-                                        âœڈï¸ڈ <?= htmlspecialchars($currentPerson['last_editor_name']) ?>
+                                        ✏️ <?= htmlspecialchars($currentPerson['last_editor_name']) ?>
                                     </div>
                                     <?php if(!empty($currentPerson['last_updated_at'])): ?>
                                         <div style="font-size:0.7rem; color:#9ca3af; margin-top:2px;">
@@ -2550,7 +2550,7 @@ if ($action === 'bio') {
                         <?php endif; ?>
                         </div>
                         <?php if (!$isViewingOthers): ?>
-                        <a href="?action=bio&id=<?= $currentPerson['id'] ?>&mode=edit" class="btn btn-primary btn-block" style="margin-top:15px;">âœڈï¸ڈ Edit Profil</a>
+                        <a href="?action=bio&id=<?= $currentPerson['id'] ?>&mode=edit" class="btn btn-primary btn-block" style="margin-top:15px;">✏️ Edit Profil</a>
                         <?php endif; ?>
                 <?php endif; ?>
             </div>
@@ -2605,7 +2605,7 @@ if ($action === 'bio') {
         
             <?php if (empty($relations)): ?>
                 <div class="empty-relations">
-                    <div class="empty-icon">ًں¤‌</div>
+                    <div class="empty-icon">📭</div>
                     <p>Belum ada relasi yang tercatat untuk anggota ini.</p>
                 </div>
             <?php else: ?>
@@ -2654,7 +2654,7 @@ if ($action === 'bio') {
                                         <a href="?action=bio&id=<?= $currentPerson['id'] ?>&delete_rel=<?= $r['id'] ?>" 
                                            class="btn-chip btn-chip-delete"
                                            onclick="event.stopPropagation(); return confirm('Hapus relasi ini?');">
-                                            âœ– Hapus
+                                            🗑 Hapus
                                         </a>
                                         <?php endif; ?>
                                     </div>
@@ -2673,16 +2673,16 @@ if ($action === 'bio') {
     <div class="card">
         <div class="export-toolbar">
             <div class="export-label">
-                <span style="font-size: 1.2rem;">ًںŒ³</span> 
+                <span style="font-size: 1.2rem;">🌳</span>
                 <span style="font-weight:600; color:#374151;">Pohon Keluarga</span>
             </div>
             <?php 
                 $fr = isset($_GET['filter_root']) ? '&filter_root='.intval($_GET['filter_root']) : ''; 
             ?>
             <div class="export-actions">
-                <a href="?export=excel<?= $fr ?>" class="btn btn-success btn-sm">ًں“ٹ Excel</a>
-                <a href="?export=word<?= $fr ?>" class="btn btn-primary btn-sm">ًں“‌ Word</a>
-                <a href="?export=pdf<?= $fr ?>" class="btn btn-danger btn-sm" target="_blank">ًں“„ PDF</a>
+                <a href="?export=excel<?= $fr ?>" class="btn btn-success btn-sm">📊 Excel</a>
+                <a href="?export=word<?= $fr ?>" class="btn btn-primary btn-sm">📘 Word</a>
+                <a href="?export=pdf<?= $fr ?>" class="btn btn-danger btn-sm" target="_blank">📕 PDF</a>
             </div>
         </div>
 
@@ -2704,7 +2704,7 @@ if ($action === 'bio') {
                     iconColor: '#4f46e5',
                     
                     // Tampilan Tombol Modern
-                    confirmButtonText: 'ًں”چ Pilih Sekarang',
+                    confirmButtonText: 'Pilih Sekarang',
                     confirmButtonColor: '#4f46e5',
                     buttonsStyling: true,
                     
@@ -2841,12 +2841,12 @@ if ($action === 'bio') {
             <div style="font-size:0.85rem; color:#6b7280; margin-bottom:5px; font-weight:600;">
                 Filter Bani / Leluhur:
             </div>
-            <div class="pill-menu">
-                <a href="?action=tree" class="pill-item <?= ($targetRootId === null) ? 'active' : '' ?>">ًںŒچ Semua</a>
+                <div class="pill-menu">
+                <a href="?action=tree" class="pill-item <?= ($targetRootId === null) ? 'active' : '' ?>">👥 Semua</a>
                 <?php foreach ($menuList as $menu): ?>
                     <a href="?action=tree&filter_root=<?= $menu['id'] ?>" 
                        class="pill-item <?= ($targetRootId == $menu['id']) ? 'active' : '' ?>">
-                       ًں‘¤ <?= htmlspecialchars($menu['label']) ?> 
+                       • <?= htmlspecialchars($menu['label']) ?> 
                        <span style="font-size:0.75em; opacity:0.8;">(<?= $menu['count'] ?>)</span>
                     </a>
                 <?php endforeach; ?>
@@ -3533,11 +3533,11 @@ if ($action === 'bio') {
             </p>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <a href="#" id="btn_add_father" class="btn btn-secondary btn-sm" style="justify-content:center;">ًں‘´ Ayah</a>
-                <a href="#" id="btn_add_mother" class="btn btn-secondary btn-sm" style="justify-content:center;">ًں‘µ Ibu</a>
-                <a href="#" id="btn_add_spouse" class="btn btn-success btn-sm" style="justify-content:center;">ًں’چ Pasangan</a>
-                <a href="#" id="btn_add_child"  class="btn btn-primary btn-sm" style="justify-content:center;">ًں‘¶ Anak</a>
-                <a href="#" id="btn_add_sibling" class="btn btn-secondary btn-sm" style="justify-content:center; grid-column: span 2;">ًں‘¥ Saudara</a>
+                <a href="#" id="btn_add_father" class="btn btn-secondary btn-sm" style="justify-content:center;">👨 Ayah</a>
+                <a href="#" id="btn_add_mother" class="btn btn-secondary btn-sm" style="justify-content:center;">👩 Ibu</a>
+                <a href="#" id="btn_add_spouse" class="btn btn-success btn-sm" style="justify-content:center;">💑 Pasangan</a>
+                <a href="#" id="btn_add_child"  class="btn btn-primary btn-sm" style="justify-content:center;">👶 Anak</a>
+                <a href="#" id="btn_add_sibling" class="btn btn-secondary btn-sm" style="justify-content:center; grid-column: span 2;">👫 Saudara</a>
             </div>
         </div>
     </div>
@@ -3547,7 +3547,7 @@ if ($action === 'bio') {
     
 <?php elseif ($action === 'notifications'): ?>
     <div class="card" style="border:none; background:transparent; box-shadow:none; padding:0;">
-        <h2 style="margin-bottom:15px;">ًں”” Notifikasi Anda</h2>
+        <h2 style="margin-bottom:15px;">🔔 Notifikasi Anda</h2>
         
         <?php
         // Ambil notifikasi: Milik User Ini ATAU Broadcast (0)
@@ -3561,10 +3561,10 @@ if ($action === 'bio') {
             <div style="display:flex; flex-direction:column; gap:12px;">
                 <?php while ($row = $resNotif->fetch_assoc()): 
                     // Styling icon berdasarkan tipe
-                    $icon = 'â„¹ï¸ڈ'; $color = '#3b82f6'; $bg = '#eff6ff';
-                    if($row['type'] == 'success') { $icon = 'ًںŒ±'; $color = '#10b981'; $bg = '#ecfdf5'; }
-                    if($row['type'] == 'birthday') { $icon = 'ًںژ‚'; $color = '#f43f5e'; $bg = '#fff1f2'; }
-                    if($row['type'] == 'warning') { $icon = 'âڑ ï¸ڈ'; $color = '#f59e0b'; $bg = '#fffbeb'; }
+                    $icon = 'ℹ️'; $color = '#3b82f6'; $bg = '#eff6ff';
+                    if($row['type'] == 'success') { $icon = '✅'; $color = '#10b981'; $bg = '#ecfdf5'; }
+                    if($row['type'] == 'birthday') { $icon = '🎂'; $color = '#f43f5e'; $bg = '#fff1f2'; }
+                    if($row['type'] == 'warning') { $icon = '⚠️'; $color = '#f59e0b'; $bg = '#fffbeb'; }
                 ?>
                     <div style="background:#fff; padding:15px; border-radius:12px; border-left: 5px solid <?= $color ?>; box-shadow:0 2px 4px rgba(0,0,0,0.05); display:flex; gap:12px;">
                         <div style="font-size:1.5rem; background:<?= $bg ?>; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -3585,8 +3585,8 @@ if ($action === 'bio') {
                 <?php endwhile; ?>
             </div>
         <?php else: ?>
-            <div class="card" style="text-align:center; padding:50px 20px;">
-                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">ًں“­</div>
+                <div class="card" style="text-align:center; padding:50px 20px;">
+                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">🔕</div>
                 <h3 style="color:#374151; margin:0;">Belum ada notifikasi</h2>
                 <p style="color:#6b7280; font-size:0.9rem;">Info keluarga dan pengumuman akan muncul di sini.</p>
             </div>
@@ -3621,12 +3621,12 @@ if ($action === 'bio') {
         <div class="menu-list">
             <?php if ($isAdmin): ?>
             <a href="?action=admin_users" style="color:#4f46e5;">
-                <span class="menu-icon">ًں‘‘</span> Dashboard Admin
+                <span class="menu-icon">🛠</span> Dashboard Admin
             </a>
             <?php endif; ?>
 
             <a href="?action=support">
-                <span class="menu-icon">ًں“©</span> Pusat Bantuan / Feedback
+                <span class="menu-icon">💬</span> Pusat Bantuan / Feedback
             </a>
             
             <div style="padding:15px; border-bottom:1px solid #f3f4f6;">
@@ -3652,14 +3652,14 @@ if ($action === 'bio') {
                                         <button type="submit" class="btn btn-sm" 
                                                 style="background:#dc2626; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                                 onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($t['name']) ?>?');">
-                                            ًں”’ Diizinkan
+                                            ✅ Diizinkan
                                         </button>
                                     <?php else: ?>
                                         <input type="hidden" name="new_status" value="1">
                                         <button type="submit" class="btn btn-sm" 
                                                 style="background:#10b981; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                                 onclick="return confirm('Yakin izinkan akses Admin untuk Keluarga <?= htmlspecialchars($t['name']) ?>?');">
-                                            â‌Œ Terkunci
+                                            🔒 Terkunci
                                         </button>
                                     <?php endif; ?>
                                 </form>
@@ -3675,21 +3675,21 @@ if ($action === 'bio') {
             </div>
 
             <a href="?action=logout" onclick="return confirm('Keluar dari aplikasi?')" style="color:#ef4444;">
-                <span class="menu-icon">ًںڑھ</span> Keluar Aplikasi
+                <span class="menu-icon">🚪</span> Keluar Aplikasi
             </a>
             <a href="?action=about">
-                <span class="menu-icon">â„¹ï¸ڈ</span> Tentang Aplikasi
+                <span class="menu-icon">ℹ️</span> Tentang Aplikasi
             </a>
             
             <a href="?action=privacy">
-                <span class="menu-icon">ًں›،ï¸ڈ</span> Kebijakan Privasi
+                <span class="menu-icon">🔐</span> Kebijakan Privasi
             </a>
         </div>
     </div>
 
 <?php elseif ($action === 'support'): ?>
     <div class="card">
-        <h2>ًں“© Pusat Bantuan & Feedback</h2>
+        <h2>💬 Pusat Bantuan & Feedback</h2>
         
         <?php
         // Proses Kirim Tiket
@@ -3729,11 +3729,11 @@ if ($action === 'bio') {
                 
                 <?php if ($t['admin_reply']): ?>
                     <div style="background:#ecfdf5; padding:10px; border-radius:6px; border-left:4px solid #10b981; font-size:0.9rem;">
-                        <strong>ًں‘‘ Balasan Admin:</strong><br>
+                        <strong>✉️ Balasan Admin:</strong><br>
                         <?= nl2br(htmlspecialchars($t['admin_reply'])) ?>
                     </div>
                 <?php else: ?>
-                    <div style="font-size:0.8rem; color:#d97706; background:#fffbeb; display:inline-block; padding:2px 8px; border-radius:99px;">âڈ³ Menunggu balasan</div>
+                    <div style="font-size:0.8rem; color:#d97706; background:#fffbeb; display:inline-block; padding:2px 8px; border-radius:99px;">⏳ Menunggu balasan</div>
                 <?php endif; ?>
             </div>
         <?php endwhile; else: ?>
@@ -3748,7 +3748,7 @@ elseif ($action === 'about'): ?>
     <div class="card">
         <div style="text-align:center; margin-bottom:20px;">
             <div style="width:60px; height:60px; background:#4f46e5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; color:#fff; font-size:1.5rem;">
-                ًں‘¨â€چًں‘©â€چًں‘§â€چًں‘¦
+                👪
             </div>
             <h2 style="margin:0;">Tentang FamilyHood</h2>
             <p style="color:#6b7280; font-size:0.9rem;">Menyambung Tali Silaturahmi Digital</p>
@@ -3759,51 +3759,51 @@ elseif ($action === 'about'): ?>
         </p>
         
         <h3 class="section-title" style="margin-top:20px;">Misi Kami</h3>
-        <ul style="padding-left:20px; line-height:1.6; color:#374151;">
-            <li>ًںŒچ <strong>Menghubungkan Generasi:</strong> Memudahkan anak cucu mengenal leluhur mereka.</li>
-            <li>ًں”’ <strong>Menjaga Privasi:</strong> Data keluarga Anda aman dan hanya bisa diakses oleh Anda (dan admin sistem jika diizinkan).</li>
-            <li>ًں“ٹ <strong>Visualisasi Mudah:</strong> Melihat hubungan keluarga dalam bentuk pohon visual yang interaktif.</li>
+            <ul style="padding-left:20px; line-height:1.6; color:#374151;">
+            <li>👪 <strong>Menghubungkan Generasi:</strong> Memudahkan anak cucu mengenal leluhur mereka.</li>
+            <li>🔒 <strong>Menjaga Privasi:</strong> Data keluarga Anda aman dan hanya bisa diakses oleh Anda (dan admin sistem jika diizinkan).</li>
+            <li>🖼️ <strong>Visualisasi Mudah:</strong> Melihat hubungan keluarga dalam bentuk pohon visual yang interaktif.</li>
         </ul>
 
         <h3 class="section-title" style="margin-top:20px;">Kontak Kami</h3>
         <div style="background:#f0f9ff; padding:15px; border-radius:10px; border:1px solid #bae6fd; margin-bottom:20px;">
             <p style="margin:0 0 8px; font-weight:600; color:#0c4a6e;">Informasi Pengembang/Admin:</p>
             <ul style="list-style:none; padding:0; margin:0; font-size:0.9rem;">
-                <li style="margin-bottom:5px;">ًں“± HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
-                <li style="margin-bottom:5px;">ًں“§ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
-                <li>ًں“¸ Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
+                <li style="margin-bottom:5px;">📞 HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
+                <li style="margin-bottom:5px;">✉️ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
+                <li>📸 Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
             </ul>
         </div>
         
         <h3 class="section-title" style="margin-top:20px;">Fitur Unggulan</h3>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>ًںŒ³ Pohon Dinamis</strong><br>Otomatis menyusun bagan keturunan.
+                <strong>🌳 Pohon Dinamis</strong><br>Otomatis menyusun bagan keturunan.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>ًں“„ Export Data</strong><br>Unduh ke PDF, Word, atau Excel dengan mudah.
+                <strong>📤 Export Data</strong><br>Unduh ke PDF, Word, atau Excel dengan mudah.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>ًںژ‚ Pengingat Ultah</strong><br>Notifikasi ulang tahun anggota keluarga.
+                <strong>🎂 Pengingat Ultah</strong><br>Notifikasi ulang tahun anggota keluarga.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>ًں–¼ï¸ڈ Galeri Foto</strong><br>Simpan foto kenangan setiap anggota.
+                <strong>🖼 Galeri Foto</strong><br>Simpan foto kenangan setiap anggota.
             </div>
         </div>
 
         <div style="margin-top:30px; text-align:center; border-top:1px solid #eee; padding-top:20px;">
             <p style="font-size:0.8rem; color:#9ca3af;">
                 Versi Aplikasi: 1.0.0<br>
-                Dibuat dengan â‌¤ï¸ڈ oleh Tim Pengembang.
+                Dibuat dengan ❤️ oleh Tim Pengembang.
             </p>
-            <a href="?action=settings" class="btn btn-secondary btn-sm">â†گ Kembali ke Pengaturan</a>
+            <a href="?action=settings" class="btn btn-secondary btn-sm">← Kembali ke Pengaturan</a>
         </div>
     </div>
 <?
 // --- HALAMAN KEBIJAKAN PRIVASI (PRIVACY POLICY) ---
 elseif ($action === 'privacy'): ?>
     <div class="card">
-        <h2 style="margin-bottom:10px;">ًں”’ Kebijakan Privasi</h2>
+        <h2 style="margin-bottom:10px;">🔐 Kebijakan Privasi</h2>
         <p style="font-size:0.85rem; color:#6b7280; margin-bottom:20px;">Terakhir diperbarui: <?= date('d M Y') ?></p>
         
         <div style="font-size:0.9rem; line-height:1.6; color:#374151;">
@@ -3844,9 +3844,9 @@ elseif ($action === 'privacy'): ?>
                 <strong>Hubungi Kami</strong><br>
                 Jika ada pertanyaan mengenai privasi, Anda dapat menghubungi kami:<br>
                 <ul style="list-style:disc; padding-left:20px; margin:5px 0 0; font-size:0.9rem;">
-                    <li>ًں“± HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
-                    <li>ًں“§ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
-                    <li>ًں“¸ Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
+                    <li>📞 HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
+                    <li>✉️ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
+                    <li>📸 Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
                 </ul>
             </div>
         </div>
@@ -3858,7 +3858,7 @@ elseif ($action === 'privacy'): ?>
 
 <?php elseif ($action === 'admin_users' && $isAdmin): ?>
     <div class="card">
-        <h2>ًں‘‘ Dashboard Admin</h2>
+        <h2>🛠 Dashboard Admin</h2>
         
         <h3 class="section-title">Daftar Pengguna</h3>
         <div style="overflow-x:auto;">
@@ -3898,10 +3898,10 @@ elseif ($action === 'privacy'): ?>
                                         class="btn btn-sm btn-primary"
                                         style="background:#4f46e5; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                         onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($u['name']) ?>?');">
-                                    âœ… <?= $viewableTreesCount ?> Keluarga Diizinkan
+                                    ✅ <?= $viewableTreesCount ?> Keluarga Diizinkan
                                 </button>
                             <?php else: ?>
-                                <span style="color:#9ca3af; font-size:0.85rem;">ًں”’ Private (0 Keluarga)</span>
+                                <span style="color:#9ca3af; font-size:0.85rem;">🔒 Private (0 Keluarga)</span>
                             <?php endif; ?>
                         </td>
 
@@ -3912,7 +3912,7 @@ elseif ($action === 'privacy'): ?>
         </div>
         
         <div style="margin-top:40px; padding-top:20px; border-top:2px dashed #e5e7eb;">
-            <h3 class="section-title">ًں“¢ Kirim Pengumuman / Notifikasi</h3>
+            <h3 class="section-title">📣 Kirim Pengumuman / Notifikasi</h3>
             
             <?php
             if (isset($_POST['send_broadcast'])) {
@@ -3933,12 +3933,12 @@ elseif ($action === 'privacy'): ?>
                 
                 <label>Tujuan:</label>
                 <select name="broadcast_target" required>
-                    <option value="0">ًں“¢ SEMUA USER (Broadcast)</option>
+                    <option value="0">📣 SEMUA USER (Broadcast)</option>
                     <?php 
                     // Ambil list user lagi untuk dropdown
                     $usersList = $mysqli->query("SELECT id, name FROM users WHERE role != 'admin'");
                     while($u = $usersList->fetch_assoc()) {
-                        echo "<option value='".$u['id']."'>ًں‘¤ ".$u['name']."</option>";
+                        echo "<option value='".$u['id']."'>• ".$u['name']."</option>";
                     }
                     ?>
                 </select>
@@ -4320,13 +4320,13 @@ function showAdminViewModal(userId, userName) {
                     li.style.borderBottom = '1px solid #eee';
                     
                     li.innerHTML = `
-                        <div style="font-weight:600; color:#1f2937;">ًںŒ³ ${tree.name}</div>
+                        <div style="font-weight:600; color:#1f2937;">🌳 ${tree.name}</div>
                         <div style="font-size:0.8rem; color:#6b7280;">ID: ${tree.id}</div>
                         <a href="?action=home&view_user_id=${userId}&view_tree_id=${tree.id}" 
                            target="_blank" 
                            class="btn btn-sm btn-primary" 
                            style="margin-top:5px; font-size:0.75rem; background:#10b981;">
-                            ًں‘پï¸ڈ Lihat Pohon Ini
+                            🔎 Lihat Pohon Ini
                         </a>
                     `;
                     listContainer.appendChild(li);
