@@ -3106,7 +3106,7 @@ if ($action === 'bio') {
             // ── Bangun badge pasangan + edges ──────────────────────────────
             // Setiap pasangan suami-istri mendapat badge ❤ (menikah) atau ✂ (cerai)
             // Garis suami-istri terbagi dua: suami→badge→istri
-            // Anak terhubung ke badge (1 istri) atau anchor centroid (>1 istri)
+            // Anak terhubung ke badge ibu mereka masing-masing
             heads.forEach(hId => {
                 const wives = unitSpouses[hId] || [];
                 const kids  = unitChildren[hId] || [];
@@ -3129,19 +3129,26 @@ if ($action === 'bio') {
                         elements.push({ group:'edges', data:{ id:`sp2-${hId}-${wid}`, source:bid, target:String(wid), edgeType:eType } });
                     });
 
-                    // Routing anak dari badge (1 istri) atau anchor centroid (>1 istri)
+                    // Routing anak: setiap anak → badge ibu mereka masing-masing
                     if (kids.length > 0) {
-                        let ancId;
-                        if (wives.length === 1 && badgeList.length === 1) {
-                            ancId = badgeList[0].bid; // badge sekaligus jadi anchor
-                        } else {
-                            const all = [hId, ...wives].filter(m => pos[m]);
-                            const ax  = all.reduce((s,m) => s + pos[m].x, 0) / all.length;
-                            ancId = `anc-${hId}`;
-                            elements.push({ group:'nodes', data:{ id:ancId, label:'', isAnchor:true }, position:{ x:ax, y:pos[hId].y } });
-                        }
+                        // Build map: wid → bid
+                        const widToBid = {};
+                        wives.forEach(wid => {
+                            widToBid[wid] = `badge-${Math.min(hId,wid)}-${Math.max(hId,wid)}`;
+                        });
                         kids.forEach(chHead => {
-                            elements.push({ group:'edges', data:{ id:`pc-${ancId}-${chHead}`, source:ancId, target:String(chHead), edgeType:'parent-child' } });
+                            // Cari ibu dari child unit ini
+                            const parentIds = Object.keys(childParents[chHead]||{}).map(Number);
+                            const motherWid = wives.find(wid => parentIds.includes(wid));
+                            let srcId;
+                            if (motherWid && widToBid[motherWid]) {
+                                srcId = widToBid[motherWid];          // badge ibu spesifik
+                            } else if (badgeList.length === 1) {
+                                srcId = badgeList[0].bid;             // satu-satunya badge
+                            } else {
+                                srcId = String(hId);                  // fallback ke ayah
+                            }
+                            elements.push({ group:'edges', data:{ id:`pc-${srcId}-${chHead}`, source:srcId, target:String(chHead), edgeType:'parent-child' } });
                         });
                     }
                 } else {
