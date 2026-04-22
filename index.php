@@ -2906,7 +2906,9 @@ if ($action === 'bio') {
             </div>
         </div>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.29.2/cytoscape.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
         <script>
         (function() {
             const container = document.getElementById('family-graph');
@@ -2920,12 +2922,11 @@ if ($action === 'bio') {
             const persons        = <?= json_encode($graphPersons,    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const parentChildren = <?= json_encode($parentChildren,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const childParents   = <?= json_encode($childParents,    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-            const spouses = <?= json_encode($spouses, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-            const roots = <?= json_encode(array_values($rootsToRender)) ?>;
+            const spouses        = <?= json_encode($spouses,         JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            const roots          = <?= json_encode(array_values($rootsToRender)) ?>;
             const focusId        = <?= (int)$focusId ?>;
-            const generationData = <?= json_encode($generationData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
-            // ── Kumpulkan node yang visible (BFS dari roots) ─────────────────
+            // ── BFS: kumpulkan semua node yang visible ───────────────────────
             const visible = new Set();
             const stack   = [...roots];
             while (stack.length) {
@@ -2933,255 +2934,59 @@ if ($action === 'bio') {
                 if (!curr || visible.has(curr)) continue;
                 visible.add(curr);
                 Object.keys(parentChildren[curr] || {}).forEach(cid => {
-                    const c = Number(cid);
-                    if (c && !visible.has(c)) stack.push(c);
+                    const c = Number(cid); if (c && !visible.has(c)) stack.push(c);
                 });
                 Object.keys(spouses[curr] || {}).forEach(sid => {
-                    const s = Number(sid);
-                    if (s && !visible.has(s)) stack.push(s);
+                    const s = Number(sid); if (s && !visible.has(s)) stack.push(s);
                 });
             }
-            if (visible.size === 0) {
-                if (fallback) fallback.style.display = 'block';
-                return;
-            }
+            if (visible.size === 0) { if (fallback) fallback.style.display = 'block'; return; }
 
-            // ── Parameter layout ─────────────────────────────────────────────
-            const GEN_Y_GAP  = 160;
-            const NODE_W     = 110;
-            const COUPLE_GAP = 90;
-
-            // ── Level Y per generasi (pasangan disamakan) ────────────────────
-            const genY = {};
-            visible.forEach(id => {
-                genY[id] = ((generationData[id] ?? 1) - 1) * GEN_Y_GAP;
-            });
-            visible.forEach(id => {
-                Object.keys(spouses[id] || {}).forEach(sid => {
-                    const s = Number(sid);
-                    if (!visible.has(s)) return;
-                    const merged = Math.min(genY[id], genY[s]);
-                    genY[id] = merged;
-                    genY[s]  = merged;
-                });
-            });
-
-            // ── Kumpulkan childSet ───────────────────────────────────────────
-            const childSet = new Set();
-            visible.forEach(pid => {
-                Object.keys(parentChildren[pid] || {}).forEach(cid => {
-                    const c = Number(cid);
-                    if (c && visible.has(c)) childSet.add(c);
-                });
-            });
-
-            // ── coupleMap: husbandId → [{wife, children[]}] ──────────────────
-            const coupleMap  = {};
-            const assignedC  = new Set();
-            visible.forEach(hId => {
-                const p = persons[hId];
-                if (!p || p.gender !== 'L') return;
-                const wives = Object.keys(spouses[hId] || {})
-                    .map(Number).filter(sid => visible.has(sid)).sort((a,b) => a-b);
-                coupleMap[hId] = [];
-                if (wives.length === 0) {
-                    const kids = [...childSet].filter(cid => {
-                        if (assignedC.has(cid)) return false;
-                        const pIds = Object.keys(childParents[cid]||{}).map(Number).filter(x=>visible.has(x));
-                        return pIds.includes(hId);
-                    });
-                    if (kids.length) { kids.forEach(c=>assignedC.add(c)); coupleMap[hId].push({wife:null,children:kids}); }
-                    return;
-                }
-                wives.forEach(wId => {
-                    const kids = [...childSet].filter(cid => {
-                        if (assignedC.has(cid)) return false;
-                        const pIds = Object.keys(childParents[cid]||{}).map(Number).filter(x=>visible.has(x));
-                        return pIds.includes(hId) && pIds.includes(wId);
-                    });
-                    kids.forEach(c=>assignedC.add(c));
-                    coupleMap[hId].push({wife:wId, children:kids});
-                });
-                const solo = [...childSet].filter(cid => {
-                    if (assignedC.has(cid)) return false;
-                    const pIds = Object.keys(childParents[cid]||{}).map(Number).filter(x=>visible.has(x));
-                    return pIds.includes(hId);
-                });
-                if (solo.length) { solo.forEach(c=>assignedC.add(c)); coupleMap[hId].push({wife:null,children:solo}); }
-            });
-
-            // ── Hitung lebar subtree (bottom-up) ─────────────────────────────
-            const subtW    = {};
-            const calcDone = new Set();
-            function calcW(id) {
-                if (calcDone.has(id)) return subtW[id] || NODE_W;
-                calcDone.add(id);
-                const groups    = coupleMap[id] || [];
-                const allKids   = groups.flatMap(g => g.children);
-                const numWives  = groups.filter(g => g.wife).length;
-                const coupleSpan = NODE_W + numWives * COUPLE_GAP;
-                if (!allKids.length) { subtW[id] = Math.max(NODE_W, coupleSpan); return subtW[id]; }
-                const childSpan = allKids.reduce((s,c) => s + calcW(c), 0)
-                                + Math.max(0, allKids.length - 1) * NODE_W;
-                subtW[id] = Math.max(coupleSpan, childSpan);
-                return subtW[id];
-            }
-            visible.forEach(id => { if (!calcDone.has(id)) calcW(id); });
-
-            // ── Penempatan posisi (top-down) ─────────────────────────────────
-            const pos    = {};
-            const placed = new Set();
-            visible.forEach(id => { pos[id] = { x: 0, y: genY[id] }; });
-
-            function placeSubtree(id, cx) {
-                if (placed.has(id)) return;
-                placed.add(id);
-                pos[id].x = cx;
-                const groups    = coupleMap[id] || [];
-                const wivesList = groups.map(g => g.wife).filter(Boolean);
-                const half      = Math.ceil(wivesList.length / 2);
-                wivesList.forEach((wId, idx) => {
-                    if (!placed.has(wId)) {
-                        placed.add(wId);
-                        pos[wId] = {
-                            x: idx < half ? cx - (half - idx) * COUPLE_GAP
-                                          : cx + (idx - half + 1) * COUPLE_GAP,
-                            y: genY[wId]
-                        };
-                    }
-                });
-                const allKids = groups.flatMap(g => g.children);
-                if (!allKids.length) return;
-                const totalChildW = allKids.reduce((s,c) => s + (subtW[c]||NODE_W), 0)
-                                  + Math.max(0, allKids.length - 1) * NODE_W;
-                let childCx = cx - totalChildW / 2 + (subtW[allKids[0]]||NODE_W) / 2;
-                allKids.forEach((cid, i) => {
-                    placeSubtree(cid, childCx);
-                    if (i < allKids.length - 1)
-                        childCx += (subtW[allKids[i]]||NODE_W)/2 + NODE_W + (subtW[allKids[i+1]]||NODE_W)/2;
-                });
-            }
-
-            const allRoots = [...visible].filter(id => {
-                return !Object.keys(childParents[id]||{}).map(Number).some(x => visible.has(x));
-            });
-            const rootSeen  = new Set();
-            const mainRoots = allRoots.filter(id => {
-                if (rootSeen.has(id)) return false;
-                rootSeen.add(id);
-                Object.keys(spouses[id]||{}).map(Number).filter(x=>visible.has(x)).forEach(s=>rootSeen.add(s));
-                if ((persons[id]?.gender||'') !== 'L') {
-                    if (allRoots.some(rid => rid!==id &&
-                        Object.keys(spouses[rid]||{}).map(Number).includes(id) &&
-                        (persons[rid]?.gender||'')==='L')) return false;
-                }
-                return true;
-            });
-            let curX = 0;
-            mainRoots.forEach(rid => {
-                const w = subtW[rid] || NODE_W;
-                placeSubtree(rid, curX + w / 2);
-                curX += w + NODE_W;
-            });
-            visible.forEach(id => { if (!placed.has(id)) { pos[id].x = curX; curX += NODE_W; } });
-
-            // Center tree
-            const allXV  = [...visible].map(id => pos[id].x);
-            const cShift = -(Math.min(...allXV) + Math.max(...allXV)) / 2;
-            visible.forEach(id => { pos[id].x += cShift; });
-
-            // ── Bangun elemen Cytoscape ──────────────────────────────────────
+            // ── Bangun nodes ─────────────────────────────────────────────────
             const elements = [];
-
             visible.forEach(id => {
                 const p = persons[id];
                 if (!p) return;
-                const label = (Number(p.is_alive)===0 ? 'alm. ' : '') + p.name;
                 elements.push({
                     group: 'nodes',
-                    data: { id: String(id), label, photo: p.photo||'', gender: p.gender||'', isFocus: (focusId===id), personId: id },
-                    position: { x: pos[id].x, y: pos[id].y }
+                    data: {
+                        id: String(id),
+                        label: (Number(p.is_alive) === 0 ? 'alm. ' : '') + p.name,
+                        photo: p.photo || '', gender: p.gender || '',
+                        isFocus: (focusId === id), personId: id
+                    }
                 });
             });
 
-            // Marriage-anchor node + edge pasangan (garis merah putus-putus)
-            const marriageSet  = new Set();
-            const marriageLnks = new Set();
-            function ensureMarriageNode(a, b) {
-                const ma = Math.min(a,b), mb = Math.max(a,b);
-                const mId = `m-${ma}-${mb}`;
-                if (!marriageSet.has(mId)) {
-                    marriageSet.add(mId);
-                    elements.push({
-                        group: 'nodes',
-                        data: { id: mId, label: '', isMarriage: true },
-                        position: { x: (pos[ma]?.x + pos[mb]?.x)/2, y: (pos[ma]?.y ?? 0) + GEN_Y_GAP * 0.38 }
-                    });
-                }
-                return mId;
-            }
-            function addSpouseEdges(a, b) {
-                const ma = Math.min(a,b), mb = Math.max(a,b);
-                const mId = ensureMarriageNode(ma, mb);
-                const lA = `sl-${ma}-${mId}`, lB = `sl-${mb}-${mId}`;
-                if (!marriageLnks.has(lA)) {
-                    marriageLnks.add(lA);
-                    elements.push({ group:'edges', data:{ id:lA, source:String(ma), target:mId, edgeType:'spouse' }});
-                }
-                if (!marriageLnks.has(lB)) {
-                    marriageLnks.add(lB);
-                    elements.push({ group:'edges', data:{ id:lB, source:String(mb), target:mId, edgeType:'spouse' }});
-                }
-                return mId;
-            }
-
-            const spouseSeen = new Set();
-            visible.forEach(id => {
-                Object.keys(spouses[id]||{}).forEach(sid => {
-                    const s = Number(sid);
-                    if (!visible.has(s)) return;
-                    const key = `${Math.min(id,s)}-${Math.max(id,s)}`;
-                    if (!spouseSeen.has(key)) { spouseSeen.add(key); addSpouseEdges(id, s); }
+            // ── Bangun parent-child edges (untuk layout dagre) ───────────────
+            const edgeSeen = new Set();
+            visible.forEach(pid => {
+                Object.keys(parentChildren[pid] || {}).forEach(cidStr => {
+                    const cid = Number(cidStr);
+                    if (!visible.has(cid)) return;
+                    const eKey = `${pid}-${cid}`;
+                    if (edgeSeen.has(eKey)) return;
+                    edgeSeen.add(eKey);
+                    elements.push({ group: 'edges', data: { id: `pc-${pid}-${cid}`, source: String(pid), target: String(cid), edgeType: 'parent-child' } });
                 });
             });
 
-            childSet.forEach(childId => {
-                const pIds = Object.keys(childParents[childId]||{}).map(Number).filter(x=>visible.has(x));
-                if (pIds.length >= 2) {
-                    const father = pIds.find(id=>(persons[id]?.gender||'')==='L');
-                    const mother = pIds.find(id=>(persons[id]?.gender||'')==='P');
-                    const p1 = father || pIds[0];
-                    const p2 = mother || pIds.find(id=>id!==p1) || pIds[1];
-                    if (p1 && p2 && p1!==p2) {
-                        const mId = addSpouseEdges(p1, p2);
-                        elements.push({ group:'edges', data:{ id:`pc-${mId}-${childId}`, source:mId, target:String(childId), edgeType:'parent-child' }});
-                        return;
-                    }
-                }
-                if (pIds.length >= 1) {
-                    const parentId    = pIds[0];
-                    const pGender     = persons[parentId]?.gender||'';
-                    const spouseCands = Object.keys(spouses[parentId]||{}).map(Number)
-                        .filter(x => visible.has(x) && !childSet.has(x));
-                    const inferredSpouse = spouseCands.find(x => pGender && (persons[x]?.gender||'') && (persons[x]?.gender||'') !== pGender)
-                        ?? spouseCands[0];
-                    if (inferredSpouse && inferredSpouse !== parentId) {
-                        const mId = addSpouseEdges(parentId, inferredSpouse);
-                        elements.push({ group:'edges', data:{ id:`pc-${mId}-${childId}`, source:mId, target:String(childId), edgeType:'parent-child' }});
-                    } else {
-                        elements.push({ group:'edges', data:{ id:`pc-${parentId}-${childId}`, source:String(parentId), target:String(childId), edgeType:'parent-child' }});
-                    }
-                }
-            });
-
-            // ── Inisialisasi Cytoscape ───────────────────────────────────────
+            // ── Inisialisasi Cytoscape dengan dagre layout ───────────────────
             const cy = cytoscape({
                 container,
                 elements,
-                layout: { name: 'preset' },
+                layout: {
+                    name:    'dagre',
+                    rankDir: 'TB',
+                    nodeSep: 55,
+                    rankSep: 120,
+                    ranker:  'tight-tree',
+                    fit:     true,
+                    padding: 40
+                },
                 style: [
                     {
-                        selector: 'node[!isMarriage]',
+                        selector: 'node',
                         style: {
                             'width': 60, 'height': 60,
                             'background-fit': 'cover',
@@ -3190,7 +2995,7 @@ if ($action === 'bio') {
                                 const photo = ele.data('photo');
                                 if (photo) return photo;
                                 const g = ele.data('gender');
-                                const fill = g==='L' ? '#bfdbfe' : g==='P' ? '#fbcfe8' : '#e5e7eb';
+                                const fill = g === 'L' ? '#bfdbfe' : g === 'P' ? '#fbcfe8' : '#e5e7eb';
                                 const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='#fff'/><circle cx='100' cy='72' r='48' fill='${fill}'/><rect x='36' y='132' rx='16' width='128' height='44' fill='${fill}'/></svg>`;
                                 return 'data:image/svg+xml;base64,' + btoa(svg);
                             },
@@ -3211,17 +3016,14 @@ if ($action === 'bio') {
                         }
                     },
                     {
-                        selector: 'node[?isFocus]',
-                        style: { 'width': 72, 'height': 72, 'border-width': 4, 'border-color': '#4f46e5' }
-                    },
-                    {
-                        selector: 'node[isMarriage]',
+                        selector: 'edge[edgeType="parent-child"]',
                         style: {
-                            'width': 6, 'height': 6,
-                            'background-color': 'rgba(0,0,0,0)',
-                            'border-width': 0,
-                            'label': '',
-                            'events': 'no'
+                            'width': 2.2,
+                            'line-color': '#94a3b8',
+                            'line-style': 'solid',
+                            'curve-style': 'bezier',
+                            'target-arrow-shape': 'none',
+                            'source-arrow-shape': 'none'
                         }
                     },
                     {
@@ -3235,17 +3037,6 @@ if ($action === 'bio') {
                             'target-arrow-shape': 'none',
                             'source-arrow-shape': 'none'
                         }
-                    },
-                    {
-                        selector: 'edge[edgeType="parent-child"]',
-                        style: {
-                            'width': 2.2,
-                            'line-color': '#94a3b8',
-                            'line-style': 'solid',
-                            'curve-style': 'straight',
-                            'target-arrow-shape': 'none',
-                            'source-arrow-shape': 'none'
-                        }
                     }
                 ],
                 userZoomingEnabled:  true,
@@ -3255,16 +3046,33 @@ if ($action === 'bio') {
                 maxZoom: 3
             });
 
+            // ── Tambah spouse edges setelah layout selesai ───────────────────
+            const spouseSeen  = new Set();
+            const spouseEdges = [];
+            visible.forEach(id => {
+                Object.keys(spouses[id] || {}).forEach(sidStr => {
+                    const s = Number(sidStr);
+                    if (!visible.has(s)) return;
+                    const key = `${Math.min(id, s)}-${Math.max(id, s)}`;
+                    if (spouseSeen.has(key)) return;
+                    spouseSeen.add(key);
+                    spouseEdges.push({ group: 'edges', data: { id: `sp-${Math.min(id,s)}-${Math.max(id,s)}`, source: String(id), target: String(s), edgeType: 'spouse' } });
+                });
+            });
+            if (spouseEdges.length) cy.add(spouseEdges);
+
+            // ── Fit setelah container selesai dirender ───────────────────────
             function doFit() { cy.resize(); cy.fit(undefined, 40); }
             requestAnimationFrame(doFit);
-            setTimeout(doFit, 300);
+            setTimeout(doFit, 400);
 
-            cy.on('tap', 'node[!isMarriage]', function(evt) {
+            // ── Event handlers ───────────────────────────────────────────────
+            cy.on('tap', 'node', function(evt) {
                 const pid = evt.target.data('personId');
                 if (pid) window.location.href = `?action=bio&id=${pid}&mode=view`;
             });
 
-            cy.on('dblclick', 'node[!isMarriage]', function(evt) {
+            cy.on('dblclick', 'node', function(evt) {
                 const pid = evt.target.data('personId');
                 if (pid) window.location.href = `?action=tree&focus_id=${pid}`;
             });
