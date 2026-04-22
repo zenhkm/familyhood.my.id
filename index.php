@@ -3017,6 +3017,7 @@ if ($action === 'bio') {
                 if (calcDone.has(hId)) return subtW[hId] || NODE_W;
                 calcDone.add(hId);
                 const n       = (unitSpouses[hId]||[]).length;
+                // Lebar horizontal: suami + kolom kiri + kolom kanan (maks 2 kolom)
                 const n_row0  = Math.min(n, 2);
                 const coupleW = n_row0 * SPOUSE_GAP + NODE_W;
                 const kids    = unitChildren[hId] || [];
@@ -3029,47 +3030,27 @@ if ($action === 'bio') {
             heads.forEach(h => calcW(h));
 
             // ── Penempatan posisi top-down ────────────────────────────────────
-            // Baris 0: suami + istri 1 & 2. Baris 1: istri 3 & 4, dst.
+            // Suami di tengah. Kolom kiri: istri 1, 3, 5, ... Kolom kanan: istri 2, 4, 6, ...
+            // Setiap baris turun WIFE_ROW_GAP dari baris sebelumnya.
             const pos    = {};
             const placed = new Set();
             function placeUnit(hId, cx) {
                 if (placed.has(hId)) return;
                 placed.add(hId);
-                const wives   = unitSpouses[hId] || [];
-                const n       = wives.length;
-                const baseY   = (genLevel[hId] ?? 0) * GEN_Y_GAP;
+                const wives  = unitSpouses[hId] || [];
+                const baseY  = (genLevel[hId] ?? 0) * GEN_Y_GAP;
 
-                // ─ Baris 0: suami + maks 2 istri pertama ─
-                const row0Wives = wives.slice(0, 2);
-                const r0n       = row0Wives.length;
-                const r0husbIdx = Math.floor(r0n / 2);
-                const r0start   = cx - (r0n) / 2 * SPOUSE_GAP;  // (r0n+1-1)/2
-                pos[hId] = { x: r0start + r0husbIdx * SPOUSE_GAP, y: baseY };
-                row0Wives.slice(0, r0husbIdx).forEach((wid, i) => {
-                    pos[wid] = { x: r0start + i * SPOUSE_GAP, y: baseY };
+                // Suami selalu di tengah
+                pos[hId] = { x: cx, y: baseY };
+
+                // Istri genap-index (0,2,4,...) → kolom kiri; ganjil (1,3,5,...) → kolom kanan
+                // Baris ke-n turun n × WIFE_ROW_GAP
+                wives.forEach((wid, i) => {
+                    const side = (i % 2 === 0) ? -1 : 1;
+                    const row  = Math.floor(i / 2);
+                    pos[wid] = { x: cx + side * SPOUSE_GAP, y: baseY + row * WIFE_ROW_GAP };
                     placed.add(wid);
                 });
-                row0Wives.slice(r0husbIdx).forEach((wid, i) => {
-                    pos[wid] = { x: r0start + (r0husbIdx + 1 + i) * SPOUSE_GAP, y: baseY };
-                    placed.add(wid);
-                });
-
-                // ─ Baris 1+: sepasang dua istri per baris, centred di husband x ─
-                const remWives = wives.slice(2);
-                for (let ri = 0; ri < remWives.length; ri += 2) {
-                    const rowIdx = Math.floor(ri / 2) + 1;
-                    const rowY   = baseY + rowIdx * WIFE_ROW_GAP;
-                    const pair   = remWives.slice(ri, ri + 2);
-                    if (pair.length === 1) {
-                        pos[pair[0]] = { x: pos[hId].x, y: rowY };
-                        placed.add(pair[0]);
-                    } else {
-                        pos[pair[0]] = { x: pos[hId].x - SPOUSE_GAP / 2, y: rowY };
-                        pos[pair[1]] = { x: pos[hId].x + SPOUSE_GAP / 2, y: rowY };
-                        placed.add(pair[0]);
-                        placed.add(pair[1]);
-                    }
-                }
 
                 // anak-anak diletakkan terpusat di bawah cx (pusat unit)
                 const kids = unitChildren[hId] || [];
