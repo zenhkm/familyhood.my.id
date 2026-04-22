@@ -3223,11 +3223,11 @@ if ($action === 'bio') {
                     },
                     position: pos[id]
                 });
-                // Badge edit: ikon pensil kecil, menempel di bawah foto
+                // Badge edit: ikon pensil kecil, menempel di bagian bawah foto
                 elements.push({
                     group: 'nodes',
                     data: { id: `edit-${id}`, label: '', isEditBadge: true, personId: id },
-                    position: { x: pos[id].x, y: pos[id].y + 36 }
+                    position: { x: pos[id].x, y: pos[id].y + 20 }
                 });
             });
 
