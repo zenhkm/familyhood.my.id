@@ -3032,23 +3032,32 @@ if ($action === 'bio') {
             });
 
             // ── Assign anak ke unit kepala (proses dari generasi atas) ───────
-            const heads        = [...visible].filter(id => unitOf[id] === id);
-            const unitChildren = {};   // headId → [child-unit-headId...]
-            const childClaimed = new Set();
+            const heads          = [...visible].filter(id => unitOf[id] === id);
+            const unitChildren   = {};   // headId → [child-unit-headId...]
+            const unitChildMother = {};  // headId → { chHead: motherWid|null }
+            const childClaimed   = new Set();
             heads.sort((a, b) => (genLevel[a]??0) - (genLevel[b]??0));
             heads.forEach(hId => {
                 const members  = [hId, ...(unitSpouses[hId]||[])];
                 const seen     = new Set();
                 const arr      = [];
+                const mmap     = {};
                 childSet.forEach(cid => {
                     if (childClaimed.has(cid)) return;
                     const pIds = Object.keys(childParents[cid]||{}).map(Number).filter(x => visible.has(x));
                     if (!pIds.some(p => members.includes(p))) return;
                     childClaimed.add(cid);
                     const chHead = unitOf[cid] ?? cid;
-                    if (!seen.has(chHead)) { seen.add(chHead); arr.push(chHead); }
+                    if (!seen.has(chHead)) {
+                        seen.add(chHead);
+                        arr.push(chHead);
+                        // Catat ibu anak ini (istri mana yang ada di pIds)
+                        const motherWid = (unitSpouses[hId]||[]).find(w => pIds.includes(w)) || null;
+                        mmap[chHead] = motherWid;
+                    }
                 });
-                unitChildren[hId] = arr;
+                unitChildren[hId]    = arr;
+                unitChildMother[hId] = mmap;
             });
 
             // ── Konstanta layout ─────────────────────────────────────────────
@@ -3104,15 +3113,56 @@ if ($action === 'bio') {
                     placed.add(wid);
                 });
 
-                // anak-anak diletakkan terpusat di bawah cx (pusat unit)
+                // anak-anak: kelompokkan per ibu, urutkan kiri→kanan sesuai posisi ibu
                 const kids = unitChildren[hId] || [];
                 if (!kids.length) return;
-                const totalKidsW = kids.reduce((s,c) => s + (subtW[c]||NODE_W), 0) + (kids.length-1) * NODE_GAP;
-                let kx = cx - totalKidsW/2 + (subtW[kids[0]]||NODE_W)/2;
-                kids.forEach((cid, i) => {
-                    placeUnit(cid, kx);
-                    if (i < kids.length-1)
-                        kx += (subtW[kids[i]]||NODE_W)/2 + NODE_GAP + (subtW[kids[i+1]]||NODE_W)/2;
+
+                const mmap       = unitChildMother[hId] || {};
+                const wivesLocal = unitSpouses[hId] || [];
+
+                // Urutkan istri dari kiri ke kanan berdasarkan posisi X
+                const sortedW = [...wivesLocal].filter(w => pos[w]).sort((a, b) => pos[a].x - pos[b].x);
+
+                // Bangun kelompok anak per ibu
+                const groups   = [];  // [{ targetX, kids }]
+                const usedKids = new Set();
+                sortedW.forEach(wid => {
+                    const gk = kids.filter(k => !usedKids.has(k) && mmap[k] === wid);
+                    if (!gk.length) return;
+                    gk.forEach(k => usedKids.add(k));
+                    groups.push({ targetX: pos[wid].x, kids: gk });
+                });
+                // Anak tanpa ibu teridentifikasi → terpusat di posisi suami
+                const remain = kids.filter(k => !usedKids.has(k));
+                if (remain.length) {
+                    groups.push({ targetX: cx, kids: remain });
+                    groups.sort((a, b) => a.targetX - b.targetX);
+                }
+                if (!groups.length) return;
+
+                // Hitung lebar tiap kelompok dan posisi awal ideal (centered di targetX)
+                const gw     = groups.map(g => g.kids.reduce((s,c) => s+(subtW[c]||NODE_W), 0) + (g.kids.length-1)*NODE_GAP);
+                const gStart = groups.map((g, i) => g.targetX - gw[i] / 2);
+
+                // Pass kiri→kanan: dorong ke kanan jika bertabrakan
+                for (let i = 1; i < groups.length; i++) {
+                    const minS = gStart[i-1] + gw[i-1] + NODE_GAP;
+                    if (gStart[i] < minS) gStart[i] = minS;
+                }
+                // Pass kanan→kiri: dorong ke kiri jika bertabrakan (jaga simetri)
+                for (let i = groups.length - 2; i >= 0; i--) {
+                    const maxE = gStart[i+1] - NODE_GAP;
+                    if (gStart[i] + gw[i] > maxE) gStart[i] = maxE - gw[i];
+                }
+
+                // Tempatkan tiap kelompok
+                groups.forEach((g, gi) => {
+                    let kx = gStart[gi] + (subtW[g.kids[0]]||NODE_W)/2;
+                    g.kids.forEach((cid, i) => {
+                        placeUnit(cid, kx);
+                        if (i < g.kids.length-1)
+                            kx += (subtW[g.kids[i]]||NODE_W)/2 + NODE_GAP + (subtW[g.kids[i+1]]||NODE_W)/2;
+                    });
                 });
             }
 
