@@ -3017,9 +3017,9 @@ if ($action === 'bio') {
                 if (calcDone.has(hId)) return subtW[hId] || NODE_W;
                 calcDone.add(hId);
                 const n       = (unitSpouses[hId]||[]).length;
-                // Lebar horizontal: suami + kolom kiri + kolom kanan (maks 2 kolom)
-                const n_row0  = Math.min(n, 2);
-                const coupleW = n_row0 * SPOUSE_GAP + NODE_W;
+                // Lebar horizontal: setiap 2 istri menambah 1 kolom ke kiri & kanan
+                const numCols = Math.ceil(n / 2);
+                const coupleW = 2 * numCols * SPOUSE_GAP + NODE_W;
                 const kids    = unitChildren[hId] || [];
                 const kidsW   = kids.length
                     ? kids.reduce((s,c) => s + calcW(c), 0) + (kids.length - 1) * NODE_GAP
@@ -3043,12 +3043,13 @@ if ($action === 'bio') {
                 // Suami selalu di tengah
                 pos[hId] = { x: cx, y: baseY };
 
-                // Istri genap-index (0,2,4,...) → kolom kiri; ganjil (1,3,5,...) → kolom kanan
-                // Baris ke-n turun n × WIFE_ROW_GAP
+                // Kolom melebar keluar: istri ke-(2k-1) di kolom -k, istri ke-(2k) di kolom +k
+                // Setiap 2 istri → satu baris baru turun WIFE_ROW_GAP
                 wives.forEach((wid, i) => {
-                    const side = (i % 2 === 0) ? -1 : 1;
+                    const col  = Math.floor(i / 2) + 1;   // 1,1,2,2,3,3,...
+                    const side = (i % 2 === 0) ? -1 : 1;  // kiri,kanan,kiri,kanan,...
                     const row  = Math.floor(i / 2);
-                    pos[wid] = { x: cx + side * SPOUSE_GAP, y: baseY + row * WIFE_ROW_GAP };
+                    pos[wid] = { x: cx + side * col * SPOUSE_GAP, y: baseY + row * WIFE_ROW_GAP };
                     placed.add(wid);
                 });
 
