@@ -3251,13 +3251,13 @@ if ($action === 'bio') {
                 userZoomingEnabled:  true,
                 userPanningEnabled:  true,
                 boxSelectionEnabled: false,
-                minZoom: 0.15,
+                minZoom: 0.03,
                 maxZoom: 3
             });
 
-            cy.ready(() => {
-                requestAnimationFrame(() => { cy.resize(); cy.fit(undefined, 40); });
-            });
+            function doFit() { cy.resize(); cy.fit(undefined, 40); }
+            requestAnimationFrame(doFit);
+            setTimeout(doFit, 300);
 
             cy.on('tap', 'node[!isMarriage]', function(evt) {
                 const pid = evt.target.data('personId');
@@ -3272,14 +3272,14 @@ if ($action === 'bio') {
             const btnReset = document.getElementById('btn-reset-graph');
             if (btnReset) {
                 btnReset.addEventListener('click', function() {
-                    cy.fit(undefined, 40);
+                    cy.resize(); cy.fit(undefined, 40);
                 });
             }
 
             let resizeTimer;
             window.addEventListener('resize', function() {
                 clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => { cy.resize(); cy.fit(undefined, 40); }, 200);
+                resizeTimer = setTimeout(() => { cy.resize(); cy.fit(undefined, 40); }, 300);
             });
         })();
         </script>
