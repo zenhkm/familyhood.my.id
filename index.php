@@ -2906,9 +2906,7 @@ if ($action === 'bio') {
             </div>
         </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.29.2/cytoscape.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
         <script>
         (function() {
             const container = document.getElementById('family-graph');
@@ -2926,117 +2924,255 @@ if ($action === 'bio') {
             const roots          = <?= json_encode(array_values($rootsToRender)) ?>;
             const focusId        = <?= (int)$focusId ?>;
 
-            // ── BFS: kumpulkan semua node yang visible ───────────────────────
+            // ── BFS: kumpulkan node visible ──────────────────────────────────
             const visible = new Set();
-            const stack   = [...roots];
-            while (stack.length) {
-                const curr = Number(stack.pop());
+            const bfsQ    = [...roots];
+            while (bfsQ.length) {
+                const curr = Number(bfsQ.shift());
                 if (!curr || visible.has(curr)) continue;
                 visible.add(curr);
-                Object.keys(parentChildren[curr] || {}).forEach(cid => {
-                    const c = Number(cid); if (c && !visible.has(c)) stack.push(c);
+                Object.keys(parentChildren[curr] || {}).forEach(c => { const n=Number(c); if(n&&!visible.has(n)) bfsQ.push(n); });
+                Object.keys(spouses[curr]        || {}).forEach(s => { const n=Number(s); if(n&&!visible.has(n)) bfsQ.push(n); });
+            }
+            if (!visible.size) { if (fallback) fallback.style.display='block'; return; }
+
+            // ── Hitung level generasi via BFS dari roots ─────────────────────
+            const genLevel = {};
+            const genQ     = roots.map(r => ({ id: Number(r), gen: 0 }));
+            const genSeen  = new Set();
+            while (genQ.length) {
+                const { id, gen } = genQ.shift();
+                if (!id || genSeen.has(id)) continue;
+                genSeen.add(id);
+                if (genLevel[id] === undefined || gen < genLevel[id]) genLevel[id] = gen;
+                Object.keys(spouses[id]        || {}).forEach(s => { const n=Number(s); if(visible.has(n)&&!genSeen.has(n)) genQ.push({id:n,gen}); });
+                Object.keys(parentChildren[id] || {}).forEach(c => { const n=Number(c); if(visible.has(n)&&!genSeen.has(n)) genQ.push({id:n,gen:gen+1}); });
+            }
+            visible.forEach(id => { if (genLevel[id] === undefined) genLevel[id] = 0; });
+
+            // ── Bangun unit keluarga: kepala → [istri-istri] ─────────────────
+            // Pass 1: laki-laki jadi kepala unitnya masing-masing
+            const unitOf      = {};   // personId → headId
+            const unitSpouses = {};   // headId   → [istriId...]
+            visible.forEach(id => {
+                if (unitOf[id] !== undefined || (persons[id]?.gender||'') !== 'L') return;
+                unitOf[id] = id;
+                const wives = Object.keys(spouses[id]||{}).map(Number)
+                              .filter(s => visible.has(s) && unitOf[s] === undefined);
+                unitSpouses[id] = wives;
+                wives.forEach(s => { unitOf[s] = id; });
+            });
+            // Pass 2: sisa (perempuan/tidak diketahui yang bukan istri siapapun)
+            visible.forEach(id => {
+                if (unitOf[id] !== undefined) return;
+                unitOf[id] = id;
+                const rem = Object.keys(spouses[id]||{}).map(Number)
+                            .filter(s => visible.has(s) && unitOf[s] === undefined);
+                unitSpouses[id] = rem;
+                rem.forEach(s => { unitOf[s] = id; });
+            });
+
+            // ── childSet: semua anak yang ada di visible ─────────────────────
+            const childSet = new Set();
+            visible.forEach(pid => {
+                Object.keys(parentChildren[pid]||{}).forEach(c => {
+                    const n=Number(c); if(n&&visible.has(n)) childSet.add(n);
                 });
-                Object.keys(spouses[curr] || {}).forEach(sid => {
-                    const s = Number(sid); if (s && !visible.has(s)) stack.push(s);
+            });
+
+            // ── Assign anak ke unit kepala (proses dari generasi atas) ───────
+            const heads        = [...visible].filter(id => unitOf[id] === id);
+            const unitChildren = {};   // headId → [child-unit-headId...]
+            const childClaimed = new Set();
+            heads.sort((a, b) => (genLevel[a]??0) - (genLevel[b]??0));
+            heads.forEach(hId => {
+                const members  = [hId, ...(unitSpouses[hId]||[])];
+                const seen     = new Set();
+                const arr      = [];
+                childSet.forEach(cid => {
+                    if (childClaimed.has(cid)) return;
+                    const pIds = Object.keys(childParents[cid]||{}).map(Number).filter(x => visible.has(x));
+                    if (!pIds.some(p => members.includes(p))) return;
+                    childClaimed.add(cid);
+                    const chHead = unitOf[cid] ?? cid;
+                    if (!seen.has(chHead)) { seen.add(chHead); arr.push(chHead); }
+                });
+                unitChildren[hId] = arr;
+            });
+
+            // ── Konstanta layout ─────────────────────────────────────────────
+            const NODE_W     = 80;    // lebar efektif per node
+            const SPOUSE_GAP = 110;   // jarak antar suami-istri
+            const NODE_GAP   = 40;    // jarak antar subtree saudara
+            const GEN_Y_GAP  = 160;   // jarak vertikal antar generasi
+
+            // ── Hitung lebar subtree (bottom-up) ─────────────────────────────
+            const subtW    = {};
+            const calcDone = new Set();
+            function calcW(hId) {
+                if (calcDone.has(hId)) return subtW[hId] || NODE_W;
+                calcDone.add(hId);
+                const n       = (unitSpouses[hId]||[]).length;
+                const coupleW = n * SPOUSE_GAP + NODE_W;
+                const kids    = unitChildren[hId] || [];
+                const kidsW   = kids.length
+                    ? kids.reduce((s,c) => s + calcW(c), 0) + (kids.length - 1) * NODE_GAP
+                    : 0;
+                subtW[hId] = Math.max(coupleW, kidsW, NODE_W);
+                return subtW[hId];
+            }
+            heads.forEach(h => calcW(h));
+
+            // ── Penempatan posisi top-down ────────────────────────────────────
+            // Suami di tengah antara istri-istrinya, semua sejajar (y sama)
+            const pos    = {};
+            const placed = new Set();
+            function placeUnit(hId, cx) {
+                if (placed.has(hId)) return;
+                placed.add(hId);
+                const wives   = unitSpouses[hId] || [];
+                const n       = wives.length;
+                const y       = (genLevel[hId] ?? 0) * GEN_Y_GAP;
+                const total   = n + 1;
+                const husbIdx = Math.floor(n / 2);          // posisi suami di baris
+                const rowStart = cx - (total - 1) / 2 * SPOUSE_GAP;
+                pos[hId] = { x: rowStart + husbIdx * SPOUSE_GAP, y };
+                // istri di kiri suami
+                wives.slice(0, husbIdx).forEach((wid, i) => {
+                    pos[wid] = { x: rowStart + i * SPOUSE_GAP, y };
+                    placed.add(wid);
+                });
+                // istri di kanan suami
+                wives.slice(husbIdx).forEach((wid, i) => {
+                    pos[wid] = { x: rowStart + (husbIdx + 1 + i) * SPOUSE_GAP, y };
+                    placed.add(wid);
+                });
+                // anak-anak diletakkan terpusat di bawah cx (pusat unit)
+                const kids = unitChildren[hId] || [];
+                if (!kids.length) return;
+                const totalKidsW = kids.reduce((s,c) => s + (subtW[c]||NODE_W), 0) + (kids.length-1) * NODE_GAP;
+                let kx = cx - totalKidsW/2 + (subtW[kids[0]]||NODE_W)/2;
+                kids.forEach((cid, i) => {
+                    placeUnit(cid, kx);
+                    if (i < kids.length-1)
+                        kx += (subtW[kids[i]]||NODE_W)/2 + NODE_GAP + (subtW[kids[i+1]]||NODE_W)/2;
                 });
             }
-            if (visible.size === 0) { if (fallback) fallback.style.display = 'block'; return; }
 
-            // ── Bangun nodes ─────────────────────────────────────────────────
+            // Temukan kepala-kepala paling atas (tidak punya orang tua yang visible)
+            const topSeen = new Set();
+            let curX = 0;
+            heads.filter(hId => {
+                const members = [hId, ...(unitSpouses[hId]||[])];
+                return !members.some(m => Object.keys(childParents[m]||{}).map(Number).some(p => visible.has(p)));
+            }).forEach(hId => {
+                if (topSeen.has(hId)) return;
+                topSeen.add(hId);
+                const w = subtW[hId] || NODE_W;
+                placeUnit(hId, curX + w/2);
+                curX += w + NODE_W;
+            });
+            heads.forEach(hId => {
+                if (!placed.has(hId)) { placeUnit(hId, curX); curX += (subtW[hId]||NODE_W) + NODE_W; }
+            });
+
+            // Pusatkan tree secara horizontal
+            const allXs = [...visible].filter(id => pos[id]).map(id => pos[id].x);
+            const shift  = -(Math.min(...allXs) + Math.max(...allXs)) / 2;
+            visible.forEach(id => { if (pos[id]) pos[id].x += shift; });
+
+            // ── Bangun elemen Cytoscape ──────────────────────────────────────
             const elements = [];
+
+            // Node orang
             visible.forEach(id => {
                 const p = persons[id];
-                if (!p) return;
+                if (!p || !pos[id]) return;
                 elements.push({
                     group: 'nodes',
                     data: {
                         id: String(id),
-                        label: (Number(p.is_alive) === 0 ? 'alm. ' : '') + p.name,
-                        photo: p.photo || '', gender: p.gender || '',
-                        isFocus: (focusId === id), personId: id
+                        label: (Number(p.is_alive)===0 ? 'alm. ':'') + p.name,
+                        photo: p.photo||'', gender: p.gender||'',
+                        isFocus: focusId===id, personId: id
+                    },
+                    position: pos[id]
+                });
+            });
+
+            // Untuk setiap unit: buat marriage-anchor + edges
+            heads.forEach(hId => {
+                const wives = unitSpouses[hId] || [];
+                const kids  = unitChildren[hId] || [];
+                if (!pos[hId]) return;
+
+                if (wives.length > 0) {
+                    // Edge suami-istri langsung (merah putus-putus)
+                    wives.forEach(wid => {
+                        if (!pos[wid]) return;
+                        elements.push({ group:'edges', data:{ id:`sp-${Math.min(hId,wid)}-${Math.max(hId,wid)}`, source:String(hId), target:String(wid), edgeType:'spouse' }});
+                    });
+                    // Marriage-anchor di centroid baris pasangan (untuk routing ke anak)
+                    if (kids.length > 0) {
+                        const all = [hId, ...wives].filter(m => pos[m]);
+                        const ax  = all.reduce((s,m) => s + pos[m].x, 0) / all.length;
+                        const ay  = pos[hId].y;
+                        const aid = `anc-${hId}`;
+                        elements.push({ group:'nodes', data:{ id:aid, label:'', isAnchor:true }, position:{ x:ax, y:ay }});
+                        kids.forEach(chHead => {
+                            elements.push({ group:'edges', data:{ id:`pc-${aid}-${chHead}`, source:aid, target:String(chHead), edgeType:'parent-child' }});
+                        });
                     }
-                });
+                } else {
+                    // Orang tua tunggal: edge langsung ke anak
+                    kids.forEach(chHead => {
+                        elements.push({ group:'edges', data:{ id:`pc-${hId}-${chHead}`, source:String(hId), target:String(chHead), edgeType:'parent-child' }});
+                    });
+                }
             });
 
-            // ── Bangun parent-child edges (untuk layout dagre) ───────────────
-            const edgeSeen = new Set();
-            visible.forEach(pid => {
-                Object.keys(parentChildren[pid] || {}).forEach(cidStr => {
-                    const cid = Number(cidStr);
-                    if (!visible.has(cid)) return;
-                    const eKey = `${pid}-${cid}`;
-                    if (edgeSeen.has(eKey)) return;
-                    edgeSeen.add(eKey);
-                    elements.push({ group: 'edges', data: { id: `pc-${pid}-${cid}`, source: String(pid), target: String(cid), edgeType: 'parent-child' } });
-                });
-            });
-
-            // ── Inisialisasi Cytoscape dengan dagre layout ───────────────────
+            // ── Inisialisasi Cytoscape ───────────────────────────────────────
             const cy = cytoscape({
                 container,
                 elements,
-                layout: {
-                    name:    'dagre',
-                    rankDir: 'TB',
-                    nodeSep: 55,
-                    rankSep: 120,
-                    ranker:  'tight-tree',
-                    fit:     true,
-                    padding: 40
-                },
+                layout: { name: 'preset' },
                 style: [
                     {
-                        selector: 'node',
+                        selector: 'node[!isAnchor]',
                         style: {
                             'width': 60, 'height': 60,
-                            'background-fit': 'cover',
-                            'background-clip': 'node',
+                            'background-fit': 'cover', 'background-clip': 'node',
                             'background-image': function(ele) {
                                 const photo = ele.data('photo');
                                 if (photo) return photo;
-                                const g = ele.data('gender');
-                                const fill = g === 'L' ? '#bfdbfe' : g === 'P' ? '#fbcfe8' : '#e5e7eb';
-                                const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='#fff'/><circle cx='100' cy='72' r='48' fill='${fill}'/><rect x='36' y='132' rx='16' width='128' height='44' fill='${fill}'/></svg>`;
+                                const g    = ele.data('gender');
+                                const fill = g==='L' ? '#bfdbfe' : g==='P' ? '#fbcfe8' : '#e5e7eb';
+                                const svg  = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='#fff'/><circle cx='100' cy='72' r='48' fill='${fill}'/><rect x='36' y='132' rx='16' width='128' height='44' fill='${fill}'/></svg>`;
                                 return 'data:image/svg+xml;base64,' + btoa(svg);
                             },
                             'border-width':     function(ele) { return ele.data('isFocus') ? 4 : 2; },
                             'border-color':     function(ele) { return ele.data('isFocus') ? '#4f46e5' : '#94a3b8'; },
                             'background-color': '#ffffff',
                             'label':            'data(label)',
-                            'text-valign':      'bottom',
-                            'text-halign':      'center',
+                            'text-valign':      'bottom', 'text-halign': 'center',
                             'font-size':        function(ele) { return ele.data('isFocus') ? 14 : 11; },
                             'font-family':      'Segoe UI, sans-serif',
                             'color':            '#0f172a',
-                            'text-margin-y':    6,
-                            'text-wrap':        'wrap',
-                            'text-max-width':   100,
-                            'shape':            'ellipse',
-                            'overlay-padding':  4
+                            'text-margin-y':    6, 'text-wrap': 'wrap', 'text-max-width': 100,
+                            'shape':            'ellipse', 'overlay-padding': 4
                         }
                     },
                     {
-                        selector: 'edge[edgeType="parent-child"]',
-                        style: {
-                            'width': 2.2,
-                            'line-color': '#94a3b8',
-                            'line-style': 'solid',
-                            'curve-style': 'bezier',
-                            'target-arrow-shape': 'none',
-                            'source-arrow-shape': 'none'
-                        }
+                        selector: 'node[isAnchor]',
+                        style: { 'width': 1, 'height': 1, 'background-color': 'transparent', 'border-width': 0, 'label': '', 'events': 'no', 'opacity': 0 }
                     },
                     {
                         selector: 'edge[edgeType="spouse"]',
-                        style: {
-                            'width': 2.4,
-                            'line-color': '#ef4444',
-                            'line-style': 'dashed',
-                            'line-dash-pattern': [8, 6],
-                            'curve-style': 'straight',
-                            'target-arrow-shape': 'none',
-                            'source-arrow-shape': 'none'
-                        }
+                        style: { 'width': 2.4, 'line-color': '#ef4444', 'line-style': 'dashed', 'line-dash-pattern': [8,6], 'curve-style': 'straight', 'target-arrow-shape': 'none', 'source-arrow-shape': 'none' }
+                    },
+                    {
+                        selector: 'edge[edgeType="parent-child"]',
+                        style: { 'width': 2.2, 'line-color': '#94a3b8', 'line-style': 'solid', 'curve-style': 'straight', 'target-arrow-shape': 'none', 'source-arrow-shape': 'none' }
                     }
                 ],
                 userZoomingEnabled:  true,
@@ -3046,43 +3182,21 @@ if ($action === 'bio') {
                 maxZoom: 3
             });
 
-            // ── Tambah spouse edges setelah layout selesai ───────────────────
-            const spouseSeen  = new Set();
-            const spouseEdges = [];
-            visible.forEach(id => {
-                Object.keys(spouses[id] || {}).forEach(sidStr => {
-                    const s = Number(sidStr);
-                    if (!visible.has(s)) return;
-                    const key = `${Math.min(id, s)}-${Math.max(id, s)}`;
-                    if (spouseSeen.has(key)) return;
-                    spouseSeen.add(key);
-                    spouseEdges.push({ group: 'edges', data: { id: `sp-${Math.min(id,s)}-${Math.max(id,s)}`, source: String(id), target: String(s), edgeType: 'spouse' } });
-                });
-            });
-            if (spouseEdges.length) cy.add(spouseEdges);
-
-            // ── Fit setelah container selesai dirender ───────────────────────
             function doFit() { cy.resize(); cy.fit(undefined, 40); }
             requestAnimationFrame(doFit);
             setTimeout(doFit, 400);
 
-            // ── Event handlers ───────────────────────────────────────────────
-            cy.on('tap', 'node', function(evt) {
+            cy.on('tap', 'node[!isAnchor]', function(evt) {
                 const pid = evt.target.data('personId');
                 if (pid) window.location.href = `?action=bio&id=${pid}&mode=view`;
             });
-
-            cy.on('dblclick', 'node', function(evt) {
+            cy.on('dblclick', 'node[!isAnchor]', function(evt) {
                 const pid = evt.target.data('personId');
                 if (pid) window.location.href = `?action=tree&focus_id=${pid}`;
             });
 
             const btnReset = document.getElementById('btn-reset-graph');
-            if (btnReset) {
-                btnReset.addEventListener('click', function() {
-                    cy.resize(); cy.fit(undefined, 40);
-                });
-            }
+            if (btnReset) btnReset.addEventListener('click', () => { cy.resize(); cy.fit(undefined, 40); });
 
             let resizeTimer;
             window.addEventListener('resize', function() {
