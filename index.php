@@ -3255,7 +3255,9 @@ if ($action === 'bio') {
                 maxZoom: 3
             });
 
-            cy.ready(() => { cy.fit(undefined, 40); });
+            cy.ready(() => {
+                requestAnimationFrame(() => { cy.resize(); cy.fit(undefined, 40); });
+            });
 
             cy.on('tap', 'node[!isMarriage]', function(evt) {
                 const pid = evt.target.data('personId');
