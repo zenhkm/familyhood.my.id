@@ -3223,11 +3223,11 @@ if ($action === 'bio') {
                     },
                     position: pos[id]
                 });
-                // Badge edit (pill pensil di bawah foto, di atas nama)
+                // Badge edit: ikon pensil kecil, menempel di bawah foto
                 elements.push({
                     group: 'nodes',
-                    data: { id: `edit-${id}`, label: '\u270F Edit', isEditBadge: true, personId: id },
-                    position: { x: pos[id].x, y: pos[id].y + 42 }
+                    data: { id: `edit-${id}`, label: '', isEditBadge: true, personId: id },
+                    position: { x: pos[id].x, y: pos[id].y + 36 }
                 });
             });
 
@@ -3327,6 +3327,10 @@ if ($action === 'bio') {
             });
 
             // ── Inisialisasi Cytoscape ───────────────────────────────────────
+            // Ikon pensil SVG (putih di atas indigo)
+            const _pencilSvg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/></svg>`;
+            const _pencilDataUri = 'data:image/svg+xml;base64,' + btoa(_pencilSvg);
+
             const cy = cytoscape({
                 container,
                 elements,
@@ -3353,7 +3357,7 @@ if ($action === 'bio') {
                             'font-size':        function(ele) { return ele.data('isFocus') ? 14 : 11; },
                             'font-family':      'Segoe UI, sans-serif',
                             'color':            '#0f172a',
-                            'text-margin-y':    30, 'text-wrap': 'wrap', 'text-max-width': 100,
+                            'text-margin-y':    8, 'text-wrap': 'wrap', 'text-max-width': 100,
                             'shape':            'ellipse', 'overlay-padding': 4
                         }
                     },
@@ -3376,12 +3380,13 @@ if ($action === 'bio') {
                     {
                         selector: 'node[isEditBadge]',
                         style: {
-                            'width': 62, 'height': 22, 'shape': 'round-rectangle',
+                            'width': 20, 'height': 20, 'shape': 'ellipse',
                             'background-color': '#4f46e5',
-                            'border-width': 0,
-                            'label': 'data(label)',
-                            'text-valign': 'center', 'text-halign': 'center',
-                            'font-size': 12, 'font-weight': 'bold', 'color': '#ffffff',
+                            'background-image': _pencilDataUri,
+                            'background-fit': 'contain',
+                            'background-clip': 'none',
+                            'border-width': 2, 'border-color': '#ffffff',
+                            'label': '',
                             'z-index': 20, 'cursor': 'pointer'
                         }
                     },
