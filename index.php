@@ -3319,7 +3319,7 @@ if ($action === 'bio') {
     
 <?php elseif ($action === 'notifications'): ?>
     <div class="card" style="border:none; background:transparent; box-shadow:none; padding:0;">
-        <h2 style="margin-bottom:15px;">≡ا¤¤ Notifikasi Anda</h2>
+        <h2 style="margin-bottom:15px;">🔔 Notifikasi Anda</h2>
         
         <?php
         // Ambil notifikasi: Milik User Ini ATAU Broadcast (0)
@@ -3333,10 +3333,10 @@ if ($action === 'bio') {
             <div style="display:flex; flex-direction:column; gap:12px;">
                 <?php while ($row = $resNotif->fetch_assoc()): 
                     // Styling icon berdasarkan tipe
-                    $icon = 'ظ╣ي╕'; $color = '#3b82f6'; $bg = '#eff6ff';
-                    if($row['type'] == 'success') { $icon = 'ظ£à'; $color = '#10b981'; $bg = '#ecfdf5'; }
-                    if($row['type'] == 'birthday') { $icon = '≡اé'; $color = '#f43f5e'; $bg = '#fff1f2'; }
-                    if($row['type'] == 'warning') { $icon = 'ظأبي╕'; $color = '#f59e0b'; $bg = '#fffbeb'; }
+                    $icon = 'ℹ️'; $color = '#3b82f6'; $bg = '#eff6ff';
+                    if($row['type'] == 'success') { $icon = '✅'; $color = '#10b981'; $bg = '#ecfdf5'; }
+                    if($row['type'] == 'birthday') { $icon = '🎂'; $color = '#f43f5e'; $bg = '#fff1f2'; }
+                    if($row['type'] == 'warning') { $icon = '⚠️'; $color = '#f59e0b'; $bg = '#fffbeb'; }
                 ?>
                     <div style="background:#fff; padding:15px; border-radius:12px; border-left: 5px solid <?= $color ?>; box-shadow:0 2px 4px rgba(0,0,0,0.05); display:flex; gap:12px;">
                         <div style="font-size:1.5rem; background:<?= $bg ?>; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -3358,7 +3358,7 @@ if ($action === 'bio') {
             </div>
         <?php else: ?>
                 <div class="card" style="text-align:center; padding:50px 20px;">
-                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">≡ا¤ـ</div>
+                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">🔕</div>
                 <h3 style="color:#374151; margin:0;">Belum ada notifikasi</h2>
                 <p style="color:#6b7280; font-size:0.9rem;">Info keluarga dan pengumuman akan muncul di sini.</p>
             </div>
@@ -3393,12 +3393,12 @@ if ($action === 'bio') {
         <div class="menu-list">
             <?php if ($isAdmin): ?>
             <a href="?action=admin_users" style="color:#4f46e5;">
-                <span class="menu-icon">≡اؤب</span> Dashboard Admin
+                <span class="menu-icon">🛠️</span> Dashboard Admin
             </a>
             <?php endif; ?>
 
             <a href="?action=support">
-                <span class="menu-icon">≡اْش</span> Pusat Bantuan / Feedback
+                <span class="menu-icon">💬</span> Pusat Bantuan / Feedback
             </a>
             
             <div style="padding:15px; border-bottom:1px solid #f3f4f6;">
@@ -3424,14 +3424,14 @@ if ($action === 'bio') {
                                         <button type="submit" class="btn btn-sm" 
                                                 style="background:#dc2626; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                                 onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($t['name']) ?>?');">
-                                            ظ£à Diizinkan
+                                            🔓 Diizinkan
                                         </button>
                                     <?php else: ?>
                                         <input type="hidden" name="new_status" value="1">
                                         <button type="submit" class="btn btn-sm" 
                                                 style="background:#10b981; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                                 onclick="return confirm('Yakin izinkan akses Admin untuk Keluarga <?= htmlspecialchars($t['name']) ?>?');">
-                                            ≡ا¤ْ Terkunci
+                                            🔐 Terkunci
                                         </button>
                                     <?php endif; ?>
                                 </form>
@@ -3447,10 +3447,10 @@ if ($action === 'bio') {
             </div>
 
             <a href="?action=logout" onclick="return confirm('Keluar dari aplikasi?')" style="color:#ef4444;">
-                <span class="menu-icon">≡اأز</span> Keluar Aplikasi
+                <span class="menu-icon">🚪</span> Keluar Aplikasi
             </a>
             <a href="?action=about">
-                <span class="menu-icon">ظ╣ي╕</span> Tentang Aplikasi
+                <span class="menu-icon">ℹ️</span> Tentang Aplikasi
             </a>
             
             <a href="?action=privacy">
@@ -3461,7 +3461,7 @@ if ($action === 'bio') {
 
 <?php elseif ($action === 'support'): ?>
     <div class="card">
-        <h2>≡اْش Pusat Bantuan & Feedback</h2>
+        <h2>💬 Pusat Bantuan & Feedback</h2>
         
         <?php
         // Proses Kirim Tiket
@@ -3520,7 +3520,7 @@ elseif ($action === 'about'): ?>
     <div class="card">
         <div style="text-align:center; margin-bottom:20px;">
             <div style="width:60px; height:60px; background:#4f46e5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; color:#fff; font-size:1.5rem;">
-                ≡اّز
+                👪
             </div>
             <h2 style="margin:0;">Tentang FamilyHood</h2>
             <p style="color:#6b7280; font-size:0.9rem;">Menyambung Tali Silaturahmi Digital</p>
@@ -3532,9 +3532,9 @@ elseif ($action === 'about'): ?>
         
         <h3 class="section-title" style="margin-top:20px;">Misi Kami</h3>
             <ul style="padding-left:20px; line-height:1.6; color:#374151;">
-            <li>≡اّز <strong>Menghubungkan Generasi:</strong> Memudahkan anak cucu mengenal leluhur mereka.</li>
-            <li>≡ا¤ْ <strong>Menjaga Privasi:</strong> Data keluarga Anda aman dan hanya bisa diakses oleh Anda (dan admin sistem jika diizinkan).</li>
-            <li>≡اû╝ي╕ <strong>Visualisasi Mudah:</strong> Melihat hubungan keluarga dalam bentuk pohon visual yang interaktif.</li>
+            <li>👪 <strong>Menghubungkan Generasi:</strong> Memudahkan anak cucu mengenal leluhur mereka.</li>
+            <li>🔒 <strong>Menjaga Privasi:</strong> Data keluarga Anda aman dan hanya bisa diakses oleh Anda (dan admin sistem jika diizinkan).</li>
+            <li>🖼️ <strong>Visualisasi Mudah:</strong> Melihat hubungan keluarga dalam bentuk pohon visual yang interaktif.</li>
         </ul>
 
         <h3 class="section-title" style="margin-top:20px;">Kontak Kami</h3>
@@ -3556,7 +3556,7 @@ elseif ($action === 'about'): ?>
                 <strong>≡اôج Export Data</strong><br>Unduh ke PDF, Word, atau Excel dengan mudah.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>≡اé Pengingat Ultah</strong><br>Notifikasi ulang tahun anggota keluarga.
+                <strong>🎂 Pengingat Ultah</strong><br>Notifikasi ulang tahun anggota keluarga.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
                 <strong>≡اû╝ Galeri Foto</strong><br>Simpan foto kenangan setiap anggota.
@@ -3566,9 +3566,9 @@ elseif ($action === 'about'): ?>
         <div style="margin-top:30px; text-align:center; border-top:1px solid #eee; padding-top:20px;">
             <p style="font-size:0.8rem; color:#9ca3af;">
                 Versi Aplikasi: 1.0.0<br>
-                Dibuat dengan ظإجي╕ oleh Tim Pengembang.
+                Dibuat dengan ❤️ oleh Tim Pengembang.
             </p>
-            <a href="?action=settings" class="btn btn-secondary btn-sm">ظ Kembali ke Pengaturan</a>
+            <a href="?action=settings" class="btn btn-secondary btn-sm">← Kembali ke Pengaturan</a>
         </div>
     </div>
 <?
@@ -3624,13 +3624,13 @@ elseif ($action === 'privacy'): ?>
         </div>
         
         <div style="margin-top:20px; text-align:center;">
-            <a href="?action=settings" class="btn btn-secondary btn-sm">├تظب┌» Kembali ke Pengaturan</a>
+            <a href="?action=settings" class="btn btn-secondary btn-sm">← Kembali ke Pengaturan</a>
         </div>
     </div>
 
 <?php elseif ($action === 'admin_users' && $isAdmin): ?>
     <div class="card">
-        <h2>≡اؤب Dashboard Admin</h2>
+        <h2>🛠️ Dashboard Admin</h2>
         
         <h3 class="section-title">Daftar Pengguna</h3>
         <div style="overflow-x:auto;">
@@ -3670,10 +3670,10 @@ elseif ($action === 'privacy'): ?>
                                         class="btn btn-sm btn-primary"
                                         style="background:#4f46e5; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                         onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($u['name']) ?>?');">
-                                    ظ£à <?= $viewableTreesCount ?> Keluarga Diizinkan
+                                    ✅ <?= $viewableTreesCount ?> Keluarga Diizinkan
                                 </button>
                             <?php else: ?>
-                                <span style="color:#9ca3af; font-size:0.85rem;">≡ا¤ْ Private (0 Keluarga)</span>
+                                <span style="color:#9ca3af; font-size:0.85rem;">🔒 Private (0 Keluarga)</span>
                             <?php endif; ?>
                         </td>
 
