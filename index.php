@@ -403,7 +403,7 @@ function fh_compute_generations($mysqli, $treeId) {
     }
 
     // 4. Ambil Relasi Pasangan (Filter by Person ID)
-    $sqlRelSpouse = "SELECT person_id, related_person_id, spouse_order FROM relations 
+    $sqlRelSpouse = "SELECT person_id, related_person_id, spouse_order, IFNULL(is_divorced,0) as is_divorced FROM relations 
                      WHERE person_id IN ($idsStr) AND relation_type = 'pasangan'";
                      
     if ($res = $mysqli->query($sqlRelSpouse)) {
@@ -415,8 +415,9 @@ function fh_compute_generations($mysqli, $treeId) {
             if (isset($persons[$a]) && isset($persons[$b])) {
                 if (!isset($spouses[$a])) $spouses[$a] = [];
                 if (!isset($spouses[$b])) $spouses[$b] = [];
-                $spouses[$a][$b] = ['order' => $order];
-                $spouses[$b][$a] = ['order' => $order]; // Simpan juga kebalikannya
+                $isDivorced = (bool)($row['is_divorced'] ?? 0);
+                $spouses[$a][$b] = ['order' => $order, 'is_divorced' => $isDivorced];
+                $spouses[$b][$a] = ['order' => $order, 'is_divorced' => $isDivorced];
             }
         }
         $res->free();
@@ -2873,6 +2874,8 @@ if ($action === 'bio') {
         <div class="tree-legend">
             <span class="tree-legend-item"><span class="tree-legend-line"></span> Garis Orang Tua-Anak</span>
             <span class="tree-legend-item"><span class="tree-legend-line spouse"></span> Garis Suami-Istri</span>
+            <span class="tree-legend-item"><span class="tree-legend-badge married">❤</span> Masih Menikah</span>
+            <span class="tree-legend-item"><span class="tree-legend-badge divorced">✂</span> Cerai</span>
         </div>
 
         <div class="tree-container">
@@ -3100,33 +3103,51 @@ if ($action === 'bio') {
                 });
             });
 
-            // Untuk setiap unit: buat marriage-anchor + edges
+            // ── Bangun badge pasangan + edges ──────────────────────────────
+            // Setiap pasangan suami-istri mendapat badge ❤ (menikah) atau ✂ (cerai)
+            // Garis suami-istri terbagi dua: suami→badge→istri
+            // Anak terhubung ke badge (1 istri) atau anchor centroid (>1 istri)
             heads.forEach(hId => {
                 const wives = unitSpouses[hId] || [];
                 const kids  = unitChildren[hId] || [];
                 if (!pos[hId]) return;
 
                 if (wives.length > 0) {
-                    // Edge suami-istri langsung (merah putus-putus)
+                    const badgeList = [];
                     wives.forEach(wid => {
                         if (!pos[wid]) return;
-                        elements.push({ group:'edges', data:{ id:`sp-${Math.min(hId,wid)}-${Math.max(hId,wid)}`, source:String(hId), target:String(wid), edgeType:'spouse' }});
+                        const isDiv = !!(spouses[hId]?.[wid]?.is_divorced);
+                        const mx    = (pos[hId].x + pos[wid].x) / 2;
+                        const my    = pos[hId].y;
+                        const bid   = `badge-${Math.min(hId,wid)}-${Math.max(hId,wid)}`;
+                        badgeList.push({ bid, isDiv });
+                        // Badge node di titik tengah pasangan
+                        elements.push({ group:'nodes', data:{ id:bid, label: isDiv ? '\u2702' : '\u2764', isBadge:true, isDivorced:isDiv }, position:{ x:mx, y:my } });
+                        // Garis terbagi dua melalui badge
+                        const eType = isDiv ? 'spouse-divorced' : 'spouse';
+                        elements.push({ group:'edges', data:{ id:`sp1-${hId}-${wid}`, source:String(hId), target:bid, edgeType:eType } });
+                        elements.push({ group:'edges', data:{ id:`sp2-${hId}-${wid}`, source:bid, target:String(wid), edgeType:eType } });
                     });
-                    // Marriage-anchor di centroid baris pasangan (untuk routing ke anak)
+
+                    // Routing anak dari badge (1 istri) atau anchor centroid (>1 istri)
                     if (kids.length > 0) {
-                        const all = [hId, ...wives].filter(m => pos[m]);
-                        const ax  = all.reduce((s,m) => s + pos[m].x, 0) / all.length;
-                        const ay  = pos[hId].y;
-                        const aid = `anc-${hId}`;
-                        elements.push({ group:'nodes', data:{ id:aid, label:'', isAnchor:true }, position:{ x:ax, y:ay }});
+                        let ancId;
+                        if (wives.length === 1 && badgeList.length === 1) {
+                            ancId = badgeList[0].bid; // badge sekaligus jadi anchor
+                        } else {
+                            const all = [hId, ...wives].filter(m => pos[m]);
+                            const ax  = all.reduce((s,m) => s + pos[m].x, 0) / all.length;
+                            ancId = `anc-${hId}`;
+                            elements.push({ group:'nodes', data:{ id:ancId, label:'', isAnchor:true }, position:{ x:ax, y:pos[hId].y } });
+                        }
                         kids.forEach(chHead => {
-                            elements.push({ group:'edges', data:{ id:`pc-${aid}-${chHead}`, source:aid, target:String(chHead), edgeType:'parent-child' }});
+                            elements.push({ group:'edges', data:{ id:`pc-${ancId}-${chHead}`, source:ancId, target:String(chHead), edgeType:'parent-child' } });
                         });
                     }
                 } else {
                     // Orang tua tunggal: edge langsung ke anak
                     kids.forEach(chHead => {
-                        elements.push({ group:'edges', data:{ id:`pc-${hId}-${chHead}`, source:String(hId), target:String(chHead), edgeType:'parent-child' }});
+                        elements.push({ group:'edges', data:{ id:`pc-${hId}-${chHead}`, source:String(hId), target:String(chHead), edgeType:'parent-child' } });
                     });
                 }
             });
@@ -3138,7 +3159,7 @@ if ($action === 'bio') {
                 layout: { name: 'preset' },
                 style: [
                     {
-                        selector: 'node[!isAnchor]',
+                        selector: 'node[!isAnchor][!isBadge]',
                         style: {
                             'width': 60, 'height': 60,
                             'background-fit': 'cover', 'background-clip': 'node',
@@ -3167,8 +3188,24 @@ if ($action === 'bio') {
                         style: { 'width': 1, 'height': 1, 'background-color': 'transparent', 'border-width': 0, 'label': '', 'events': 'no', 'opacity': 0 }
                     },
                     {
+                        selector: 'node[isBadge]',
+                        style: {
+                            'width': 22, 'height': 22, 'shape': 'ellipse',
+                            'background-color': function(ele) { return ele.data('isDivorced') ? '#6b7280' : '#ef4444'; },
+                            'border-width': 0,
+                            'label': 'data(label)',
+                            'text-valign': 'center', 'text-halign': 'center',
+                            'font-size': 11, 'color': '#ffffff',
+                            'events': 'no', 'z-index': 10
+                        }
+                    },
+                    {
                         selector: 'edge[edgeType="spouse"]',
                         style: { 'width': 2.4, 'line-color': '#ef4444', 'line-style': 'dashed', 'line-dash-pattern': [8,6], 'curve-style': 'straight', 'target-arrow-shape': 'none', 'source-arrow-shape': 'none' }
+                    },
+                    {
+                        selector: 'edge[edgeType="spouse-divorced"]',
+                        style: { 'width': 2.4, 'line-color': '#6b7280', 'line-style': 'dashed', 'line-dash-pattern': [6,4], 'curve-style': 'straight', 'target-arrow-shape': 'none', 'source-arrow-shape': 'none' }
                     },
                     {
                         selector: 'edge[edgeType="parent-child"]',
@@ -3186,11 +3223,11 @@ if ($action === 'bio') {
             requestAnimationFrame(doFit);
             setTimeout(doFit, 400);
 
-            cy.on('tap', 'node[!isAnchor]', function(evt) {
+            cy.on('tap', 'node[!isAnchor][!isBadge]', function(evt) {
                 const pid = evt.target.data('personId');
                 if (pid) window.location.href = `?action=bio&id=${pid}&mode=view`;
             });
-            cy.on('dblclick', 'node[!isAnchor]', function(evt) {
+            cy.on('dblclick', 'node[!isAnchor][!isBadge]', function(evt) {
                 const pid = evt.target.data('personId');
                 if (pid) window.location.href = `?action=tree&focus_id=${pid}`;
             });
