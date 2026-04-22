@@ -1612,6 +1612,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $from_rel = $_POST['from_relation_type']??'';
         $spouse_order = (isset($_POST['spouse_order']) && intval($_POST['spouse_order']) > 0) ? intval($_POST['spouse_order']) : null;
         $is_divorced_new = (isset($_POST['is_divorced']) && $_POST['is_divorced'] == '1') ? 1 : 0;
+
+        // Auto-detect gender jika relasi tertentu
+        if ($from_rel === 'ibu') $gender = 'P';
         elseif ($from_rel === 'ayah') $gender = 'L';
         elseif ($from_rel === 'pasangan' && $from_id > 0) {
             // Cek gender pasangan
