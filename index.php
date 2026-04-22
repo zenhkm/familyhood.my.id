@@ -3005,9 +3005,10 @@ if ($action === 'bio') {
 
             // ── Konstanta layout ─────────────────────────────────────────────
             const NODE_W     = 80;    // lebar efektif per node
-            const SPOUSE_GAP = 110;   // jarak antar suami-istri
-            const NODE_GAP   = 40;    // jarak antar subtree saudara
-            const GEN_Y_GAP  = 160;   // jarak vertikal antar generasi
+            const SPOUSE_GAP    = 110;   // jarak antar suami-istri
+            const NODE_GAP     = 40;    // jarak antar subtree saudara
+            const GEN_Y_GAP    = 160;   // jarak vertikal antar generasi
+            const WIFE_ROW_GAP = 65;    // jarak vertikal antar baris istri
 
             // ── Hitung lebar subtree (bottom-up) ─────────────────────────────
             const subtW    = {};
@@ -3016,7 +3017,8 @@ if ($action === 'bio') {
                 if (calcDone.has(hId)) return subtW[hId] || NODE_W;
                 calcDone.add(hId);
                 const n       = (unitSpouses[hId]||[]).length;
-                const coupleW = n * SPOUSE_GAP + NODE_W;
+                const n_row0  = Math.min(n, 2);
+                const coupleW = n_row0 * SPOUSE_GAP + NODE_W;
                 const kids    = unitChildren[hId] || [];
                 const kidsW   = kids.length
                     ? kids.reduce((s,c) => s + calcW(c), 0) + (kids.length - 1) * NODE_GAP
@@ -3027,7 +3029,7 @@ if ($action === 'bio') {
             heads.forEach(h => calcW(h));
 
             // ── Penempatan posisi top-down ────────────────────────────────────
-            // Suami di tengah antara istri-istrinya, semua sejajar (y sama)
+            // Baris 0: suami + istri 1 & 2. Baris 1: istri 3 & 4, dst.
             const pos    = {};
             const placed = new Set();
             function placeUnit(hId, cx) {
@@ -3035,21 +3037,40 @@ if ($action === 'bio') {
                 placed.add(hId);
                 const wives   = unitSpouses[hId] || [];
                 const n       = wives.length;
-                const y       = (genLevel[hId] ?? 0) * GEN_Y_GAP;
-                const total   = n + 1;
-                const husbIdx = Math.floor(n / 2);          // posisi suami di baris
-                const rowStart = cx - (total - 1) / 2 * SPOUSE_GAP;
-                pos[hId] = { x: rowStart + husbIdx * SPOUSE_GAP, y };
-                // istri di kiri suami
-                wives.slice(0, husbIdx).forEach((wid, i) => {
-                    pos[wid] = { x: rowStart + i * SPOUSE_GAP, y };
+                const baseY   = (genLevel[hId] ?? 0) * GEN_Y_GAP;
+
+                // ─ Baris 0: suami + maks 2 istri pertama ─
+                const row0Wives = wives.slice(0, 2);
+                const r0n       = row0Wives.length;
+                const r0husbIdx = Math.floor(r0n / 2);
+                const r0start   = cx - (r0n) / 2 * SPOUSE_GAP;  // (r0n+1-1)/2
+                pos[hId] = { x: r0start + r0husbIdx * SPOUSE_GAP, y: baseY };
+                row0Wives.slice(0, r0husbIdx).forEach((wid, i) => {
+                    pos[wid] = { x: r0start + i * SPOUSE_GAP, y: baseY };
                     placed.add(wid);
                 });
-                // istri di kanan suami
-                wives.slice(husbIdx).forEach((wid, i) => {
-                    pos[wid] = { x: rowStart + (husbIdx + 1 + i) * SPOUSE_GAP, y };
+                row0Wives.slice(r0husbIdx).forEach((wid, i) => {
+                    pos[wid] = { x: r0start + (r0husbIdx + 1 + i) * SPOUSE_GAP, y: baseY };
                     placed.add(wid);
                 });
+
+                // ─ Baris 1+: sepasang dua istri per baris, centred di husband x ─
+                const remWives = wives.slice(2);
+                for (let ri = 0; ri < remWives.length; ri += 2) {
+                    const rowIdx = Math.floor(ri / 2) + 1;
+                    const rowY   = baseY + rowIdx * WIFE_ROW_GAP;
+                    const pair   = remWives.slice(ri, ri + 2);
+                    if (pair.length === 1) {
+                        pos[pair[0]] = { x: pos[hId].x, y: rowY };
+                        placed.add(pair[0]);
+                    } else {
+                        pos[pair[0]] = { x: pos[hId].x - SPOUSE_GAP / 2, y: rowY };
+                        pos[pair[1]] = { x: pos[hId].x + SPOUSE_GAP / 2, y: rowY };
+                        placed.add(pair[0]);
+                        placed.add(pair[1]);
+                    }
+                }
+
                 // anak-anak diletakkan terpusat di bawah cx (pusat unit)
                 const kids = unitChildren[hId] || [];
                 if (!kids.length) return;
@@ -3118,7 +3139,7 @@ if ($action === 'bio') {
                         if (!pos[wid]) return;
                         const isDiv = !!(spouses[hId]?.[wid]?.is_divorced);
                         const mx    = (pos[hId].x + pos[wid].x) / 2;
-                        const my    = pos[hId].y;
+                        const my    = (pos[hId].y + pos[wid].y) / 2;
                         const bid   = `badge-${Math.min(hId,wid)}-${Math.max(hId,wid)}`;
                         badgeList.push({ bid, isDiv });
                         // Badge node di titik tengah pasangan
