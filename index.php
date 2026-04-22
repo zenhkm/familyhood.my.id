@@ -3086,6 +3086,24 @@ if ($action === 'bio') {
             });
 
             // Pusatkan tree secara horizontal
+            // ── Sebelum centering: posisikan extra husbands (suami lain dari istri) ──
+            // Suami tanpa anak ditempatkan di sisi luar istri. Suami dengan anak dibiarkan.
+            heads.forEach(hId => {
+                (unitSpouses[hId] || []).forEach(wid => {
+                    if (!pos[wid]) return;
+                    const side = pos[wid].x <= pos[hId].x ? -1 : 1;
+                    const extraHubs = Object.keys(spouses[wid] || {})
+                        .map(Number)
+                        .filter(h2 => h2 !== hId && visible.has(h2));
+                    extraHubs.forEach((h2, idx) => {
+                        if ((unitChildren[h2] || []).length === 0) {
+                            // Geser ke luar dari istri
+                            pos[h2] = { x: pos[wid].x + side * (idx + 1) * SPOUSE_GAP, y: pos[wid].y };
+                        }
+                    });
+                });
+            });
+
             const allXs = [...visible].filter(id => pos[id]).map(id => pos[id].x);
             const shift  = -(Math.min(...allXs) + Math.max(...allXs)) / 2;
             visible.forEach(id => { if (pos[id]) pos[id].x += shift; });
@@ -3113,6 +3131,7 @@ if ($action === 'bio') {
             // Setiap pasangan suami-istri mendapat badge ❤ (menikah) atau ✂ (cerai)
             // Garis suami-istri terbagi dua: suami→badge→istri
             // Anak terhubung ke badge ibu mereka masing-masing
+            const builtBadges = new Set();
             heads.forEach(hId => {
                 const wives = unitSpouses[hId] || [];
                 const kids  = unitChildren[hId] || [];
@@ -3127,6 +3146,7 @@ if ($action === 'bio') {
                         const bid     = `badge-${Math.min(hId,wid)}-${Math.max(hId,wid)}`;
                         const eType   = isDiv ? 'spouse-divorced' : 'spouse';
                         badgeList.push({ bid, isDiv });
+                        builtBadges.add(bid);
                         if (wifeRow === 0) {
                             // Baris sama → garis lurus melalui badge di tengah
                             const mx = (pos[hId].x + pos[wid].x) / 2;
@@ -3177,6 +3197,29 @@ if ($action === 'bio') {
                         elements.push({ group:'edges', data:{ id:`pc-${hId}-${chHead}`, source:String(hId), target:String(chHead), edgeType:'parent-child' } });
                     });
                 }
+            });
+
+            // ── Badge & edge untuk extra husbands (suami lain dari istri) ──
+            heads.forEach(hId => {
+                (unitSpouses[hId] || []).forEach(wid => {
+                    if (!pos[wid]) return;
+                    const extraHubs = Object.keys(spouses[wid] || {})
+                        .map(Number)
+                        .filter(h2 => h2 !== hId && visible.has(h2) && pos[h2]);
+                    extraHubs.forEach(h2 => {
+                        const bid = `badge-${Math.min(wid,h2)}-${Math.max(wid,h2)}`;
+                        if (builtBadges.has(bid)) return;
+                        builtBadges.add(bid);
+                        const isDiv = !!(spouses[wid]?.[h2]?.is_divorced);
+                        const eType = isDiv ? 'spouse-divorced' : 'spouse';
+                        // Garis lurus wid → badge → h2
+                        const mx = (pos[wid].x + pos[h2].x) / 2;
+                        const my = (pos[wid].y + pos[h2].y) / 2;
+                        elements.push({ group:'nodes', data:{ id:bid, label: isDiv ? '\u2702' : '\u2764', isBadge:true, isDivorced:isDiv }, position:{ x:mx, y:my } });
+                        elements.push({ group:'edges', data:{ id:`sp1-${wid}-${h2}`, source:String(wid), target:bid, edgeType:eType } });
+                        elements.push({ group:'edges', data:{ id:`sp2-${wid}-${h2}`, source:bid, target:String(h2), edgeType:eType } });
+                    });
+                });
             });
 
             // ── Inisialisasi Cytoscape ───────────────────────────────────────
