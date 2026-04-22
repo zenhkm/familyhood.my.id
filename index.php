@@ -3018,8 +3018,8 @@ if ($action === 'bio') {
                 calcDone.add(hId);
                 const n      = (unitSpouses[hId]||[]).length;
                 const numCols = Math.ceil(n / 2);
-                // row 1+ wives dipush extra sesuai jumlah anak
-                const kExt    = n > 2 ? Math.ceil((unitChildren[hId]||[]).length / 2) * (NODE_W / 2) : 0;
+                // semua istri (termasuk row 0) melebar sesuai jumlah anak
+                const kExt    = n > 0 ? Math.ceil((unitChildren[hId]||[]).length / 2) * (NODE_W / 2) : 0;
                 const coupleW = 2 * (numCols * SPOUSE_GAP + kExt) + NODE_W;
                 const kids    = unitChildren[hId] || [];
                 const kidsW   = kids.length
@@ -3051,7 +3051,7 @@ if ($action === 'bio') {
                     const col  = Math.floor(i / 2) + 1;   // 1,1,2,2,3,3,...
                     const side = (i % 2 === 0) ? -1 : 1;  // kiri,kanan,kiri,kanan,...
                     const row  = Math.floor(i / 2);
-                    const colX = row === 0 ? col * SPOUSE_GAP : col * SPOUSE_GAP + kidsExtra;
+                    const colX = col * SPOUSE_GAP + kidsExtra;
                     pos[wid] = { x: cx + side * colX, y: baseY + row * WIFE_ROW_GAP };
                     placed.add(wid);
                 });
