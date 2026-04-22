@@ -2906,612 +2906,379 @@ if ($action === 'bio') {
             </div>
         </div>
 
-        <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.29.2/cytoscape.min.js"></script>
         <script>
         (function() {
             const container = document.getElementById('family-graph');
-            const fallback = document.getElementById('tree-fallback');
-            if (!container || typeof vis === 'undefined') {
+            const fallback  = document.getElementById('tree-fallback');
+            if (!container || typeof cytoscape === 'undefined') {
                 if (fallback) fallback.style.display = 'block';
                 return;
             }
 
-            // small inline SVG avatar fallback (avoids broken image icons in vis nodes)
-            const defaultAvatarSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="100%" height="100%" fill="#ffffff"/><circle cx="100" cy="70" r="48" fill="#e5e7eb"/><rect x="40" y="130" rx="14" width="120" height="40" fill="#e5e7eb"/></svg>';
-            let defaultAvatar = '';
-            try {
-                defaultAvatar = 'data:image/svg+xml;base64,' + btoa(defaultAvatarSvg);
-            } catch (err) {
-                // fallback if btoa not allowed for some reason
-                defaultAvatar = 'data:image/svg+xml;utf8,' + encodeURIComponent(defaultAvatarSvg);
-            }
-
-            // debounce helper for resize/layout
-            function debounce(fn, t = 120) {
-                let to;
-                return function(...args) {
-                    clearTimeout(to);
-                    to = setTimeout(() => fn.apply(this, args), t);
-                };
-            }
-
-            const persons = <?= json_encode($graphPersons, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-            const parentChildren = <?= json_encode($parentChildren, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-            const childParents = <?= json_encode($childParents, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            // ── Data dari PHP ────────────────────────────────────────────────
+            const persons        = <?= json_encode($graphPersons,    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            const parentChildren = <?= json_encode($parentChildren,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            const childParents   = <?= json_encode($childParents,    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const spouses = <?= json_encode($spouses, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
             const roots = <?= json_encode(array_values($rootsToRender)) ?>;
-            const focusId = <?= (int)$focusId ?>;
+            const focusId        = <?= (int)$focusId ?>;
+            const generationData = <?= json_encode($generationData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
+            // ── Kumpulkan node yang visible (BFS dari roots) ─────────────────
             const visible = new Set();
-            const stack = [...roots];
+            const stack   = [...roots];
             while (stack.length) {
                 const curr = Number(stack.pop());
                 if (!curr || visible.has(curr)) continue;
                 visible.add(curr);
-
-                const childrenMap = parentChildren[curr] || {};
-                Object.keys(childrenMap).forEach((cid) => {
-                    const childId = Number(cid);
-                    if (childId && !visible.has(childId)) stack.push(childId);
+                Object.keys(parentChildren[curr] || {}).forEach(cid => {
+                    const c = Number(cid);
+                    if (c && !visible.has(c)) stack.push(c);
                 });
-
-                const spouseMap = spouses[curr] || {};
-                Object.keys(spouseMap).forEach((sid) => {
-                    const spouseId = Number(sid);
-                    if (!spouseId) return;
-                    if (!visible.has(spouseId)) stack.push(spouseId);
+                Object.keys(spouses[curr] || {}).forEach(sid => {
+                    const s = Number(sid);
+                    if (s && !visible.has(s)) stack.push(s);
                 });
             }
-
             if (visible.size === 0) {
                 if (fallback) fallback.style.display = 'block';
                 return;
             }
 
-            const generationData = <?= json_encode($generationData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+            // ── Parameter layout ─────────────────────────────────────────────
+            const GEN_Y_GAP  = 160;
+            const NODE_W     = 110;
+            const COUPLE_GAP = 90;
 
-            // Tetapkan level berdasarkan data generasi dari backend (steady 1->2->3->4)
-            const levels = {};
-            visible.forEach((id) => {
-                if (generationData[id] != null) {
-                    levels[id] = Math.max(0, Number(generationData[id]) - 1) * 2;
-                } else {
-                    levels[id] = 0;
-                }
+            // ── Level Y per generasi (pasangan disamakan) ────────────────────
+            const genY = {};
+            visible.forEach(id => {
+                genY[id] = ((generationData[id] ?? 1) - 1) * GEN_Y_GAP;
             });
-
-            // Pastikan pasangan tetap sejajar (level sama atau minimum)
-            visible.forEach((id) => {
-                const spouseMap = spouses[id] || {};
-                Object.keys(spouseMap).forEach((sid) => {
-                    const spouseId = Number(sid);
-                    if (!visible.has(spouseId)) return;
-                    const mergedLevel = Math.min(levels[id], levels[spouseId]);
-                    levels[id] = mergedLevel;
-                    levels[spouseId] = mergedLevel;
+            visible.forEach(id => {
+                Object.keys(spouses[id] || {}).forEach(sid => {
+                    const s = Number(sid);
+                    if (!visible.has(s)) return;
+                    const merged = Math.min(genY[id], genY[s]);
+                    genY[id] = merged;
+                    genY[s]  = merged;
                 });
             });
 
-            const nodes = [];
-            const edges = [];
-            const marriageNodeSet = new Set();
-            const marriageLinkSet = new Set();
-
-            visible.forEach((id) => {
-                const p = persons[id];
-                if (!p) return;
-                const alivePrefix = Number(p.is_alive) === 0 ? 'alm. ' : '';
-                nodes.push({
-                    id: id,
-                    label: `${alivePrefix}${p.name}`,
-                    shape: 'circularImage',
-                    image: p.photo || defaultAvatar,
-                    level: levels[id] ?? 0,
-                    size: focusId === id ? 44 : 36,
-                    font: { size: focusId === id ? 16 : 13, face: 'Segoe UI', color: '#0f172a' },
-                    borderWidth: focusId === id ? 4 : 2,
-                    color: {
-                        border: focusId === id ? '#4f46e5' : '#94a3b8',
-                        background: '#ffffff',
-                        highlight: { border: '#4338ca', background: '#eef2ff' }
-                    }
-                });
-            });
-
-            // Garis pernikahan (diakali arah panahnya agar suami di tengah).
-            // Kumpulkan data suami -> istri-istri
-            const husbandWives = {};
-            visible.forEach((parentId) => {
-                const p = persons[parentId];
-                // Idealnya suami (L) berada di tengah. Jika gender tidak diset, tidak di-tweak.
-                if (!p || p.gender !== 'L') return;
-                
-                const spouseMap = spouses[parentId] || {};
-                const validWives = Object.keys(spouseMap)
-                    .map(Number)
-                    .filter(sid => visible.has(sid));
-                
-                if (validWives.length > 0) {
-                    husbandWives[parentId] = validWives;
-                }
-            });
-
-            // Helper: represent a spouse relationship using a small invisible "marriage" anchor node
-            // and two short links from each spouse to that anchor. This avoids long, crossing curved
-            // edges between spouses and keeps the visual compact (short bend near the couple).
-            function addSpouseEdge(aNode, bNode) {
-                const a = Math.min(Number(aNode), Number(bNode));
-                const b = Math.max(Number(aNode), Number(bNode));
-                if (!a || !b || a === b) return;
-
-                const marriageId = `m-${a}-${b}`;
-
-                if (!marriageNodeSet.has(marriageId)) {
-                    marriageNodeSet.add(marriageId);
-                    nodes.push({
-                        id: marriageId,
-                        label: '',
-                        shape: 'dot',
-                        size: 1,
-                        level: Math.min(levels[a] ?? 0, levels[b] ?? 0) + 1,
-                        color: {
-                            border: 'rgba(0,0,0,0)',
-                            background: 'rgba(0,0,0,0)',
-                            highlight: { border: 'rgba(0,0,0,0)', background: 'rgba(0,0,0,0)' }
-                        },
-                        physics: false
-                    });
-                }
-
-                const linkA = `p-${a}-${marriageId}`;
-                const linkB = `p-${b}-${marriageId}`;
-
-                if (!marriageLinkSet.has(linkA)) {
-                    marriageLinkSet.add(linkA);
-                    edges.push({
-                        from: a,
-                        to: marriageId,
-                        dashes: [7, 6],
-                        color: { color: '#ef4444' },
-                        width: 2.4,
-                        arrows: { to: { enabled: false } },
-                        // small curve towards center
-                        smooth: { enabled: true, type: 'curvedCW', roundness: 0.18 }
-                    });
-                }
-
-                if (!marriageLinkSet.has(linkB)) {
-                    marriageLinkSet.add(linkB);
-                    edges.push({
-                        from: b,
-                        to: marriageId,
-                        dashes: [7, 6],
-                        color: { color: '#ef4444' },
-                        width: 2.4,
-                        arrows: { to: { enabled: false } },
-                        // opposite curve so both links meet nicely at the anchor
-                        smooth: { enabled: true, type: 'curvedCCW', roundness: 0.18 }
-                    });
-                }
-            }
-
-            // Proses suami dan istri-istrinya, paruh kiri dan kanan
-            Object.keys(husbandWives).forEach(hId => {
-                const husbandId = Number(hId);
-                const wives = husbandWives[husbandId];
-                const split = Math.ceil(wives.length / 2);
-                
-                wives.forEach((wifeId, index) => {
-                    // Supaya vis.js mengatur urutan kiri/kanan berdasarkan edge
-                    const fromNode = (index < split) ? wifeId : husbandId;
-                    const toNode = (index < split) ? husbandId : wifeId;
-                    addSpouseEdge(fromNode, toNode);
-                });
-            });
-
-            // Fallback untuk relasi spouse yang tersisa (misal istri yg polyandry atau invalid gender)
-            visible.forEach((parentId) => {
-                const spouseMap = spouses[parentId] || {};
-                Object.keys(spouseMap).forEach((sid) => {
-                    const spouseId = Number(sid);
-                    if (!visible.has(spouseId)) return;
-                    addSpouseEdge(Number(parentId), spouseId);
-                });
-            });
-
-            // Kumpulkan semua anak yang terlihat.
+            // ── Kumpulkan childSet ───────────────────────────────────────────
             const childSet = new Set();
-            visible.forEach((pid) => {
-                const childrenMap = parentChildren[pid] || {};
-                Object.keys(childrenMap).forEach((cid) => {
-                    const childId = Number(cid);
-                    if (childId && visible.has(childId)) childSet.add(childId);
+            visible.forEach(pid => {
+                Object.keys(parentChildren[pid] || {}).forEach(cid => {
+                    const c = Number(cid);
+                    if (c && visible.has(c)) childSet.add(c);
                 });
             });
 
-            // helper untuk membuat edge pasutri dan child di marriage node
-            function addMarriageChildEdge(parentA, parentB, childId) {
-                const a = Math.min(parentA, parentB);
-                const b = Math.max(parentA, parentB);
-                if (a <= 0 || b <= 0 || a === b) return;
-
-                const marriageId = `m-${a}-${b}`;
-                if (!marriageNodeSet.has(marriageId)) {
-                    marriageNodeSet.add(marriageId);
-                    nodes.push({
-                        id: marriageId,
-                        label: '',
-                        shape: 'dot',
-                        size: 1,
-                        level: Math.min(levels[a] ?? 0, levels[b] ?? 0) + 1,
-                        color: {
-                            border: 'rgba(0,0,0,0)',
-                            background: 'rgba(0,0,0,0)',
-                            highlight: { border: 'rgba(0,0,0,0)', background: 'rgba(0,0,0,0)' }
-                        },
-                        physics: false
-                    });
-                }
-
-                const linkA = `p-${a}-${marriageId}`;
-                const linkB = `p-${b}-${marriageId}`;
-
-                if (!marriageLinkSet.has(linkA)) {
-                    marriageLinkSet.add(linkA);
-                    edges.push({
-                        from: a,
-                        to: marriageId,
-                        color: { color: 'rgba(148,163,184,0.45)' },
-                        width: 1.2,
-                        smooth: false,
-                        arrows: { to: { enabled: false } }
-                    });
-                }
-
-                if (!marriageLinkSet.has(linkB)) {
-                    marriageLinkSet.add(linkB);
-                    edges.push({
-                        from: b,
-                        to: marriageId,
-                        color: { color: 'rgba(148,163,184,0.45)' },
-                        width: 1.2,
-                        smooth: false,
-                        arrows: { to: { enabled: false } }
-                    });
-                }
-
-                edges.push({
-                    from: marriageId,
-                    to: childId,
-                    arrows: { to: { enabled: false } },
-                    color: { color: '#94a3b8' },
-                    width: 2.2,
-                    smooth: false
-                });
-            }
-
-            // Garis parent-child: jika ayah+ibu lengkap, anak ditarik dari node pasangan (tengah).
-            childSet.forEach((childId) => {
-                const parentMap = childParents[childId] || {};
-                const parentIds = Object.keys(parentMap)
-                    .map((id) => Number(id))
-                    .filter((id) => visible.has(id));
-
-                if (parentIds.length >= 2) {
-                    let fatherId = parentIds.find((id) => (persons[id]?.gender || '') === 'L');
-                    let motherId = parentIds.find((id) => (persons[id]?.gender || '') === 'P');
-                    let p1 = fatherId || parentIds[0];
-                    let p2 = motherId || parentIds.find((id) => id !== p1) || parentIds[1];
-                    if (!p1 || !p2 || p1 === p2) {
-                        p1 = parentIds[0];
-                        p2 = parentIds[1];
-                    }
-
-                    addMarriageChildEdge(p1, p2, childId);
-                    return;
-                }
-
-                if (parentIds.length === 1) {
-                    // If one parent only, try infer spouse co-parent for better centering
-                    const parentId = parentIds[0];
-                    const parentGender = persons[parentId]?.gender || '';
-
-                    const spouseCandidates = Object.keys(spouses[parentId] || {})
-                        .map((id) => Number(id))
-                        .filter((id) => visible.has(id) && !childSet.has(Number(id)));
-
-                    // Prioritas: pasangan dengan gender berlawanan, lalu pasangan pertama yang ada
-                    let inferredSpouse = spouseCandidates.find((id) => {
-                        const g = (persons[id]?.gender || '');
-                        return parentGender && g && g !== parentGender;
-                    }) || spouseCandidates[0];
-
-                    if (inferredSpouse && inferredSpouse !== parentId) {
-                        // Anak akan ditarik dari tengah pasangan, menciptakan visual "antara ayah & ibu"
-                        addMarriageChildEdge(parentId, inferredSpouse, childId);
-                    } else {
-                        // Jika tidak ada pasangan, tarik langsung dari parent node
-                        edges.push({
-                            from: parentId,
-                            to: childId,
-                            arrows: { to: { enabled: false } },
-                            color: { color: '#94a3b8' },
-                            width: 2,
-                            smooth: false
-                        });
-                    }
-                }
-            });
-
-            const nodesDS = new vis.DataSet(nodes);
-            const edgesDS = new vis.DataSet(edges);
-
-            const network = new vis.Network(container, {
-                nodes: nodesDS,
-                edges: edgesDS
-            }, {
-                autoResize: true,
-                physics: false,
-                interaction: { hover: true, navigationButtons: true, keyboard: true },
-                layout: { hierarchical: false },
-                nodes: { shapeProperties: { useBorderWithImage: true } },
-                edges: { selectionWidth: 0, hoverWidth: 0.3 }
-            });
-
-            // CUSTOM FAMILY TREE LAYOUT - sepenuhnya berbasis generationData
-            // 1. Y ditentukan dari generationData (PHP), bukan dari vis
-            // 2. Anak tepat di bawah pasangan orang tuanya
-            // 3. Istri SELALU di sebelah suami, tidak terpisah saudara
-            // CUSTOM FAMILY TREE LAYOUT â€” Reingold-Tilford style
-            // 1. Y tetap per generasi dari generationData PHP
-            // 2. Subtree width dihitung rekursif (bottom-up)
-            // 3. Penempatan node dilakukan top-down agar tidak crossing
-            // 4. Istri selalu di sebelah suami, tidak terpisah saudara
-            function customFamilyTreeLayout() {
-                // tuned layout parameters: reduce horizontal gaps to avoid long diagonal edges
-                const GEN_Y_GAP  = 150;   // jarak vertikal antar generasi (px)
-                const NODE_W     = 100;   // lebar minimum per node / leaf
-                const COUPLE_GAP = 80;    // jarak suami â†” istri
-
-                // â”€â”€ Y tetap per generasi â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                const pos = {};
-                visible.forEach(id => {
-                    pos[id] = { x: 0, y: ((generationData[id] ?? 1) - 1) * GEN_Y_GAP };
-                });
-
-                // â”€â”€ Bangun coupleMap: husbandId â†’ [{wife, children[]}] â”€â”€â”€â”€
-                // wife = null berarti tidak ada istri untuk grup ini
-                const coupleMap = {};
-                const assignedC  = new Set();
-
-                visible.forEach(hId => {
-                    const p = persons[hId];
-                    if (!p || p.gender !== 'L') return;
-
-                    const wives = Object.keys(spouses[hId] || {})
-                        .map(Number).filter(sid => visible.has(sid))
-                        .sort((a, b) => a - b);
-
-                    coupleMap[hId] = [];
-
-                    if (wives.length === 0) {
-                        // Suami tanpa istri â†’ semua anak yang punya dia sebagai parent
-                        const kids = [...childSet].filter(cid => {
-                            if (assignedC.has(cid)) return false;
-                            const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(x => visible.has(x));
-                            return pIds.includes(hId);
-                        });
-                        if (kids.length > 0) {
-                            kids.forEach(c => assignedC.add(c));
-                            coupleMap[hId].push({ wife: null, children: kids });
-                        }
-                        return;
-                    }
-
-                    // Proses tiap istri
-                    wives.forEach(wId => {
-                        const kids = [...childSet].filter(cid => {
-                            if (assignedC.has(cid)) return false;
-                            const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(x => visible.has(x));
-                            return pIds.includes(hId) && pIds.includes(wId);
-                        });
-                        kids.forEach(c => assignedC.add(c));
-                        coupleMap[hId].push({ wife: wId, children: kids }); // push meski 0 anak
-                    });
-
-                    // Anak yang hanya dari suami ini (tanpa istri spesifik)
-                    const solo = [...childSet].filter(cid => {
+            // ── coupleMap: husbandId → [{wife, children[]}] ──────────────────
+            const coupleMap  = {};
+            const assignedC  = new Set();
+            visible.forEach(hId => {
+                const p = persons[hId];
+                if (!p || p.gender !== 'L') return;
+                const wives = Object.keys(spouses[hId] || {})
+                    .map(Number).filter(sid => visible.has(sid)).sort((a,b) => a-b);
+                coupleMap[hId] = [];
+                if (wives.length === 0) {
+                    const kids = [...childSet].filter(cid => {
                         if (assignedC.has(cid)) return false;
-                        const pIds = Object.keys(childParents[cid] || {}).map(Number).filter(x => visible.has(x));
+                        const pIds = Object.keys(childParents[cid]||{}).map(Number).filter(x=>visible.has(x));
                         return pIds.includes(hId);
                     });
-                    if (solo.length > 0) {
-                        solo.forEach(c => assignedC.add(c));
-                        coupleMap[hId].push({ wife: null, children: solo });
-                    }
-                });
-
-                // â”€â”€ Hitung subtreeWidth rekursif â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                // subtW[id] = total lebar x (px) yang dibutuhkan oleh subtree orang ini
-                const subtW  = {};
-                const calcDone = new Set();
-
-                function calcW(id) {
-                    if (calcDone.has(id)) return subtW[id] || NODE_W;
-                    calcDone.add(id);
-
-                    const groups   = coupleMap[id] || [];
-                    const allKids  = groups.flatMap(g => g.children);
-                    const numWives = groups.filter(g => g.wife).length;
-
-                    // Lebar pasangan: 1 suami + N istri berdekatan
-                    const coupleSpan = NODE_W + numWives * COUPLE_GAP;
-
-                    if (allKids.length === 0) {
-                        subtW[id] = Math.max(NODE_W, coupleSpan);
-                        return subtW[id];
-                    }
-
-                    // Lebar anak-anak: jumlah lebar subtree masing-masing + celah antar anak
-                    const childSpan = allKids.reduce((s, c) => s + calcW(c), 0)
-                                    + Math.max(0, allKids.length - 1) * NODE_W;
-
-                    subtW[id] = Math.max(coupleSpan, childSpan);
-                    return subtW[id];
+                    if (kids.length) { kids.forEach(c=>assignedC.add(c)); coupleMap[hId].push({wife:null,children:kids}); }
+                    return;
                 }
-
-                visible.forEach(id => { if (!calcDone.has(id)) calcW(id); });
-
-                // â”€â”€ Tempatkan subtrees top-down â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                const placed = new Set();
-
-                function placeSubtree(id, cx) {
-                    if (placed.has(id)) return;
-                    placed.add(id);
-                    pos[id].x = cx;
-
-                    const groups    = coupleMap[id] || [];
-                    const wivesList = groups.map(g => g.wife).filter(Boolean);
-                    const half      = Math.ceil(wivesList.length / 2);
-
-                    // Tempatkan istri: kiri dan kanan suami
-                    wivesList.forEach((wId, idx) => {
-                        if (!placed.has(wId)) {
-                            placed.add(wId);
-                            pos[wId].x = idx < half
-                                ? cx - (half - idx) * COUPLE_GAP
-                                : cx + (idx - half + 1) * COUPLE_GAP;
-                        }
+                wives.forEach(wId => {
+                    const kids = [...childSet].filter(cid => {
+                        if (assignedC.has(cid)) return false;
+                        const pIds = Object.keys(childParents[cid]||{}).map(Number).filter(x=>visible.has(x));
+                        return pIds.includes(hId) && pIds.includes(wId);
                     });
-
-                    // Semua anak (dari semua istri, berurutan)
-                    const allKids = groups.flatMap(g => g.children);
-                    if (allKids.length === 0) return;
-
-                    // Total lebar anak
-                    const totalChildW = allKids.reduce((s, c) => s + (subtW[c] || NODE_W), 0)
-                                      + Math.max(0, allKids.length - 1) * NODE_W;
-
-                    // Mulai dari kiri
-                    let childCx = cx - totalChildW / 2 + (subtW[allKids[0]] || NODE_W) / 2;
-                    allKids.forEach((cid, i) => {
-                        placeSubtree(cid, childCx);
-                        if (i < allKids.length - 1) {
-                            childCx += (subtW[allKids[i]]     || NODE_W) / 2
-                                     + NODE_W
-                                     + (subtW[allKids[i + 1]] || NODE_W) / 2;
-                        }
-                    });
-                }
-
-                // Cari semua root (tidak punya parent visible)
-                const allRoots = [...visible].filter(id => {
-                    const pIds = Object.keys(childParents[id] || {}).map(Number).filter(x => visible.has(x));
-                    return pIds.length === 0;
+                    kids.forEach(c=>assignedC.add(c));
+                    coupleMap[hId].push({wife:wId, children:kids});
                 });
-
-                // Deduplikasi: abaikan istri jika suaminya juga root
-                const rootSeen  = new Set();
-                const mainRoots = allRoots.filter(id => {
-                    if (rootSeen.has(id)) return false;
-                    rootSeen.add(id);
-                    Object.keys(spouses[id] || {}).map(Number).filter(x => visible.has(x))
-                          .forEach(sid => rootSeen.add(sid));
-                    // Jika ini istri (P) dan suaminya (L) juga root â†’ skip
-                    if ((persons[id]?.gender || '') !== 'L') {
-                        const hasHusbandRoot = allRoots.some(rid =>
-                            rid !== id &&
-                            Object.keys(spouses[rid] || {}).map(Number).includes(id) &&
-                            (persons[rid]?.gender || '') === 'L'
-                        );
-                        if (hasHusbandRoot) return false;
-                    }
-                    return true;
+                const solo = [...childSet].filter(cid => {
+                    if (assignedC.has(cid)) return false;
+                    const pIds = Object.keys(childParents[cid]||{}).map(Number).filter(x=>visible.has(x));
+                    return pIds.includes(hId);
                 });
+                if (solo.length) { solo.forEach(c=>assignedC.add(c)); coupleMap[hId].push({wife:null,children:solo}); }
+            });
 
-                // Tempatkan setiap root subtree berurutan kiriâ†’kanan
-                let curX = 0;
-                mainRoots.forEach(rootId => {
-                    const w = subtW[rootId] || NODE_W;
-                    placeSubtree(rootId, curX + w / 2);
-                    curX += w + NODE_W;
-                });
+            // ── Hitung lebar subtree (bottom-up) ─────────────────────────────
+            const subtW    = {};
+            const calcDone = new Set();
+            function calcW(id) {
+                if (calcDone.has(id)) return subtW[id] || NODE_W;
+                calcDone.add(id);
+                const groups    = coupleMap[id] || [];
+                const allKids   = groups.flatMap(g => g.children);
+                const numWives  = groups.filter(g => g.wife).length;
+                const coupleSpan = NODE_W + numWives * COUPLE_GAP;
+                if (!allKids.length) { subtW[id] = Math.max(NODE_W, coupleSpan); return subtW[id]; }
+                const childSpan = allKids.reduce((s,c) => s + calcW(c), 0)
+                                + Math.max(0, allKids.length - 1) * NODE_W;
+                subtW[id] = Math.max(coupleSpan, childSpan);
+                return subtW[id];
+            }
+            visible.forEach(id => { if (!calcDone.has(id)) calcW(id); });
 
-                // Tempatkan node visible yang belum di-place (tanpa parent & bukan suami)
-                visible.forEach(id => {
-                    if (!placed.has(id)) {
-                        pos[id].x = curX;
-                        curX += NODE_W;
+            // ── Penempatan posisi (top-down) ─────────────────────────────────
+            const pos    = {};
+            const placed = new Set();
+            visible.forEach(id => { pos[id] = { x: 0, y: genY[id] }; });
+
+            function placeSubtree(id, cx) {
+                if (placed.has(id)) return;
+                placed.add(id);
+                pos[id].x = cx;
+                const groups    = coupleMap[id] || [];
+                const wivesList = groups.map(g => g.wife).filter(Boolean);
+                const half      = Math.ceil(wivesList.length / 2);
+                wivesList.forEach((wId, idx) => {
+                    if (!placed.has(wId)) {
+                        placed.add(wId);
+                        pos[wId] = {
+                            x: idx < half ? cx - (half - idx) * COUPLE_GAP
+                                          : cx + (idx - half + 1) * COUPLE_GAP,
+                            y: genY[wId]
+                        };
                     }
                 });
-
-                // â”€â”€ Center seluruh tree â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                const allXV   = [...visible].map(id => pos[id].x);
-                const cShift  = -(Math.min(...allXV) + Math.max(...allXV)) / 2;
-                visible.forEach(id => { pos[id].x += cShift; });
-
-                // â”€â”€ Posisikan marriage nodes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                marriageNodeSet.forEach(mId => {
-                    const parts = mId.split('-');
-                    const a = Number(parts[1]), b = Number(parts[2]);
-                    if (!pos[a] || !pos[b]) return;
-                    // pos[a].x and pos[b].x already include the center shift (cShift)
-                    pos[mId] = {
-                        x: (pos[a].x + pos[b].x) / 2,
-                        y:  pos[a].y + GEN_Y_GAP * 0.38
-                    };
+                const allKids = groups.flatMap(g => g.children);
+                if (!allKids.length) return;
+                const totalChildW = allKids.reduce((s,c) => s + (subtW[c]||NODE_W), 0)
+                                  + Math.max(0, allKids.length - 1) * NODE_W;
+                let childCx = cx - totalChildW / 2 + (subtW[allKids[0]]||NODE_W) / 2;
+                allKids.forEach((cid, i) => {
+                    placeSubtree(cid, childCx);
+                    if (i < allKids.length - 1)
+                        childCx += (subtW[allKids[i]]||NODE_W)/2 + NODE_W + (subtW[allKids[i+1]]||NODE_W)/2;
                 });
-
-                // â”€â”€ Terapkan ke network â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-                Object.keys(pos).forEach(nid => {
-                    network.moveNode(nid, pos[nid].x, pos[nid].y);
-                });
-                network.fit({ animation: { duration: 600 } });
             }
 
-            // === EKSEKUSI ===
-            network.once('afterDrawing', function() {
-                // initial layout after first draw
-                setTimeout(customFamilyTreeLayout, 80);
-                // run again a bit later to allow images to finish loading
-                setTimeout(customFamilyTreeLayout, 450);
+            const allRoots = [...visible].filter(id => {
+                return !Object.keys(childParents[id]||{}).map(Number).some(x => visible.has(x));
+            });
+            const rootSeen  = new Set();
+            const mainRoots = allRoots.filter(id => {
+                if (rootSeen.has(id)) return false;
+                rootSeen.add(id);
+                Object.keys(spouses[id]||{}).map(Number).filter(x=>visible.has(x)).forEach(s=>rootSeen.add(s));
+                if ((persons[id]?.gender||'') !== 'L') {
+                    if (allRoots.some(rid => rid!==id &&
+                        Object.keys(spouses[rid]||{}).map(Number).includes(id) &&
+                        (persons[rid]?.gender||'')==='L')) return false;
+                }
+                return true;
+            });
+            let curX = 0;
+            mainRoots.forEach(rid => {
+                const w = subtW[rid] || NODE_W;
+                placeSubtree(rid, curX + w / 2);
+                curX += w + NODE_W;
+            });
+            visible.forEach(id => { if (!placed.has(id)) { pos[id].x = curX; curX += NODE_W; } });
+
+            // Center tree
+            const allXV  = [...visible].map(id => pos[id].x);
+            const cShift = -(Math.min(...allXV) + Math.max(...allXV)) / 2;
+            visible.forEach(id => { pos[id].x += cShift; });
+
+            // ── Bangun elemen Cytoscape ──────────────────────────────────────
+            const elements = [];
+
+            visible.forEach(id => {
+                const p = persons[id];
+                if (!p) return;
+                const label = (Number(p.is_alive)===0 ? 'alm. ' : '') + p.name;
+                elements.push({
+                    group: 'nodes',
+                    data: { id: String(id), label, photo: p.photo||'', gender: p.gender||'', isFocus: (focusId===id), personId: id },
+                    position: { x: pos[id].x, y: pos[id].y }
+                });
             });
 
-            // Recalculate layout on window resize (debounced)
-            window.addEventListener('resize', debounce(function() {
-                try { customFamilyTreeLayout(); } catch (e) { /* ignore */ }
-                // refit viewport after layout change
-                setTimeout(function() { network.fit({ animation: { duration: 400 } }); }, 120);
-            }, 200));
+            // Marriage-anchor node + edge pasangan (garis merah putus-putus)
+            const marriageSet  = new Set();
+            const marriageLnks = new Set();
+            function ensureMarriageNode(a, b) {
+                const ma = Math.min(a,b), mb = Math.max(a,b);
+                const mId = `m-${ma}-${mb}`;
+                if (!marriageSet.has(mId)) {
+                    marriageSet.add(mId);
+                    elements.push({
+                        group: 'nodes',
+                        data: { id: mId, label: '', isMarriage: true },
+                        position: { x: (pos[ma]?.x + pos[mb]?.x)/2, y: (pos[ma]?.y ?? 0) + GEN_Y_GAP * 0.38 }
+                    });
+                }
+                return mId;
+            }
+            function addSpouseEdges(a, b) {
+                const ma = Math.min(a,b), mb = Math.max(a,b);
+                const mId = ensureMarriageNode(ma, mb);
+                const lA = `sl-${ma}-${mId}`, lB = `sl-${mb}-${mId}`;
+                if (!marriageLnks.has(lA)) {
+                    marriageLnks.add(lA);
+                    elements.push({ group:'edges', data:{ id:lA, source:String(ma), target:mId, edgeType:'spouse' }});
+                }
+                if (!marriageLnks.has(lB)) {
+                    marriageLnks.add(lB);
+                    elements.push({ group:'edges', data:{ id:lB, source:String(mb), target:mId, edgeType:'spouse' }});
+                }
+                return mId;
+            }
 
-            network.on('doubleClick', (params) => {
-                if (!params.nodes || !params.nodes.length) return;
-                const pid = Number(params.nodes[0]);
-                if (!pid) return;
-                window.location.href = `?action=tree&focus_id=${pid}`;
-            });
-            network.on('click', (params) => {
-                if (!params.nodes || !params.nodes.length) return;
-                const pid = Number(params.nodes[0]);
-                if (!pid) return;
-                window.location.href = `?action=bio&id=${pid}&mode=view`;
+            const spouseSeen = new Set();
+            visible.forEach(id => {
+                Object.keys(spouses[id]||{}).forEach(sid => {
+                    const s = Number(sid);
+                    if (!visible.has(s)) return;
+                    const key = `${Math.min(id,s)}-${Math.max(id,s)}`;
+                    if (!spouseSeen.has(key)) { spouseSeen.add(key); addSpouseEdges(id, s); }
+                });
             });
 
-            // Reset button handler: rerun layout and fit view
+            childSet.forEach(childId => {
+                const pIds = Object.keys(childParents[childId]||{}).map(Number).filter(x=>visible.has(x));
+                if (pIds.length >= 2) {
+                    const father = pIds.find(id=>(persons[id]?.gender||'')==='L');
+                    const mother = pIds.find(id=>(persons[id]?.gender||'')==='P');
+                    const p1 = father || pIds[0];
+                    const p2 = mother || pIds.find(id=>id!==p1) || pIds[1];
+                    if (p1 && p2 && p1!==p2) {
+                        const mId = addSpouseEdges(p1, p2);
+                        elements.push({ group:'edges', data:{ id:`pc-${mId}-${childId}`, source:mId, target:String(childId), edgeType:'parent-child' }});
+                        return;
+                    }
+                }
+                if (pIds.length >= 1) {
+                    const parentId    = pIds[0];
+                    const pGender     = persons[parentId]?.gender||'';
+                    const spouseCands = Object.keys(spouses[parentId]||{}).map(Number)
+                        .filter(x => visible.has(x) && !childSet.has(x));
+                    const inferredSpouse = spouseCands.find(x => pGender && (persons[x]?.gender||'') && (persons[x]?.gender||'') !== pGender)
+                        ?? spouseCands[0];
+                    if (inferredSpouse && inferredSpouse !== parentId) {
+                        const mId = addSpouseEdges(parentId, inferredSpouse);
+                        elements.push({ group:'edges', data:{ id:`pc-${mId}-${childId}`, source:mId, target:String(childId), edgeType:'parent-child' }});
+                    } else {
+                        elements.push({ group:'edges', data:{ id:`pc-${parentId}-${childId}`, source:String(parentId), target:String(childId), edgeType:'parent-child' }});
+                    }
+                }
+            });
+
+            // ── Inisialisasi Cytoscape ───────────────────────────────────────
+            const cy = cytoscape({
+                container,
+                elements,
+                layout: { name: 'preset' },
+                style: [
+                    {
+                        selector: 'node[!isMarriage]',
+                        style: {
+                            'width': 60, 'height': 60,
+                            'background-fit': 'cover',
+                            'background-clip': 'node',
+                            'background-image': function(ele) {
+                                const photo = ele.data('photo');
+                                if (photo) return photo;
+                                const g = ele.data('gender');
+                                const fill = g==='L' ? '#bfdbfe' : g==='P' ? '#fbcfe8' : '#e5e7eb';
+                                const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='100%' height='100%' fill='#fff'/><circle cx='100' cy='72' r='48' fill='${fill}'/><rect x='36' y='132' rx='16' width='128' height='44' fill='${fill}'/></svg>`;
+                                return 'data:image/svg+xml;base64,' + btoa(svg);
+                            },
+                            'border-width':     function(ele) { return ele.data('isFocus') ? 4 : 2; },
+                            'border-color':     function(ele) { return ele.data('isFocus') ? '#4f46e5' : '#94a3b8'; },
+                            'background-color': '#ffffff',
+                            'label':            'data(label)',
+                            'text-valign':      'bottom',
+                            'text-halign':      'center',
+                            'font-size':        function(ele) { return ele.data('isFocus') ? 14 : 11; },
+                            'font-family':      'Segoe UI, sans-serif',
+                            'color':            '#0f172a',
+                            'text-margin-y':    6,
+                            'text-wrap':        'wrap',
+                            'text-max-width':   100,
+                            'shape':            'ellipse',
+                            'overlay-padding':  4
+                        }
+                    },
+                    {
+                        selector: 'node[?isFocus]',
+                        style: { 'width': 72, 'height': 72, 'border-width': 4, 'border-color': '#4f46e5' }
+                    },
+                    {
+                        selector: 'node[isMarriage]',
+                        style: {
+                            'width': 6, 'height': 6,
+                            'background-color': 'rgba(0,0,0,0)',
+                            'border-width': 0,
+                            'label': '',
+                            'events': 'no'
+                        }
+                    },
+                    {
+                        selector: 'edge[edgeType="spouse"]',
+                        style: {
+                            'width': 2.4,
+                            'line-color': '#ef4444',
+                            'line-style': 'dashed',
+                            'line-dash-pattern': [8, 6],
+                            'curve-style': 'straight',
+                            'target-arrow-shape': 'none',
+                            'source-arrow-shape': 'none'
+                        }
+                    },
+                    {
+                        selector: 'edge[edgeType="parent-child"]',
+                        style: {
+                            'width': 2.2,
+                            'line-color': '#94a3b8',
+                            'line-style': 'solid',
+                            'curve-style': 'straight',
+                            'target-arrow-shape': 'none',
+                            'source-arrow-shape': 'none'
+                        }
+                    }
+                ],
+                userZoomingEnabled:  true,
+                userPanningEnabled:  true,
+                boxSelectionEnabled: false,
+                minZoom: 0.15,
+                maxZoom: 3
+            });
+
+            cy.ready(() => { cy.fit(undefined, 40); });
+
+            cy.on('tap', 'node[!isMarriage]', function(evt) {
+                const pid = evt.target.data('personId');
+                if (pid) window.location.href = `?action=bio&id=${pid}&mode=view`;
+            });
+
+            cy.on('dblclick', 'node[!isMarriage]', function(evt) {
+                const pid = evt.target.data('personId');
+                if (pid) window.location.href = `?action=tree&focus_id=${pid}`;
+            });
+
             const btnReset = document.getElementById('btn-reset-graph');
             if (btnReset) {
                 btnReset.addEventListener('click', function() {
-                    try {
-                        network.unselectAll();
-                        // recalc positions deterministically and fit
-                        customFamilyTreeLayout();
-                        setTimeout(function() { network.fit({ animation: { duration: 420 } }); }, 120);
-                    } catch (err) {
-                        console.error('Reset graph failed', err);
-                        try { network.fit(); } catch(e) {}
-                    }
+                    cy.fit(undefined, 40);
                 });
             }
+
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => { cy.resize(); cy.fit(undefined, 40); }, 200);
+            });
         })();
         </script>
         
@@ -3545,9 +3312,14 @@ if ($action === 'bio') {
     
     
     
+
+
+    
+    
+    
 <?php elseif ($action === 'notifications'): ?>
     <div class="card" style="border:none; background:transparent; box-shadow:none; padding:0;">
-        <h2 style="margin-bottom:15px;">🔔 Notifikasi Anda</h2>
+        <h2 style="margin-bottom:15px;">≡ا¤¤ Notifikasi Anda</h2>
         
         <?php
         // Ambil notifikasi: Milik User Ini ATAU Broadcast (0)
@@ -3561,10 +3333,10 @@ if ($action === 'bio') {
             <div style="display:flex; flex-direction:column; gap:12px;">
                 <?php while ($row = $resNotif->fetch_assoc()): 
                     // Styling icon berdasarkan tipe
-                    $icon = 'ℹ️'; $color = '#3b82f6'; $bg = '#eff6ff';
-                    if($row['type'] == 'success') { $icon = '✅'; $color = '#10b981'; $bg = '#ecfdf5'; }
-                    if($row['type'] == 'birthday') { $icon = '🎂'; $color = '#f43f5e'; $bg = '#fff1f2'; }
-                    if($row['type'] == 'warning') { $icon = '⚠️'; $color = '#f59e0b'; $bg = '#fffbeb'; }
+                    $icon = 'ظ╣ي╕'; $color = '#3b82f6'; $bg = '#eff6ff';
+                    if($row['type'] == 'success') { $icon = 'ظ£à'; $color = '#10b981'; $bg = '#ecfdf5'; }
+                    if($row['type'] == 'birthday') { $icon = '≡اé'; $color = '#f43f5e'; $bg = '#fff1f2'; }
+                    if($row['type'] == 'warning') { $icon = 'ظأبي╕'; $color = '#f59e0b'; $bg = '#fffbeb'; }
                 ?>
                     <div style="background:#fff; padding:15px; border-radius:12px; border-left: 5px solid <?= $color ?>; box-shadow:0 2px 4px rgba(0,0,0,0.05); display:flex; gap:12px;">
                         <div style="font-size:1.5rem; background:<?= $bg ?>; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -3586,7 +3358,7 @@ if ($action === 'bio') {
             </div>
         <?php else: ?>
                 <div class="card" style="text-align:center; padding:50px 20px;">
-                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">🔕</div>
+                <div style="font-size:3rem; margin-bottom:10px; opacity:0.3;">≡ا¤ـ</div>
                 <h3 style="color:#374151; margin:0;">Belum ada notifikasi</h2>
                 <p style="color:#6b7280; font-size:0.9rem;">Info keluarga dan pengumuman akan muncul di sini.</p>
             </div>
@@ -3621,12 +3393,12 @@ if ($action === 'bio') {
         <div class="menu-list">
             <?php if ($isAdmin): ?>
             <a href="?action=admin_users" style="color:#4f46e5;">
-                <span class="menu-icon">🛠</span> Dashboard Admin
+                <span class="menu-icon">≡اؤب</span> Dashboard Admin
             </a>
             <?php endif; ?>
 
             <a href="?action=support">
-                <span class="menu-icon">💬</span> Pusat Bantuan / Feedback
+                <span class="menu-icon">≡اْش</span> Pusat Bantuan / Feedback
             </a>
             
             <div style="padding:15px; border-bottom:1px solid #f3f4f6;">
@@ -3652,14 +3424,14 @@ if ($action === 'bio') {
                                         <button type="submit" class="btn btn-sm" 
                                                 style="background:#dc2626; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                                 onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($t['name']) ?>?');">
-                                            ✅ Diizinkan
+                                            ظ£à Diizinkan
                                         </button>
                                     <?php else: ?>
                                         <input type="hidden" name="new_status" value="1">
                                         <button type="submit" class="btn btn-sm" 
                                                 style="background:#10b981; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                                 onclick="return confirm('Yakin izinkan akses Admin untuk Keluarga <?= htmlspecialchars($t['name']) ?>?');">
-                                            🔒 Terkunci
+                                            ≡ا¤ْ Terkunci
                                         </button>
                                     <?php endif; ?>
                                 </form>
@@ -3675,21 +3447,21 @@ if ($action === 'bio') {
             </div>
 
             <a href="?action=logout" onclick="return confirm('Keluar dari aplikasi?')" style="color:#ef4444;">
-                <span class="menu-icon">🚪</span> Keluar Aplikasi
+                <span class="menu-icon">≡اأز</span> Keluar Aplikasi
             </a>
             <a href="?action=about">
-                <span class="menu-icon">ℹ️</span> Tentang Aplikasi
+                <span class="menu-icon">ظ╣ي╕</span> Tentang Aplikasi
             </a>
             
             <a href="?action=privacy">
-                <span class="menu-icon">🔐</span> Kebijakan Privasi
+                <span class="menu-icon">≡ا¤</span> Kebijakan Privasi
             </a>
         </div>
     </div>
 
 <?php elseif ($action === 'support'): ?>
     <div class="card">
-        <h2>💬 Pusat Bantuan & Feedback</h2>
+        <h2>≡اْش Pusat Bantuan & Feedback</h2>
         
         <?php
         // Proses Kirim Tiket
@@ -3729,11 +3501,11 @@ if ($action === 'bio') {
                 
                 <?php if ($t['admin_reply']): ?>
                     <div style="background:#ecfdf5; padding:10px; border-radius:6px; border-left:4px solid #10b981; font-size:0.9rem;">
-                        <strong>✉️ Balasan Admin:</strong><br>
+                        <strong>ظ£ëي╕ Balasan Admin:</strong><br>
                         <?= nl2br(htmlspecialchars($t['admin_reply'])) ?>
                     </div>
                 <?php else: ?>
-                    <div style="font-size:0.8rem; color:#d97706; background:#fffbeb; display:inline-block; padding:2px 8px; border-radius:99px;">⏳ Menunggu balasan</div>
+                    <div style="font-size:0.8rem; color:#d97706; background:#fffbeb; display:inline-block; padding:2px 8px; border-radius:99px;">ظ│ Menunggu balasan</div>
                 <?php endif; ?>
             </div>
         <?php endwhile; else: ?>
@@ -3748,7 +3520,7 @@ elseif ($action === 'about'): ?>
     <div class="card">
         <div style="text-align:center; margin-bottom:20px;">
             <div style="width:60px; height:60px; background:#4f46e5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; color:#fff; font-size:1.5rem;">
-                👪
+                ≡اّز
             </div>
             <h2 style="margin:0;">Tentang FamilyHood</h2>
             <p style="color:#6b7280; font-size:0.9rem;">Menyambung Tali Silaturahmi Digital</p>
@@ -3760,50 +3532,50 @@ elseif ($action === 'about'): ?>
         
         <h3 class="section-title" style="margin-top:20px;">Misi Kami</h3>
             <ul style="padding-left:20px; line-height:1.6; color:#374151;">
-            <li>👪 <strong>Menghubungkan Generasi:</strong> Memudahkan anak cucu mengenal leluhur mereka.</li>
-            <li>🔒 <strong>Menjaga Privasi:</strong> Data keluarga Anda aman dan hanya bisa diakses oleh Anda (dan admin sistem jika diizinkan).</li>
-            <li>🖼️ <strong>Visualisasi Mudah:</strong> Melihat hubungan keluarga dalam bentuk pohon visual yang interaktif.</li>
+            <li>≡اّز <strong>Menghubungkan Generasi:</strong> Memudahkan anak cucu mengenal leluhur mereka.</li>
+            <li>≡ا¤ْ <strong>Menjaga Privasi:</strong> Data keluarga Anda aman dan hanya bisa diakses oleh Anda (dan admin sistem jika diizinkan).</li>
+            <li>≡اû╝ي╕ <strong>Visualisasi Mudah:</strong> Melihat hubungan keluarga dalam bentuk pohon visual yang interaktif.</li>
         </ul>
 
         <h3 class="section-title" style="margin-top:20px;">Kontak Kami</h3>
         <div style="background:#f0f9ff; padding:15px; border-radius:10px; border:1px solid #bae6fd; margin-bottom:20px;">
             <p style="margin:0 0 8px; font-weight:600; color:#0c4a6e;">Informasi Pengembang/Admin:</p>
             <ul style="list-style:none; padding:0; margin:0; font-size:0.9rem;">
-                <li style="margin-bottom:5px;">📞 HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
-                <li style="margin-bottom:5px;">✉️ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
-                <li>📸 Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
+                <li style="margin-bottom:5px;">≡اôئ HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
+                <li style="margin-bottom:5px;">ظ£ëي╕ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
+                <li>≡اô╕ Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
             </ul>
         </div>
         
         <h3 class="section-title" style="margin-top:20px;">Fitur Unggulan</h3>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>🌳 Pohon Dinamis</strong><br>Otomatis menyusun bagan keturunan.
+                <strong>≡اî│ Pohon Dinamis</strong><br>Otomatis menyusun bagan keturunan.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>📤 Export Data</strong><br>Unduh ke PDF, Word, atau Excel dengan mudah.
+                <strong>≡اôج Export Data</strong><br>Unduh ke PDF, Word, atau Excel dengan mudah.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>🎂 Pengingat Ultah</strong><br>Notifikasi ulang tahun anggota keluarga.
+                <strong>≡اé Pengingat Ultah</strong><br>Notifikasi ulang tahun anggota keluarga.
             </div>
             <div style="background:#f9fafb; padding:10px; border-radius:8px; font-size:0.85rem;">
-                <strong>🖼 Galeri Foto</strong><br>Simpan foto kenangan setiap anggota.
+                <strong>≡اû╝ Galeri Foto</strong><br>Simpan foto kenangan setiap anggota.
             </div>
         </div>
 
         <div style="margin-top:30px; text-align:center; border-top:1px solid #eee; padding-top:20px;">
             <p style="font-size:0.8rem; color:#9ca3af;">
                 Versi Aplikasi: 1.0.0<br>
-                Dibuat dengan ❤️ oleh Tim Pengembang.
+                Dibuat dengan ظإجي╕ oleh Tim Pengembang.
             </p>
-            <a href="?action=settings" class="btn btn-secondary btn-sm">← Kembali ke Pengaturan</a>
+            <a href="?action=settings" class="btn btn-secondary btn-sm">ظ Kembali ke Pengaturan</a>
         </div>
     </div>
 <?
 // --- HALAMAN KEBIJAKAN PRIVASI (PRIVACY POLICY) ---
 elseif ($action === 'privacy'): ?>
     <div class="card">
-        <h2 style="margin-bottom:10px;">🔐 Kebijakan Privasi</h2>
+        <h2 style="margin-bottom:10px;">≡ا¤ Kebijakan Privasi</h2>
         <p style="font-size:0.85rem; color:#6b7280; margin-bottom:20px;">Terakhir diperbarui: <?= date('d M Y') ?></p>
         
         <div style="font-size:0.9rem; line-height:1.6; color:#374151;">
@@ -3844,21 +3616,21 @@ elseif ($action === 'privacy'): ?>
                 <strong>Hubungi Kami</strong><br>
                 Jika ada pertanyaan mengenai privasi, Anda dapat menghubungi kami:<br>
                 <ul style="list-style:disc; padding-left:20px; margin:5px 0 0; font-size:0.9rem;">
-                    <li>📞 HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
-                    <li>✉️ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
-                    <li>📸 Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
+                    <li>≡اôئ HP: <a href="tel:+6281234567890" style="color:#1d4ed8; text-decoration:none;">+62 85743399595</a></li>
+                    <li>ظ£ëي╕ Email: <a href="mailto:admin@familyhood.com" style="color:#1d4ed8; text-decoration:none;">admin@familyhood.com</a></li>
+                    <li>≡اô╕ Instagram: <a href="https://instagram.com/zainul.hakim" target="_blank" style="color:#1d4ed8; text-decoration:none;">@zainul.hakim</a></li>
                 </ul>
             </div>
         </div>
         
         <div style="margin-top:20px; text-align:center;">
-            <a href="?action=settings" class="btn btn-secondary btn-sm">â†گ Kembali ke Pengaturan</a>
+            <a href="?action=settings" class="btn btn-secondary btn-sm">├تظب┌» Kembali ke Pengaturan</a>
         </div>
     </div>
 
 <?php elseif ($action === 'admin_users' && $isAdmin): ?>
     <div class="card">
-        <h2>🛠 Dashboard Admin</h2>
+        <h2>≡اؤب Dashboard Admin</h2>
         
         <h3 class="section-title">Daftar Pengguna</h3>
         <div style="overflow-x:auto;">
@@ -3898,10 +3670,10 @@ elseif ($action === 'privacy'): ?>
                                         class="btn btn-sm btn-primary"
                                         style="background:#4f46e5; color:#fff; padding:6px 10px; font-size:0.75rem; border-radius:99px;"
                                         onclick="return confirm('Yakin kunci akses Admin untuk Keluarga <?= htmlspecialchars($u['name']) ?>?');">
-                                    ✅ <?= $viewableTreesCount ?> Keluarga Diizinkan
+                                    ظ£à <?= $viewableTreesCount ?> Keluarga Diizinkan
                                 </button>
                             <?php else: ?>
-                                <span style="color:#9ca3af; font-size:0.85rem;">🔒 Private (0 Keluarga)</span>
+                                <span style="color:#9ca3af; font-size:0.85rem;">≡ا¤ْ Private (0 Keluarga)</span>
                             <?php endif; ?>
                         </td>
 
@@ -3912,7 +3684,7 @@ elseif ($action === 'privacy'): ?>
         </div>
         
         <div style="margin-top:40px; padding-top:20px; border-top:2px dashed #e5e7eb;">
-            <h3 class="section-title">📣 Kirim Pengumuman / Notifikasi</h3>
+            <h3 class="section-title">≡اôث Kirim Pengumuman / Notifikasi</h3>
             
             <?php
             if (isset($_POST['send_broadcast'])) {
@@ -3933,12 +3705,12 @@ elseif ($action === 'privacy'): ?>
                 
                 <label>Tujuan:</label>
                 <select name="broadcast_target" required>
-                    <option value="0">📣 SEMUA USER (Broadcast)</option>
+                    <option value="0">≡اôث SEMUA USER (Broadcast)</option>
                     <?php 
                     // Ambil list user lagi untuk dropdown
                     $usersList = $mysqli->query("SELECT id, name FROM users WHERE role != 'admin'");
                     while($u = $usersList->fetch_assoc()) {
-                        echo "<option value='".$u['id']."'>• ".$u['name']."</option>";
+                        echo "<option value='".$u['id']."'>ظت ".$u['name']."</option>";
                     }
                     ?>
                 </select>
