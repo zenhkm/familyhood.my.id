@@ -1958,6 +1958,21 @@ if ($action === 'view_tree') {
 
 // --- LOGIKA HAPUS DATA (DELETE) ---
 
+// Toggle Status Cerai
+if (isset($_GET['toggle_divorced']) && $action === 'bio') {
+    if ($isViewingOthers) die("Akses Ditolak.");
+    $relId = intval($_GET['toggle_divorced']);
+    $pid   = intval($_GET['id']);
+    $r = $mysqli->query("SELECT * FROM relations WHERE id=$relId AND user_id=$targetUserId AND relation_type='pasangan'")->fetch_assoc();
+    if ($r) {
+        $newVal = $r['is_divorced'] ? 0 : 1;
+        $mysqli->query("UPDATE relations SET is_divorced=$newVal WHERE id=$relId");
+        // Update relasi sebaliknya juga
+        $mysqli->query("UPDATE relations SET is_divorced=$newVal WHERE person_id={$r['related_person_id']} AND related_person_id={$r['person_id']} AND relation_type='pasangan' AND user_id=$targetUserId");
+    }
+    redirect("?action=bio&id=$pid&mode=view");
+}
+
 // Hapus Relasi
 if (isset($_GET['delete_rel']) && $action === 'bio') {
     if ($isViewingOthers) die("Akses Ditolak.");
@@ -2678,6 +2693,13 @@ if ($action === 'bio') {
                                     <div class="relation-actions">
                                         
                                         <?php if (!$isViewingOthers): ?>
+                                        <?php if (($r['relation_type'] ?? '') === 'pasangan'): ?>
+                                        <a href="?action=bio&id=<?= $currentPerson['id'] ?>&toggle_divorced=<?= $r['id'] ?>" 
+                                           class="btn-chip <?= !empty($r['is_divorced']) ? 'btn-chip-delete' : 'btn-chip-married' ?>"
+                                           onclick="event.stopPropagation(); return confirm('<?= !empty($r['is_divorced']) ? 'Tandai sebagai masih menikah?' : 'Tandai sebagai cerai?' ?>');">
+                                            <?= !empty($r['is_divorced']) ? '❤ Menikah' : '✂ Cerai' ?>
+                                        </a>
+                                        <?php endif; ?>
                                         <a href="?action=bio&id=<?= $currentPerson['id'] ?>&delete_rel=<?= $r['id'] ?>" 
                                            class="btn-chip btn-chip-delete"
                                            onclick="event.stopPropagation(); return confirm('Hapus relasi ini?');">

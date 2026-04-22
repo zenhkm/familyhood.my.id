@@ -383,6 +383,8 @@ input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db;
 .btn-chip-view:hover { background: #dbeafe; transform: translateY(-1px); box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25); }
 .btn-chip-delete { background: #fef2f2; color: #b91c1c; }
 .btn-chip-delete:hover { background: #fee2e2; transform: translateY(-1px); box-shadow: 0 3px 6px rgba(185, 28, 28, 0.25); }
+.btn-chip-married { background: #f0fdf4; color: #15803d; }
+.btn-chip-married:hover { background: #dcfce7; transform: translateY(-1px); box-shadow: 0 3px 6px rgba(21, 128, 61, 0.25); }
 
 @media (max-width: 640px) {
     .card-relations { padding: 12px 12px 10px; border-radius: 16px; }
