@@ -1611,9 +1611,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $from_id = intval($_POST['from_id']??0);
         $from_rel = $_POST['from_relation_type']??'';
         $spouse_order = (isset($_POST['spouse_order']) && intval($_POST['spouse_order']) > 0) ? intval($_POST['spouse_order']) : null;
-
-        // Auto-detect gender jika relasi tertentu
-        if ($from_rel === 'ibu') $gender = 'P'; 
+        $is_divorced_new = (isset($_POST['is_divorced']) && $_POST['is_divorced'] == '1') ? 1 : 0;
         elseif ($from_rel === 'ayah') $gender = 'L';
         elseif ($from_rel === 'pasangan' && $from_id > 0) {
             // Cek gender pasangan
@@ -1649,7 +1647,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $relationSpouseOrder = ($rtype === 'pasangan') ? ($spouse_order ?? 0) : 0;
                         
                         // Insert Relasi (Pakai user_id)
-                        $mysqli->query("INSERT INTO relations (user_id, person_id, related_person_id, relation_type, spouse_order) VALUES ($targetUserId, $pid, $rid, '$rtype', " . ($relationSpouseOrder ?: "NULL") . ")");
+                        $isDivInsert = ($rtype === 'pasangan') ? $is_divorced_new : 0;
+                        $mysqli->query("INSERT INTO relations (user_id, person_id, related_person_id, relation_type, spouse_order, is_divorced) VALUES ($targetUserId, $pid, $rid, '$rtype', " . ($relationSpouseOrder ?: "NULL") . ", $isDivInsert)");
                         
                         // Insert Relasi Kebalikannya
                         $revType = null;
@@ -1661,7 +1660,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         elseif ($rtype == 'pasangan') $revType = 'pasangan';
                         
                         if ($revType) {
-                            $mysqli->query("INSERT INTO relations (user_id, person_id, related_person_id, relation_type, spouse_order) VALUES ($targetUserId, $rid, $pid, '$revType', " . (($revType === 'pasangan' && $relationSpouseOrder > 0) ? $relationSpouseOrder : "NULL") . ")");
+                            $isDivRev = ($revType === 'pasangan') ? $is_divorced_new : 0;
+                            $mysqli->query("INSERT INTO relations (user_id, person_id, related_person_id, relation_type, spouse_order, is_divorced) VALUES ($targetUserId, $rid, $pid, '$revType', " . (($revType === 'pasangan' && $relationSpouseOrder > 0) ? $relationSpouseOrder : "NULL") . ", $isDivRev)");
                         }
 
                         // Logic saudara satu orang tua
@@ -1743,10 +1743,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pid = intval($_POST['person_id']); 
         $rid = intval($_POST['related_person_id']); 
         $rtype = $_POST['relation_type'];
+        $isDivorcedVal = (isset($_POST['is_divorced']) && $_POST['is_divorced'] == '1') ? 1 : 0;
         
         if ($pid > 0 && $rid > 0 && $rtype) {
              // Insert A -> B
-             $mysqli->query("INSERT IGNORE INTO relations (user_id, person_id, related_person_id, relation_type) VALUES ($targetUserId, $pid, $rid, '$rtype')");
+             $mysqli->query("INSERT IGNORE INTO relations (user_id, person_id, related_person_id, relation_type, is_divorced) VALUES ($targetUserId, $pid, $rid, '$rtype', $isDivorcedVal)");
+             // Jika sudah ada, update is_divorced
+             $mysqli->query("UPDATE relations SET is_divorced=$isDivorcedVal WHERE user_id=$targetUserId AND person_id=$pid AND related_person_id=$rid AND relation_type='$rtype'");
              
              // Insert B -> A (Kebalikannya)
              $revType = null;
@@ -1758,7 +1761,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              elseif ($rtype == 'pasangan') $revType = 'pasangan';
              
              if ($revType) {
-                 $mysqli->query("INSERT IGNORE INTO relations (user_id, person_id, related_person_id, relation_type) VALUES ($targetUserId, $rid, $pid, '$revType')");
+                 $isDivRev = ($rtype === 'pasangan') ? $isDivorcedVal : 0;
+                 $mysqli->query("INSERT IGNORE INTO relations (user_id, person_id, related_person_id, relation_type, is_divorced) VALUES ($targetUserId, $rid, $pid, '$revType', $isDivRev)");
+                 $mysqli->query("UPDATE relations SET is_divorced=$isDivRev WHERE user_id=$targetUserId AND person_id=$rid AND related_person_id=$pid AND relation_type='$revType'");
              }
              redirect("?action=bio&id=$pid&mode=view");
         }
@@ -2019,7 +2024,7 @@ if ($action === 'bio') {
     if ($id > 0) {
         $currentPerson = $mysqli->query("SELECT * FROM persons WHERE id=$id")->fetch_assoc();
         if ($currentPerson) {
-            $res = $mysqli->query("SELECT r.id, r.relation_type, r.related_person_id, r.spouse_order, p.name AS related_name, p.gender AS related_gender, p.photo AS related_photo FROM relations r JOIN persons p ON p.id = r.related_person_id WHERE r.person_id=$id ORDER BY FIELD(r.relation_type,'ayah','ibu','anak','saudara','pasangan'), CASE WHEN r.relation_type='pasangan' THEN COALESCE(r.spouse_order, 999999) ELSE 999999 END, p.name");
+            $res = $mysqli->query("SELECT r.id, r.relation_type, r.related_person_id, r.spouse_order, IFNULL(r.is_divorced,0) AS is_divorced, p.name AS related_name, p.gender AS related_gender, p.photo AS related_photo FROM relations r JOIN persons p ON p.id = r.related_person_id WHERE r.person_id=$id ORDER BY FIELD(r.relation_type,'ayah','ibu','anak','saudara','pasangan'), CASE WHEN r.relation_type='pasangan' THEN COALESCE(r.spouse_order, 999999) ELSE 999999 END, p.name");
             $relations = $res->fetch_all(MYSQLI_ASSOC);
             
             // PERBAIKAN DI SINI: Ambil orang lain dalam satu tree yang sama
@@ -2397,6 +2402,11 @@ if ($action === 'bio') {
                 <?php if ($req_rel === 'pasangan'): ?>
                     <label>Pasangan ke</label>
                     <input type="number" name="spouse_order" min="1" placeholder="Contoh: 1, 2, 3...">
+                    <div class="alert alert-error" style="margin-top:8px;">
+                        <label style="margin:0; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                            <input type="checkbox" name="is_divorced" value="1" style="width:auto;"> Sudah Cerai?
+                        </label>
+                    </div>
                 <?php endif; ?>
 
                 <?php if ($req_rel === 'anak'): ?>
@@ -2584,12 +2594,22 @@ if ($action === 'bio') {
                             </select>
                         </div>
                         <div class="flex-1">
-                            <select name="relation_type" required>
+                            <select name="relation_type" required id="create_rel_type">
                                 <option value="">- Sebagai -</option>
                                 <option value="ayah">Ayah</option><option value="ibu">Ibu</option><option value="anak">Anak</option><option value="saudara">Saudara</option><option value="pasangan">Pasangan</option>
                             </select>
                         </div>
                     </div>
+                    <div id="create_rel_divorced_wrap" style="display:none; margin-top:6px;">
+                        <label style="font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; color:#dc2626;">
+                            <input type="checkbox" name="is_divorced" value="1" style="width:auto;"> Sudah Cerai?
+                        </label>
+                    </div>
+                    <script>
+                    document.getElementById('create_rel_type').addEventListener('change', function(){
+                        document.getElementById('create_rel_divorced_wrap').style.display = this.value === 'pasangan' ? 'block' : 'none';
+                    });
+                    </script>
                     <button type="submit" class="btn btn-primary btn-sm" style="margin-top:5px;">Simpan</button>
                 </form>
             </div>
@@ -2645,6 +2665,9 @@ if ($action === 'bio') {
                                         <?= ucfirst($r['relation_type']) ?>
                                         <?php if (($r['relation_type'] ?? '') === 'pasangan' && !empty($r['spouse_order'])): ?>
                                             <?= ' ke-' . (int)$r['spouse_order'] ?>
+                                        <?php endif; ?>
+                                        <?php if (($r['relation_type'] ?? '') === 'pasangan'): ?>
+                                            <?= !empty($r['is_divorced']) ? ' ✂ Cerai' : ' ❤ Menikah' ?>
                                         <?php endif; ?>
                                     </span>
                                 </td>
