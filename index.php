@@ -3016,10 +3016,11 @@ if ($action === 'bio') {
             function calcW(hId) {
                 if (calcDone.has(hId)) return subtW[hId] || NODE_W;
                 calcDone.add(hId);
-                const n       = (unitSpouses[hId]||[]).length;
-                // Lebar horizontal: setiap 2 istri menambah 1 kolom ke kiri & kanan
+                const n      = (unitSpouses[hId]||[]).length;
                 const numCols = Math.ceil(n / 2);
-                const coupleW = 2 * numCols * SPOUSE_GAP + NODE_W;
+                // row 1+ wives dipush extra sesuai jumlah anak
+                const kExt    = n > 2 ? Math.ceil((unitChildren[hId]||[]).length / 2) * (NODE_W / 2) : 0;
+                const coupleW = 2 * (numCols * SPOUSE_GAP + kExt) + NODE_W;
                 const kids    = unitChildren[hId] || [];
                 const kidsW   = kids.length
                     ? kids.reduce((s,c) => s + calcW(c), 0) + (kids.length - 1) * NODE_GAP
@@ -3043,13 +3044,15 @@ if ($action === 'bio') {
                 // Suami selalu di tengah
                 pos[hId] = { x: cx, y: baseY };
 
-                // Kolom melebar keluar: istri ke-(2k-1) di kolom -k, istri ke-(2k) di kolom +k
-                // Setiap 2 istri → satu baris baru turun WIFE_ROW_GAP
+                // Kolom melebar keluar; row 1+ ditambah jarak proporsional jumlah anak
+                const kidsCount = (unitChildren[hId] || []).length;
+                const kidsExtra = Math.ceil(kidsCount / 2) * (NODE_W / 2);
                 wives.forEach((wid, i) => {
                     const col  = Math.floor(i / 2) + 1;   // 1,1,2,2,3,3,...
                     const side = (i % 2 === 0) ? -1 : 1;  // kiri,kanan,kiri,kanan,...
                     const row  = Math.floor(i / 2);
-                    pos[wid] = { x: cx + side * col * SPOUSE_GAP, y: baseY + row * WIFE_ROW_GAP };
+                    const colX = row === 0 ? col * SPOUSE_GAP : col * SPOUSE_GAP + kidsExtra;
+                    pos[wid] = { x: cx + side * colX, y: baseY + row * WIFE_ROW_GAP };
                     placed.add(wid);
                 });
 
@@ -3117,19 +3120,33 @@ if ($action === 'bio') {
 
                 if (wives.length > 0) {
                     const badgeList = [];
-                    wives.forEach(wid => {
+                    wives.forEach((wid, wifeIdx) => {
                         if (!pos[wid]) return;
-                        const isDiv = !!(spouses[hId]?.[wid]?.is_divorced);
-                        const mx    = (pos[hId].x + pos[wid].x) / 2;
-                        const my    = (pos[hId].y + pos[wid].y) / 2;
-                        const bid   = `badge-${Math.min(hId,wid)}-${Math.max(hId,wid)}`;
+                        const wifeRow = Math.floor(wifeIdx / 2);
+                        const isDiv   = !!(spouses[hId]?.[wid]?.is_divorced);
+                        const bid     = `badge-${Math.min(hId,wid)}-${Math.max(hId,wid)}`;
+                        const eType   = isDiv ? 'spouse-divorced' : 'spouse';
                         badgeList.push({ bid, isDiv });
-                        // Badge node di titik tengah pasangan
-                        elements.push({ group:'nodes', data:{ id:bid, label: isDiv ? '\u2702' : '\u2764', isBadge:true, isDivorced:isDiv }, position:{ x:mx, y:my } });
-                        // Garis terbagi dua melalui badge
-                        const eType = isDiv ? 'spouse-divorced' : 'spouse';
-                        elements.push({ group:'edges', data:{ id:`sp1-${hId}-${wid}`, source:String(hId), target:bid, edgeType:eType } });
-                        elements.push({ group:'edges', data:{ id:`sp2-${hId}-${wid}`, source:bid, target:String(wid), edgeType:eType } });
+                        if (wifeRow === 0) {
+                            // Baris sama → garis lurus melalui badge di tengah
+                            const mx = (pos[hId].x + pos[wid].x) / 2;
+                            const my = pos[hId].y;
+                            elements.push({ group:'nodes', data:{ id:bid, label: isDiv ? '\u2702' : '\u2764', isBadge:true, isDivorced:isDiv }, position:{ x:mx, y:my } });
+                            elements.push({ group:'edges', data:{ id:`sp1-${hId}-${wid}`, source:String(hId), target:bid, edgeType:eType } });
+                            elements.push({ group:'edges', data:{ id:`sp2-${hId}-${wid}`, source:bid, target:String(wid), edgeType:eType } });
+                        } else {
+                            // Baris bawah → garis L: suami turun ke elbow, lalu belok horizontal ke istri
+                            const eid = `elbow-${hId}-${wid}`;
+                            elements.push({ group:'nodes', data:{ id:eid, label:'', isAnchor:true }, position:{ x:pos[hId].x, y:pos[wid].y } });
+                            // Badge di tengah segmen horizontal (elbow → istri)
+                            const bx = (pos[hId].x + pos[wid].x) / 2;
+                            const by = pos[wid].y;
+                            elements.push({ group:'nodes', data:{ id:bid, label: isDiv ? '\u2702' : '\u2764', isBadge:true, isDivorced:isDiv }, position:{ x:bx, y:by } });
+                            // Garis: suami→elbow (vertikal), elbow→badge, badge→istri (horizontal)
+                            elements.push({ group:'edges', data:{ id:`sp0-${hId}-${wid}`, source:String(hId), target:eid, edgeType:eType } });
+                            elements.push({ group:'edges', data:{ id:`sp1-${hId}-${wid}`, source:eid, target:bid, edgeType:eType } });
+                            elements.push({ group:'edges', data:{ id:`sp2-${hId}-${wid}`, source:bid, target:String(wid), edgeType:eType } });
+                        }
                     });
 
                     // Routing anak: setiap anak → badge ibu mereka masing-masing
