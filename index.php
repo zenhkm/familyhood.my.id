@@ -3223,11 +3223,11 @@ if ($action === 'bio') {
                     },
                     position: pos[id]
                 });
-                // Badge edit (ikon pensil di kanan atas node)
+                // Badge edit (pill pensil di bawah foto, di atas nama)
                 elements.push({
                     group: 'nodes',
-                    data: { id: `edit-${id}`, label: '\u270E', isEditBadge: true, personId: id },
-                    position: { x: pos[id].x + 32, y: pos[id].y - 32 }
+                    data: { id: `edit-${id}`, label: '\u270F Edit', isEditBadge: true, personId: id },
+                    position: { x: pos[id].x, y: pos[id].y + 42 }
                 });
             });
 
@@ -3353,7 +3353,7 @@ if ($action === 'bio') {
                             'font-size':        function(ele) { return ele.data('isFocus') ? 14 : 11; },
                             'font-family':      'Segoe UI, sans-serif',
                             'color':            '#0f172a',
-                            'text-margin-y':    6, 'text-wrap': 'wrap', 'text-max-width': 100,
+                            'text-margin-y':    30, 'text-wrap': 'wrap', 'text-max-width': 100,
                             'shape':            'ellipse', 'overlay-padding': 4
                         }
                     },
@@ -3376,12 +3376,12 @@ if ($action === 'bio') {
                     {
                         selector: 'node[isEditBadge]',
                         style: {
-                            'width': 20, 'height': 20, 'shape': 'ellipse',
+                            'width': 62, 'height': 22, 'shape': 'round-rectangle',
                             'background-color': '#4f46e5',
-                            'border-width': 1.5, 'border-color': '#ffffff',
+                            'border-width': 0,
                             'label': 'data(label)',
                             'text-valign': 'center', 'text-halign': 'center',
-                            'font-size': 11, 'color': '#ffffff',
+                            'font-size': 12, 'font-weight': 'bold', 'color': '#ffffff',
                             'z-index': 20, 'cursor': 'pointer'
                         }
                     },
