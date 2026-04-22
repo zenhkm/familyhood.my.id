@@ -192,6 +192,7 @@ input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db;
     position: relative;
     width: 100%; min-height: 40vh; border-radius: 14px; background: #ffffff;
     border: 1px solid rgba(148, 163, 184, 0.35); box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08); overflow: hidden;
+    text-align: left;
 }
 
 .graph-controls {
@@ -212,7 +213,8 @@ input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db;
 .graph-controls .btn:hover { transform: translateY(-2px); }
 
 /* family graph responsive height: prefer viewport-based sizing with sensible mins */
-#family-graph { width: 100%; height: min(72vh, 820px); min-height: 420px; }
+/* text-align: left prevents Cytoscape canvas from being offset by inherited text-align: center */
+#family-graph { width: 100%; height: min(72vh, 820px); min-height: 420px; text-align: left; overflow: hidden; }
 
 .tree-legend { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center; margin-bottom: 12px; font-size: 0.78rem; color: #475569; }
 .tree-legend-item { display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 999px; padding: 4px 10px; }
