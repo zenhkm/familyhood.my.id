@@ -3173,6 +3173,12 @@ if ($action === 'bio') {
                     },
                     position: pos[id]
                 });
+                // Badge edit (ikon pensil di kanan atas node)
+                elements.push({
+                    group: 'nodes',
+                    data: { id: `edit-${id}`, label: '\u270E', isEditBadge: true, personId: id },
+                    position: { x: pos[id].x + 32, y: pos[id].y - 32 }
+                });
             });
 
             // ── Bangun badge pasangan + edges ──────────────────────────────
@@ -3318,6 +3324,18 @@ if ($action === 'bio') {
                         }
                     },
                     {
+                        selector: 'node[isEditBadge]',
+                        style: {
+                            'width': 20, 'height': 20, 'shape': 'ellipse',
+                            'background-color': '#4f46e5',
+                            'border-width': 1.5, 'border-color': '#ffffff',
+                            'label': 'data(label)',
+                            'text-valign': 'center', 'text-halign': 'center',
+                            'font-size': 11, 'color': '#ffffff',
+                            'z-index': 20, 'cursor': 'pointer'
+                        }
+                    },
+                    {
                         selector: 'edge[edgeType="spouse"]',
                         style: { 'width': 2.4, 'line-color': '#ef4444', 'line-style': 'dashed', 'line-dash-pattern': [8,6], 'curve-style': 'straight', 'target-arrow-shape': 'none', 'source-arrow-shape': 'none' }
                     },
@@ -3341,11 +3359,12 @@ if ($action === 'bio') {
             requestAnimationFrame(doFit);
             setTimeout(doFit, 400);
 
-            cy.on('tap', 'node[!isAnchor][!isBadge]', function(evt) {
+            cy.on('tap', 'node[isEditBadge]', function(evt) {
+                evt.stopPropagation();
                 const pid = evt.target.data('personId');
-                if (pid) window.location.href = `?action=bio&id=${pid}&mode=view`;
+                if (pid) window.location.href = `?action=bio&id=${pid}&mode=edit`;
             });
-            cy.on('dblclick', 'node[!isAnchor][!isBadge]', function(evt) {
+            cy.on('tap', 'node[!isAnchor][!isBadge][!isEditBadge]', function(evt) {
                 const pid = evt.target.data('personId');
                 if (pid) window.location.href = `?action=tree&focus_id=${pid}`;
             });
@@ -3362,7 +3381,7 @@ if ($action === 'bio') {
         </script>
         
         <p style="text-align:center; color:#9ca3af; font-size:0.8rem; margin-top:10px;">
-            <small>Tips: Klik node untuk biodata, double-click node untuk fokus silsilah orang tersebut.</small>
+            <small>Tips: Klik foto untuk menjadikan orang tersebut pusat silsilah. Klik ikon <span style="color:#4f46e5;">✎</span> untuk mengedit.</small>
         </p>
 
     </div>
